@@ -24,7 +24,8 @@
     }
     .back-btn {
       padding: 8px 15px;
-      background-color: #6c757d;
+      /* Homeボタンの色を青色に変更 */
+      background-color: #4285f4; /* 青色 */
       color: white;
       border: none;
       border-radius: 5px;
@@ -33,7 +34,8 @@
       cursor: pointer;
     }
     .back-btn:hover {
-      background-color: #5a6268;
+      /* ホバー時の色も調整 */
+      background-color: #3367d6; /* 少し濃い青 */
     }
 
     .container {
@@ -310,7 +312,8 @@
   <div class="container">
     <div class="header">
       <h1>Daily Record</h1>
-      <a href="index.html" class="back-btn">Home</a> </div>
+      <a href="index.html" class="back-btn">Home</a>
+    </div>
 
     <div class="record-section">
       <h2>Today's Summary</h2>
@@ -334,17 +337,12 @@
         <div class="summary-item">
           <h3>Average Completion (Last 7 Days)</h3>
           <p class="completion-percentage" id="avgCompletion7Days">0%</p>
-          <p class="completion-tasks">&nbsp;</p> <div class="progress-bar-container">
+          <p class="completion-tasks">&nbsp;</p>
+          <div class="progress-bar-container">
             <div class="progress-bar" id="avg7DaysProgressBar"></div>
           </div>
         </div>
-        <div class="summary-item">
-          <h3>Total Completed Tasks (Today)</h3>
-          <p class="completion-percentage" id="totalCompletedTasks">0</p>
-          <p class="completion-tasks">tasks</p> <div class="progress-bar-container">
-            <div class="progress-bar" style="width:100%; background-color:#4CAF50;"></div> </div>
         </div>
-      </div>
     </div>
 
     <div class="streaks-section">
@@ -475,8 +473,8 @@
       document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
       document.getElementById('avg7DaysProgressBar').style.width = `${avg7Days}%`;
 
-      // Total Completed Tasks (Today)
-      document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
+      // Total Completed Tasks (Today) は削除されたため、ここでの更新は不要
+      // document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
     }
 
     function populateHistoryList() {
