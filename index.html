@@ -1032,24 +1032,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// URLパラメータからの共有データ読み込み
-const urlParams = new URLSearchParams(window.location.search);
-const sharedDataParam = urlParams.get('data');
-if (sharedDataParam) {
-    try {
-        const decodedParam = decodeURIComponent(sharedDataParam); // Base64デコード前のURLエンコードをデコード
-        const decompressed = atob(decodedParam); // Base64デコード
-        const sharedState = JSON.parse(decompressed);
-        restoreState(sharedState); // 共有された状態を復元
-        // 共有された状態を復元した後もチェックボックスリスナーをアタッチ
-        document.querySelectorAll('.editable').forEach(editableDiv => {
-            attachCheckboxListeners(editableDiv);
-        });
-    } catch (e) {
-        console.error("Error processing shared data:", e);
-        alert("共有されたデータの読み込みに失敗しました。");
-    }
-}
 </script>
 </body>
 </html>
