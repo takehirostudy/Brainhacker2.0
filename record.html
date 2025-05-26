@@ -501,10 +501,10 @@
         data.todayCompletion.subValue = `${todayComp.completed}/${todayComp.total} tasks completed`;
         data.todayCompletion.progress = todayComp.completionRate;
 
-const yesterdayComp = calculateCompletionData(getYesterdayKey());
-data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`;
-data.yesterdayCompletion.subValue = `${yesterdayComp.completed}/${yesterdayComp.total} tasks completed`;
-data.yesterdayCompletion.progress = yesterdayComp.completionRate;
+        const yesterdayComp = calculateCompletionData(getYesterdayKey());
+        data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`;
+        data.yesterdayCompletion.subValue = `${yesterdayComp.completed}/${yesterdayComp.total} tasks completed`;
+        data.yesterdayCompletion.progress = yesterdayComp.completionRate;
 
         // 過去7日間の平均を計算
         let total7DaysCompletion = 0;
@@ -645,11 +645,11 @@ data.yesterdayCompletion.progress = yesterdayComp.completionRate;
 
       let state = localStorage.getItem(`brainhack-${date}`);
 
-      // Try to load from URL if not found in localStorage (for direct shared links)
+      // 共有データがURLにあり、かつlocalStorageにデータがない場合のみ、その共有データを読み込む
+      // ただし、record.htmlへの自動ポップアップを抑制するため、このブロックはコメントアウトする
+      /*
       const urlParams = new URLSearchParams(window.location.search);
       const compressedData = urlParams.get('data');
-
-      // 共有データがURLにあり、かつlocalStorageにデータがない場合のみ、その共有データを読み込む
       if (!state && compressedData) {
         try {
           const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
@@ -662,6 +662,7 @@ data.yesterdayCompletion.progress = yesterdayComp.completionRate;
           console.error("Error parsing shared data from URL:", e);
         }
       }
+      */
 
       if (!state) {
         historyGridDisplay.innerHTML = '<p style="text-align: center; width: 100%; padding-top: 50px;">この日付の記録は見つかりませんでした。</p>';
@@ -731,26 +732,34 @@ data.yesterdayCompletion.progress = yesterdayComp.completionRate;
               // HTML文字列をパースして子要素を一つずつ追加することで、DOM構造を正確に再現
               const parser = new DOMParser();
               const doc = parser.parseFromString(cellData.h || '', 'text/html');
-              const bodyChildren = Array.from(doc.body.children); // 直下の要素を取得
-
-              bodyChildren.forEach(child => {
-                  const clonedChild = child.cloneNode(true); // 子要素をクローン
+              // doc.bodyの子要素を直接取得し、それらをcontentDivに追加
+              // Note: `childNodes`を使うことでテキストノードも扱えるようにする
+              Array.from(doc.body.childNodes).forEach(node => {
+                  const clonedNode = node.cloneNode(true); // ノードをクローン
 
                   // チェックボックスがあれば処理
-                  if (clonedChild.tagName === 'SPAN' && clonedChild.querySelector('input[type="checkbox"]')) {
-                      const cb = clonedChild.querySelector('input[type="checkbox"]');
+                  if (clonedNode.tagName === 'SPAN' && clonedNode.querySelector('input[type="checkbox"]')) {
+                      const cb = clonedNode.querySelector('input[type="checkbox"]');
                       cb.disabled = true; // 無効化
+                      // checked属性が設定されている場合のみcheckedプロパティをtrueに
                       if (cb.hasAttribute('checked')) {
-                          cb.checked = true; // checked属性があればプロパティもtrueに
-                          const textSpan = cb.nextElementSibling;
-                          if (textSpan) textSpan.style.textDecoration = 'line-through';
+                          cb.checked = true;
                       } else {
                           cb.checked = false;
-                          const textSpan = cb.nextElementSibling;
-                          if (textSpan) textSpan.style.textDecoration = 'none';
+                      }
+                      const textSpan = cb.nextElementSibling;
+                      if (textSpan) {
+                         // checkedプロパティがtrueなら取り消し線、そうでなければ取り消し線なし
+                         textSpan.style.textDecoration = cb.checked ? 'line-through' : 'none';
+                      }
+                  } else if (clonedNode.tagName === 'DIV' && clonedNode.querySelector('span[contenteditable="true"]')) {
+                      // Note: のためのdivとspan要素を処理
+                      const editableSpan = clonedNode.querySelector('span[contenteditable="true"]');
+                      if (editableSpan) {
+                          editableSpan.removeAttribute('contenteditable'); // 編集不可にする
                       }
                   }
-                  contentDiv.appendChild(clonedChild);
+                  contentDiv.appendChild(clonedNode);
               });
 
               cellDiv.appendChild(contentDiv);
@@ -787,11 +796,12 @@ data.yesterdayCompletion.progress = yesterdayComp.completionRate;
             // 共有データをlocalStorageに保存
             localStorage.setItem(`brainhack-${parsedData.d}`, JSON.stringify(parsedData));
             // この場合、共有データの日付の履歴を自動的に表示する (これは前回の意図された共有リンクからの自動表示)
-            displayHistoryModal(parsedData.d);
+            // ただし、通常のrecord.htmlロード時のポップアップを抑制するため、displayHistoryModalの呼び出しはコメントアウト
+            // displayHistoryModal(parsedData.d); // <- この行をコメントアウト
           }
         } catch (e) {
           console.error("Error loading shared data from URL:", e);
-          alert("共有データの読み込みに失敗しました。無効なリンクの可能性があります。");
+          // alert("共有データの読み込みに失敗しました。無効なリンクの可能性があります。"); // 通常のエラーアラートは抑制
         }
       }
 
