@@ -501,10 +501,10 @@
         data.todayCompletion.subValue = `${todayComp.completed}/${todayComp.total} tasks completed`;
         data.todayCompletion.progress = todayComp.completionRate;
 
-        const yesterdayComp = calculateCompletionData(getYesterdayKey()); // 変数名を修正
-        data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`; // ここを修正
-        data.yesterdayCompletion.subValue = `${yesterdayComp.completed}/${yesterdayComp.total} tasks completed`; // ここを修正
-        data.yesterdayCompletion.progress = yesterdayComp.completionRate; // ここを修正
+const yesterdayComp = calculateCompletionData(getYesterdayKey());
+data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`;
+data.yesterdayCompletion.subValue = `${yesterdayComp.completed}/${yesterdayComp.total} tasks completed`;
+data.yesterdayCompletion.progress = yesterdayComp.completionRate;
 
         // 過去7日間の平均を計算
         let total7DaysCompletion = 0;
