@@ -69,6 +69,7 @@
       border-radius: 5px;
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative; /* プログレスバーの親要素とするため */
     }
 
     .summary-item h3 {
@@ -77,11 +78,34 @@
       font-size: 1.1em;
     }
 
-    .summary-item p {
+    .summary-item .completion-percentage {
       font-size: 2em;
       font-weight: bold;
       color: #4285f4;
-      margin: 5px 0;
+      margin: 5px 0 10px; /* バーとの間隔を調整 */
+    }
+    .summary-item .completion-tasks {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: -5px; /* 上の行との間隔を調整 */
+    }
+
+    /* プログレスバーのスタイル */
+    .progress-bar-container {
+      width: 80%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 0 auto 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #4CAF50; /* 緑色 */
+      width: 0%; /* JavaScriptで設定 */
+      border-radius: 4px;
+      transition: width 0.5s ease-out;
     }
 
     .history-list {
@@ -116,6 +140,44 @@
       margin-left: 20px;
       font-size: 1em;
       color: #555;
+    }
+
+    /* Continuous Streaks Section */
+    .streaks-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .streaks-section h2 {
+      color: #4285f4;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .streak-item {
+      background-color: #e8f0fe;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.0em;
+    }
+
+    .streak-task-content {
+      flex-grow: 1;
+      margin-right: 10px;
+      color: #333;
+    }
+
+    .streak-days {
+      font-weight: bold;
+      color: #d9534f; /* 赤色 */
     }
 
     /* Modal styles */
@@ -248,27 +310,49 @@
   <div class="container">
     <div class="header">
       <h1>Daily Record</h1>
-      <a href="index.html" class="back-btn">Back to Brain Hacker</a>
-    </div>
+      <a href="index.html" class="back-btn">Home</a> </div>
 
     <div class="record-section">
       <h2>Today's Summary</h2>
       <div class="summary-grid">
         <div class="summary-item">
           <h3>Today's Completion</h3>
-          <p id="todayCompletion">0%</p>
+          <p class="completion-percentage" id="todayCompletion">0%</p>
+          <p class="completion-tasks" id="todayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="todayProgressBar"></div>
+          </div>
         </div>
         <div class="summary-item">
           <h3>Yesterday's Completion</h3>
-          <p id="yesterdayCompletion">0%</p>
+          <p class="completion-percentage" id="yesterdayCompletion">0%</p>
+          <p class="completion-tasks" id="yesterdayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="yesterdayProgressBar"></div>
+          </div>
         </div>
         <div class="summary-item">
           <h3>Average Completion (Last 7 Days)</h3>
-          <p id="avgCompletion7Days">0%</p>
+          <p class="completion-percentage" id="avgCompletion7Days">0%</p>
+          <p class="completion-tasks">&nbsp;</p> <div class="progress-bar-container">
+            <div class="progress-bar" id="avg7DaysProgressBar"></div>
+          </div>
         </div>
         <div class="summary-item">
           <h3>Total Completed Tasks (Today)</h3>
-          <p id="totalCompletedTasks">0</p>
+          <p class="completion-percentage" id="totalCompletedTasks">0</p>
+          <p class="completion-tasks">tasks</p> <div class="progress-bar-container">
+            <div class="progress-bar" style="width:100%; background-color:#4CAF50;"></div> </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="streaks-section">
+      <h2>Continuous Streaks</h2>
+      <div id="continuousStreaksList">
+        <div class="streak-item">
+          <span class="streak-task-content">No active streaks found.</span>
+          <span class="streak-days"></span>
         </div>
       </div>
     </div>
@@ -308,14 +392,13 @@
       let completedCheckboxes = 0;
 
       cells.forEach(cell => {
-        // Create a temporary div to parse HTML content
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = cell.html;
 
         const checkboxes = tempDiv.querySelectorAll('input[type="checkbox"]');
         totalCheckboxes += checkboxes.length;
         checkboxes.forEach(cb => {
-          if (cb.hasAttribute('checked')) { // Check for the 'checked' attribute
+          if (cb.hasAttribute('checked')) {
             completedCheckboxes++;
           }
         });
@@ -330,13 +413,11 @@
       const compressed = localStorage.getItem(`brainhack-${dateKey}`);
       if (compressed) {
         try {
-          // *** ここを修正：LZStringからbtoa/encodeURIComponentのデコードに変更 ***
           const decompressed = decodeURIComponent(atob(compressed));
           return JSON.parse(decompressed);
         } catch (e) {
-          // *** ここを修正：エラーログを出力しないように変更 ***
-          // console.error(`Failed to load data for ${dateKey}:`, e);
-          return null; // データが読み込めなかった場合はnullを返す
+          // console.error(`Failed to load data for ${dateKey}:`, e); // エラーログを有効にする場合はコメントアウト解除
+          return null;
         }
       }
       return null;
@@ -349,29 +430,33 @@
         if (key.startsWith('brainhack-')) {
           const dateKey = key.replace('brainhack-', '');
           const data = loadBrainhackData(dateKey);
-          if (data) { // nullでない、つまり正常にデコードできたデータのみを対象とする
+          if (data) {
             allData.push(data);
           }
         }
       }
-      // Sort data by date, newest first
       allData.sort((a, b) => new Date(b.date) - new Date(a.date));
       return allData;
     }
 
     function updateSummary() {
       const todayData = loadBrainhackData(getTodayKey());
-      const todayStats = todayData ? calculateCompletion(todayData.cells) : { percentage: 0, completedCount: 0 };
+      const todayStats = todayData ? calculateCompletion(todayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
       document.getElementById('todayCompletion').textContent = `${todayStats.percentage}%`;
-      document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
+      document.getElementById('todayTasks').textContent = `${todayStats.completedCount}/${todayStats.totalCount} tasks completed`;
+      document.getElementById('todayProgressBar').style.width = `${todayStats.percentage}%`;
 
       // Yesterday's Completion
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
       const yesterdayKey = getDateKey(yesterday);
       const yesterdayData = loadBrainhackData(yesterdayKey);
-      const yesterdayStats = yesterdayData ? calculateCompletion(yesterdayData.cells) : { percentage: 0 };
+      const yesterdayStats = yesterdayData ? calculateCompletion(yesterdayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
       document.getElementById('yesterdayCompletion').textContent = `${yesterdayStats.percentage}%`;
+      document.getElementById('yesterdayTasks').textContent = `${yesterdayStats.completedCount}/${yesterdayStats.totalCount} tasks completed`;
+      document.getElementById('yesterdayProgressBar').style.width = `${yesterdayStats.percentage}%`;
 
       // Average Completion (Last 7 Days)
       let total7DaysCompletion = 0;
@@ -381,18 +466,22 @@
         date.setDate(date.getDate() - i);
         const dateKey = getDateKey(date);
         const data = loadBrainhackData(dateKey);
-        if (data) { // nullでない、つまり正常にデコードできたデータのみを対象とする
+        if (data) {
           total7DaysCompletion += calculateCompletion(data.cells).percentage;
           daysCount++;
         }
       }
       const avg7Days = daysCount > 0 ? (total7DaysCompletion / daysCount).toFixed(1) : 0;
       document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
+      document.getElementById('avg7DaysProgressBar').style.width = `${avg7Days}%`;
+
+      // Total Completed Tasks (Today)
+      document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
     }
 
     function populateHistoryList() {
       const historyList = document.getElementById('historyList');
-      historyList.innerHTML = ''; // Clear previous entries
+      historyList.innerHTML = '';
       const allData = getAllBrainhackData();
 
       allData.forEach(data => {
@@ -415,6 +504,107 @@
       });
     }
 
+    // --- Continuous Streaks Calculation ---
+    function calculateContinuousStreaks() {
+        const allData = getAllBrainhackData(); // データは日付降順（新しい順）で取得される
+        const streaks = {}; // { taskId: { content: "task text", days: 0, lastCompletedDate: "YYYY-MM-DD" } }
+
+        for (const data of allData) {
+            const date = new Date(data.date);
+            
+            // その日の通常のチェックボックスタスクの完了状態を抽出
+            const completedTasksToday = {}; // { taskContent: true/false }
+            data.cells.forEach(cell => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = cell.html;
+                tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    const textSpan = cb.nextElementSibling;
+                    if (textSpan && !textSpan.style.fontWeight.includes("bold")) { // 通常のチェックボックスのみ
+                        const taskContent = textSpan.textContent.trim();
+                        if (taskContent) { // 空のタスクは無視
+                            completedTasksToday[taskContent] = cb.hasAttribute('checked');
+                        }
+                    }
+                });
+            });
+
+            // ストリークの更新ロジック
+            for (const taskContent in completedTasksToday) {
+                if (completedTasksToday[taskContent]) { // そのタスクがその日に完了している場合
+                    if (streaks[taskContent]) {
+                        const lastDate = new Date(streaks[taskContent].lastCompletedDate);
+                        const diffTime = Math.abs(date.getTime() - lastDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays === 1) { // 連続している
+                            streaks[taskContent].days++;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        } else if (diffDays > 1) { // 途切れている
+                            // 新しいストリークを開始（1日目として）
+                            streaks[taskContent].days = 1;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        }
+                        // diffDays === 0 は同じ日付で、初回処理済みか、重複データなので何もしない
+                    } else {
+                        // 初めて見つかるタスク、または途切れて新規ストリーク開始
+                        streaks[taskContent] = {
+                            content: taskContent,
+                            days: 1,
+                            lastCompletedDate: data.date
+                        };
+                    }
+                } else { // そのタスクがその日に完了していない場合
+                    if (streaks[taskContent]) {
+                        // ストリーク中のタスクが未完了の場合、ストリークをリセットまたは終了
+                        // ただし、今日は未完了だが過去にはストリークしていたタスクは、そのまま残す
+                        // （ここでは「今日のストリーク継続」に限定するため、今日のデータが最も新しい場合のみ考慮）
+                        const todayDate = new Date(getTodayKey());
+                        const lastCompletedDateInStreak = new Date(streaks[taskContent].lastCompletedDate);
+                        const diffDaysFromLastCompletion = Math.ceil(Math.abs(todayDate.getTime() - lastCompletedDateInStreak.getTime()) / (1000 * 60 * 60 * 24));
+                        
+                        // もし今日のデータが処理中で、かつ昨日の完了分から連続性が途切れた場合は、ストリークをリセット
+                        // (ただし、現在のallDataは降順なので、ここでのリセットは不要。
+                        //  各タスクのストリークは、完了した日を起点に遡って連続性を確認していくのが正しい)
+                        // ここでは、単純に完了しなかった日はカウントせず、連続している日数を数える方針で進めます。
+                        // よって、この`else`ブロックでは特に何もしません。
+                    }
+                }
+            }
+        }
+
+        // 表示用の処理
+        const continuousStreaksList = document.getElementById('continuousStreaksList');
+        continuousStreaksList.innerHTML = ''; // Clear previous entries
+
+        const activeStreaks = Object.values(streaks).filter(s => {
+            const lastCompletedDate = new Date(s.lastCompletedDate);
+            const today = new Date(getTodayKey());
+            const diffDays = Math.abs(today.getTime() - lastCompletedDate.getTime()) / (1000 * 60 * 60 * 24);
+            // 今日または昨日までに完了しており、ストリークが途切れていないもののみ表示
+            return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1)); // diffDays=0は今日、diffDays=1は昨日
+        }).sort((a,b) => b.days - a.days); // 日数の多い順にソート
+
+        if (activeStreaks.length === 0) {
+            continuousStreaksList.innerHTML = `
+                <div class="streak-item">
+                    <span class="streak-task-content">No active streaks found.</span>
+                    <span class="streak-days"></span>
+                </div>
+            `;
+        } else {
+            activeStreaks.forEach(streak => {
+                const item = document.createElement('div');
+                item.classList.add('streak-item');
+                item.innerHTML = `
+                    <span class="streak-task-content">${streak.content}</span>
+                    <span class="streak-days">${streak.days} days</span>
+                `;
+                continuousStreaksList.appendChild(item);
+            });
+        }
+    }
+
+
     // --- Modal Functions ---
     const historyDetailModal = document.getElementById('historyDetailModal');
     const closeModalButton = document.getElementById('closeModal');
@@ -425,13 +615,12 @@
     function displayHistoryModal(data) {
       modalTitle.textContent = data.title || '（タイトルなし）';
       modalDate.textContent = data.date;
-      historyGridDisplay.innerHTML = ''; // Clear previous grid
+      historyGridDisplay.innerHTML = '';
 
       const ROWS = 16;
       const COLS = 20;
       const gridCells = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
 
-      // Populate a temporary grid with loaded data to handle merged cells
       data.cells.forEach(cellData => {
         const r = parseInt(cellData.row);
         const c = parseInt(cellData.col);
@@ -449,8 +638,7 @@
             textAlign: cellData.textAlign,
             isMergedBase: true
           };
-          // Mark cells covered by a merged cell as hidden
-          if (cellData.gridRow && cellData.gridColumn && cellData.display !== 'none') { // Only if it's a visible merged cell
+          if (cellData.gridRow && cellData.gridColumn && cellData.display !== 'none') {
             const rowSpanMatch = cellData.gridRow.match(/span (\d+)/);
             const colSpanMatch = cellData.gridColumn.match(/span (\d+)/);
             const rowSpan = rowSpanMatch ? parseInt(rowSpanMatch[1]) : 1;
@@ -458,7 +646,7 @@
 
             for (let i = r; i < r + rowSpan; i++) {
               for (let j = c; j < c + colSpan; j++) {
-                if (i === r && j === c) continue; // Skip the base cell itself
+                if (i === r && j === c) continue;
                 if (i >= 0 && i < ROWS && j >= 0 && j < COLS) {
                   gridCells[i][j] = { isHidden: true };
                 }
@@ -468,7 +656,6 @@
         }
       });
 
-      // Render cells to DOM
       for (let r = 0; r < ROWS; r++) {
         for (let c = 0; c < COLS; c++) {
           const cell = document.createElement('div');
@@ -480,23 +667,22 @@
 
           if (cellInfo && cellInfo.isHidden) {
             cell.classList.add('hidden');
-          } else if (cellInfo) { // This cell is either a base merged cell or a regular cell
+          } else if (cellInfo) {
             cell.style.backgroundColor = cellInfo.bgColor || '';
             cell.style.display = cellInfo.display || 'flex';
             cell.style.gridRow = cellInfo.gridRow || '';
             cell.style.gridColumn = cellInfo.gridColumn || '';
 
             const editableDiv = document.createElement('div');
-            editableDiv.classList.add('editable'); // Add editable class for styling consistency
+            editableDiv.classList.add('editable');
             editableDiv.style.fontSize = cellInfo.fontSize || '';
             editableDiv.style.alignItems = cellInfo.alignItems || '';
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
             editableDiv.innerHTML = cellInfo.html || '';
 
-            // Handle checkbox state and styling for display
             editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.disabled = true; // Disable checkboxes in history modal
+                checkbox.disabled = true;
                 const textSpan = checkbox.nextElementSibling;
                 if (textSpan) {
                     textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
@@ -504,7 +690,6 @@
                 }
             });
 
-            // Handle images
             const img = document.createElement('img');
             if (cellInfo.imgSrc) {
                 img.src = cellInfo.imgSrc;
@@ -515,7 +700,6 @@
             cell.appendChild(editableDiv);
             cell.appendChild(img);
           } else {
-            // Empty cell (default state if not in loaded data or not a hidden cell)
             const editableDiv = document.createElement('div');
             editableDiv.classList.add('editable');
             editableDiv.innerHTML = '';
@@ -528,7 +712,7 @@
         }
       }
 
-      historyDetailModal.style.display = 'flex'; // Use flex to center the modal
+      historyDetailModal.style.display = 'flex';
     }
 
     closeModalButton.addEventListener('click', () => {
@@ -545,6 +729,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       updateSummary();
       populateHistoryList();
+      calculateContinuousStreaks(); // 新しいストリーク計算関数を呼び出す
     });
 
     // Share link processing (if accessed via a share URL)
@@ -552,17 +737,13 @@
     const sharedDataParam = urlParams.get('data');
     if (sharedDataParam) {
         try {
-            // *** ここも修正：LZStringからbtoa/encodeURIComponentのデコードに変更 ***
             const decodedData = decodeURIComponent(atob(sharedDataParam));
             const sharedState = JSON.parse(decodedData);
             displayHistoryModal(sharedState);
         } catch (e) {
-            // *** ここも修正：エラーログを出力しないように変更 ***
-            // console.error("Error processing shared data:", e);
-            // alert("共有されたデータの読み込みに失敗しました。");
+            // console.error("Error processing shared data:", e); // エラーログを有効にする場合はコメントアウト解除
+            // alert("共有されたデータの読み込みに失敗しました。"); // ユーザーへのアラートを有効にする場合はコメントアウト解除
         }
-        // URLからデータパラメータを削除して、通常のURLに戻す (任意)
-        // history.replaceState(null, '', window.location.pathname);
     }
   </script>
 </body>
