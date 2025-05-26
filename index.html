@@ -49,14 +49,15 @@
       width: 100%;
       border: none;
       background-color: transparent;
-      color: #333;
+      /* プレースホルダーの文字色をグレーに */
+      color: #333; /* 入力時の文字色 */
       outline: none;
       text-align: center;
       margin: 10px 0;
     }
     
     .title-input::placeholder {
-      color: #999;
+      color: #999; /* Brain Hacker Home の文字色をグレーに */
     }
     
     #dateDisplay {
@@ -271,6 +272,18 @@
     }
     .history-cell input[type='checkbox'] {
       margin-right: 3px;
+    }
+
+    /* チェックボックスの改行間隔を狭めるためのスタイル */
+    .checkbox-wrapper {
+      display: flex;
+      align-items: flex-start; /* チェックボックスとテキストを上揃え */
+      margin-bottom: 2px; /* 各チェックボックス行の下マージンを狭める */
+      line-height: 1.2; /* 行の高さを調整 */
+    }
+    /* editable内のbrタグが不要になるように、margin-bottomで制御 */
+    .editable br {
+      display: none;
     }
   </style>
 </head>
@@ -671,13 +684,15 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   for (const key of selectedCells) {
     const [r, c] = key.split(',');
     const editable = document.querySelector(`.cell[data-row='${r}'][data-col='${c}'] .editable`);
+    // 新しいラッパー要素を追加し、改行をCSSで制御
     const wrapper = document.createElement("span");
-    wrapper.style.display = "inline-flex";
-    wrapper.style.alignItems = "center"; // Align checkbox and text vertically
+    wrapper.classList.add("checkbox-wrapper"); /* 新しいクラスを追加 */
+    // wrapper.style.display = "inline-flex"; // checkbox-wrapperクラスで制御
+    // wrapper.style.alignItems = "center"; // checkbox-wrapperクラスで制御
     const cb = document.createElement("input");
     cb.type = "checkbox";
     const span = document.createElement("span");
-    span.textContent = "項目";
+    span.textContent = "task"; /* 「項目」を「task」に変更 */
     span.contentEditable = true;
     // チェックボックスのchangeイベントリスナーをautoSaveを呼び出すように変更
     cb.addEventListener("change", () => {
@@ -686,7 +701,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
     });
     wrapper.append(cb, span);
     editable.appendChild(wrapper);
-    editable.appendChild(document.createElement("br")); // Add a line break for new item
+    // editable.appendChild(document.createElement("br")); // brタグを削除
   }
   autoSave(); // autoSaveを呼び出すように変更
 });
@@ -696,13 +711,15 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
   for (const key of selectedCells) {
     const [r, c] = key.split(',');
     const editable = document.querySelector(`.cell[data-row='${r}'][data-col='${c}'] .editable`);
+    // 新しいラッパー要素を追加し、改行をCSSで制御
     const wrapper = document.createElement("span");
-    wrapper.style.display = "inline-flex";
-    wrapper.style.alignItems = "center"; // Align checkbox and text vertically
+    wrapper.classList.add("checkbox-wrapper"); /* 新しいクラスを追加 */
+    // wrapper.style.display = "inline-flex"; // checkbox-wrapperクラスで制御
+    // wrapper.style.alignItems = "center"; // checkbox-wrapperクラスで制御
     const cb = document.createElement("input");
     cb.type = "checkbox";
     const span = document.createElement("span");
-    span.textContent = "項目";
+    span.textContent = "task"; /* 「項目」を「task」に変更 */
     span.contentEditable = true;
     span.style.fontWeight = "bold";
     // チェックボックスのchangeイベントリスナーをautoSaveを呼び出すように変更
@@ -712,7 +729,7 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
     });
     wrapper.append(cb, span);
     editable.appendChild(wrapper);
-    editable.appendChild(document.createElement("br")); // Add a line break for new item
+    // editable.appendChild(document.createElement("br")); // brタグを削除
   }
   autoSave(); // autoSaveを呼び出すように変更
 });
