@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+      background: #f8f9fa;
+    }
+    .nav {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .nav button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      background-color: white;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .top-right-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 6px 10px;
+      font-size: 14px;
+      border: none;
+      background-color: #4285f4;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .section {
+      margin-bottom: 40px;
+    }
+    .section h2 {
+      margin-bottom: 10px;
+    }
+    .summary-grid {
+      display: flex;
+      gap: 20px;
+    }
+    .summary-card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      width: 45%;
+    }
+    .summary-card h3 {
+      margin: 0 0 10px 0;
+    }
+    .summary-card .rate {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .summary-card .comment {
+      margin-bottom: 10px;
+    }
+    .archive-list {
+      background: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .archive-list a {
+      display: block;
+      padding: 4px 0;
+      color: #0077cc;
+      text-decoration: none;
+    }
+    .archive-list a:hover {
+      text-decoration: underline;
+    }
+    .streak {
+      font-weight: bold;
+      color: #28a745;
+      margin-bottom: 10px;
+    }
+
+    /* Modal styles for history view */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      padding: 20px;
+      border-radius: 5px;
+      width: 90%;
+      max-width: 800px;
+      height: 80%;
+      overflow-y: auto;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    
+    .close-btn {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+    
+    .close-btn:hover {
+      color: #333;
+    }
+
+    .history-grid-display {
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      grid-template-rows: repeat(16, 1fr);
+      width: 100%;
+      height: auto;
+      min-height: 400px;
+      gap: 1px;
+      background-color: #eee;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .history-cell {
+      border: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Align content to top */
+      align-items: flex-start; /* Align content to left */
+      padding: 1px;
+      font-size: 0.8vw;
+      background-color: white; /* Always white for history view */
+      overflow: hidden;
+      text-align: left;
+      word-break: break-word;
+      white-space: pre-wrap;
+      position: relative;
+    }
+    /* Styles for merged cells in history view */
+    .history-cell.merged {
+        display: flex;
+        /* Inherit grid-row and grid-column from data */
+    }
+
+    .history-cell.hidden {
+        display: none;
+    }
+
+    .history-cell .cell-content {
+        width: 100%;
+        height: 100%;
+        overflow: auto; /* Enable scrolling for content within a cell */
+        box-sizing: border-box;
+        padding: 2px;
+    }
+    .history-cell .cell-content span {
+        display: inline-flex;
+        align-items: center;
+    }
+    .history-cell .cell-content input[type="checkbox"] {
+        margin-right: 5px;
+        flex-shrink: 0; /* Prevent checkbox from shrinking */
+    }
+    .history-cell .cell-content span[contenteditable="true"] {
+        flex-grow: 1; /* Allow text to take available space */
+        min-width: 0; /* Allow text to shrink below its content size */
+    }
+  </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+</head>
+<body>
+  <a href="https://takehirostudy.github.io/routine-home/" class="top-right-btn">Brain Hacker</a>
+
+  <div class="nav">
+    <button onclick="showUser('me')">あなた</button>
+    <button onclick="showUser('userA')">他のユーザーA</button>
+    <button onclick="showUser('userB')">他のユーザーB</button>
+  </div>
+
+  <div id="content"></div>
+
+  <div id="historyModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeHistoryModal">&times;</span>
+      <h2 id="historyModalTitle"></h2>
+      <div class="history-grid-display" id="historyGridDisplay">
+        </div>
+    </div>
+  </div>
+
+  <script>
+  // === 修正済み addUserFromShareLink 関数 ===
+  function addUserFromShareLink(shareLink) {
+    try {
+      let userData;
+
+      // index.html の圧縮形式リンク対応
+      if (shareLink.includes('?data=')) {
+        const url = new URL(shareLink);
+        const data = url.searchParams.get('data');
+        const jsonStr = LZString.decompressFromEncodedURIComponent(data);
+        const decompressed = JSON.parse(jsonStr);
+
+        userData = {
+          username: 'user-' + Math.random().toString(36).substring(2, 8),
+          displayName: decompressed.t || decompressed.title || "Shared User",
+          data: { // Placeholder for actual shared data. In a real app, this would be fetched/processed.
+            today: { completion: 0, total: 0, completed: 0 },
+            yesterday: { completion: 0, total: 0, completed: 0 },
+            weeklyAverage: 0,
+            streaks: [],
+            history: [] // Actual history data would go here if available from share link
+          }
+        };
+
+      } else if (shareLink.startsWith('brainhack://share?data=')) {
+        const base64Data = shareLink.replace('brainhack://share?data=', '');
+        const jsonStr = atob(base64Data);
+        userData = JSON.parse(jsonStr);
+
+      } else {
+        throw new Error("Invalid share link format");
+      }
+
+      const savedUsers = JSON.parse(localStorage.getItem('brainhack-shared-users') || '[]');
+      const existingUserIndex = savedUsers.findIndex(u => u.username === userData.username);
+      if (existingUserIndex >= 0) {
+        savedUsers[existingUserIndex] = userData;
+      } else {
+        savedUsers.push(userData);
+      }
+
+      localStorage.setItem('brainhack-shared-users', JSON.stringify(savedUsers));
+      // addUserTab(userData); // This function is not defined in the original record.html
+      alert(`User "${userData.displayName || userData.username}" has been added successfully!`);
+
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert('Invalid share link. Please try again with a valid link.');
+    }
+  }
+    // Dummy data for demonstration. In a real app, this would come from backend or complex local storage parsing.
+    const users = {
+      me: {
+        streak: 5,
+        recent: [
+          {
+            date: "2025-05-18",
+            rate: "92%",
+            comment: "とても集中していた",
+            // link: "brainhack-2025-05-18.html" // Changed to data-date for modal
+          },
+          {
+            date: "2025-05-17",
+            rate: "88%",
+            comment: "目標達成度が高い",
+            // link: "brainhack-2025-05-17.html" // Changed to data-date for modal
+          }
+        ],
+        archive: ["2025-05-16", "2025-05-15", "2025-05-14", "2025-05-26"] // Added today's date for testing
+      },
+      userA: {
+        streak: 3,
+        recent: [
+          {
+            date: "2025-05-18",
+            rate: "85%",
+            comment: "安定した取り組み",
+            // link: "userA-2025-05-18.html"
+          },
+          {
+            date: "2025-05-17",
+            rate: "78%",
+            comment: "もう少し集中できたかも",
+            // link: "userA-2025-05-17.html"
+          }
+        ],
+        archive: ["2025-05-16", "2025-05-15"]
+      },
+      userB: {
+        streak: 7,
+        recent: [
+          {
+            date: "2025-05-18",
+            rate: "98%",
+            comment: "完璧な実行日",
+            // link: "userB-2025-05-18.html"
+          },
+          {
+            date: "2025-05-17",
+            rate: "94%",
+            comment: "順調に進行中",
+            // link: "userB-2025-05-17.html"
+          }
+        ],
+        archive: ["2025-05-16", "2025-05-15"]
+      }
+    };
+
+    function showUser(key) {
+      const data = users[key];
+      const content = document.getElementById("content");
+      content.innerHTML = `
+        <div class="section">
+          <h2>${key === 'me' ? 'あなた' : key === 'userA' ? '他のユーザーA' : '他のユーザーB'}</h2>
+          <div class="streak">✅ チェックタスク継続日数: ${data.streak}日</div>
+          <div class="summary-grid">
+            ${data.recent.map(d => `
+              <div class="summary-card">
+                <h3>📅 ${d.date}</h3>
+                <div class="rate">達成率: ${d.rate}</div>
+                <div class="comment">💬 ${d.comment}</div>
+                <button class="view-history-btn" data-date="${d.date}">その日の Brain Hackerページへ</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="section">
+          <h3>📚 過去の記録</h3>
+          <div class="archive-list">
+            ${data.archive.map(date => `<button class="view-history-btn" data-date="${date}">${date}</button>`).join('')}
+          </div>
+        </div>
+      `;
+      addHistoryEventListeners();
+    }
+
+    function addHistoryEventListeners() {
+        document.querySelectorAll(".view-history-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const date = event.target.dataset.date;
+                displayHistoryModal(date);
+            });
+        });
+    }
+
+    const historyModal = document.getElementById("historyModal");
+    const closeHistoryModalBtn = document.getElementById("closeHistoryModal");
+    const historyModalTitle = document.getElementById("historyModalTitle");
+    const historyGridDisplay = document.getElementById("historyGridDisplay");
+
+    closeHistoryModalBtn.addEventListener("click", () => {
+        historyModal.style.display = "none";
+    });
+
+    window.addEventListener("click", (event) => {
+        if (event.target === historyModal) {
+            historyModal.style.display = "none";
+        }
+    });
+
+    function displayHistoryModal(date) {
+        historyModalTitle.textContent = `${date} の Brain Hacker 記録`;
+        historyGridDisplay.innerHTML = ''; // Clear previous content
+
+        let state = localStorage.getItem(`brainhack-${date}`);
+        if (!state) {
+            // Check if the data is in the URL (for shared links)
+            const urlParams = new URLSearchParams(window.location.search);
+            const compressedData = urlParams.get('data');
+            if (compressedData) {
+                try {
+                    const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
+                    const parsedData = JSON.parse(decompressed);
+                    if (parsedData.d === date) { // If the URL data matches the requested date
+                        state = JSON.stringify(parsedData);
+                    }
+                } catch (e) {
+                    console.error("Error parsing shared data from URL:", e);
+                }
+            }
+        }
+
+        if (!state) {
+            historyGridDisplay.innerHTML = '<p>この日付の記録は見つかりませんでした。</p>';
+            historyModal.style.display = "flex";
+            return;
+        }
+
+        try {
+            const parsedFullState = JSON.parse(state);
+            const cellsData = parsedFullState.cells;
+
+            // Create a temporary 20x16 grid for rendering
+            const tempGrid = Array(16).fill(null).map(() => Array(20).fill(null));
+
+            // Populate the temp grid with cell data, handling merged cells
+            cellsData.forEach(cellData => {
+                const r = parseInt(cellData.r);
+                const c = parseInt(cellData.c);
+                const rowSpan = parseInt(cellData.gr?.split("span ")[1]) || 1;
+                const colSpan = parseInt(cellData.gc?.split("span ")[1]) || 1;
+
+                // Place the cell data in the top-left corner of its span
+                tempGrid[r][c] = { data: cellData, rowSpan, colSpan };
+
+                // Mark other cells in the merged area as hidden
+                for (let i = r; i < r + rowSpan; i++) {
+                    for (let j = c; j < c + colSpan; j++) {
+                        if (i === r && j === c) continue;
+                        if (tempGrid[i] && tempGrid[i][j]) {
+                            tempGrid[i][j] = { data: null, hidden: true };
+                        }
+                    }
+                }
+            });
+
+            // Render the grid
+            for (let r = 0; r < 16; r++) {
+                for (let c = 0; c < 20; c++) {
+                    const cellInfo = tempGrid[r][c];
+                    const cellDiv = document.createElement("div");
+                    cellDiv.className = "history-cell";
+                    cellDiv.dataset.row = r;
+                    cellDiv.dataset.col = c;
+
+                    if (cellInfo && cellInfo.hidden) {
+                        cellDiv.classList.add("hidden");
+                    } else if (cellInfo && cellInfo.data) {
+                        const cellData = cellInfo.data;
+                        cellDiv.classList.add("merged"); // Mark as merged or regular
+                        
+                        if (cellInfo.rowSpan > 1 || cellInfo.colSpan > 1) {
+                            cellDiv.style.gridRow = `${r + 1} / span ${cellInfo.rowSpan}`;
+                            cellDiv.style.gridColumn = `${c + 1} / span ${cellInfo.colSpan}`;
+                        }
+
+                        const contentDiv = document.createElement("div");
+                        contentDiv.className = "cell-content";
+                        contentDiv.innerHTML = cellData.h || '';
+
+                        // Re-apply strikethrough for checkboxes
+                        contentDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                            cb.disabled = true; // Make checkboxes non-interactive
+                            const span = cb.nextElementSibling;
+                            if (span && cb.hasAttribute('checked')) {
+                                span.style.textDecoration = 'line-through';
+                            } else {
+                                span.style.textDecoration = 'none';
+                            }
+                        });
+                        cellDiv.appendChild(contentDiv);
+                    }
+                    historyGridDisplay.appendChild(cellDiv);
+                }
+            }
+
+        } catch (error) {
+            console.error("Error displaying history data:", error);
+            historyGridDisplay.innerHTML = '<p>記録データの読み込み中にエラーが発生しました。</p>';
+        }
+
+        historyModal.style.display = "flex";
+    }
+
+
+    // 初期表示：あなた
+    showUser('me');
+
+    // URLから共有データが渡された場合の処理
+    window.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const compressedData = urlParams.get('data');
+        if (compressedData) {
+            try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
+                const parsedData = JSON.parse(decompressed);
+                // Assume 'd' in parsedData is the date key
+                if (parsedData.d) {
+                    // Store this shared data in localStorage for that specific date
+                    localStorage.setItem(`brainhack-${parsedData.d}`, JSON.stringify(parsedData));
+                    // Then display it in the modal
+                    displayHistoryModal(parsedData.d);
+                }
+            } catch (e) {
+                console.error("Error loading shared data from URL:", e);
+                alert("共有データの読み込みに失敗しました。");
+            }
+        }
+    });
+
+  </script>
+</body>
+</html>
