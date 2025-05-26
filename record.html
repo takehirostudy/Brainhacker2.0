@@ -316,7 +316,7 @@
   <div class="container">
     <div class="header">
       <h1>Brain Hacker Record</h1>
-      <a href="index.html" class="top-right-home-btn">Home</a>
+      <a href="#" id="homeButton" class="top-right-home-btn">Home</a>
     </div>
 
     <div class="nav-tabs">
@@ -679,6 +679,11 @@
         }
       }
     });
+
+document.getElementById('homeButton').addEventListener('click', function(e) {
+  e.preventDefault(); // デフォルトのリンク遷移を停止
+  window.location.href = 'index.html'; // パラメータなしのindex.htmlに遷移
+});
 
   </script>
 </body>
