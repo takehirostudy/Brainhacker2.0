@@ -293,14 +293,19 @@
         box-sizing: border-box;
         padding: 2px;
     }
+    .history-cell .cell-content > div { /* For Note: divs */
+        margin-bottom: 2px; /* Small spacing for note lines */
+    }
     .history-cell .cell-content span {
         display: inline-flex;
-        align-items: center;
+        align-items: flex-start; /* Align checkbox and text to top */
         width: 100%; /* Ensure spans take full width */
+        margin-bottom: 2px; /* Small spacing for checkbox lines */
     }
     .history-cell .cell-content input[type="checkbox"] {
         margin-right: 5px;
         flex-shrink: 0; /* Prevent checkbox from shrinking */
+        align-self: center; /* Center checkbox vertically if text is multi-line */
     }
     .history-cell .cell-content span[contenteditable="true"] {
         flex-grow: 1; /* Allow text to take available space */
@@ -358,32 +363,124 @@
       return days[date.getDay()];
     }
 
+    /**
+     * 指定された日付のlocalStorageからデータを読み込み、チェックボックスの完了状況を計算する
+     * @param {string} dateKey - YYYY-MM-DD形式の日付キー
+     * @returns {{completed: number, total: number, completionRate: number}}
+     */
+    function calculateCompletionData(dateKey) {
+        const data = localStorage.getItem(`brainhack-${dateKey}`);
+        let completed = 0;
+        let total = 0;
+
+        if (data) {
+            try {
+                const parsedData = JSON.parse(data);
+                if (parsedData.cells) {
+                    parsedData.cells.forEach(cellData => {
+                        // 一時的なDOM要素を作成し、HTMLをパース
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = cellData.h || '';
+
+                        tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                            total++;
+                            if (cb.hasAttribute('checked') && cb.checked) { // checked属性と実際のcheckedプロパティを両方確認
+                                completed++;
+                            }
+                        });
+                    });
+                }
+            } catch (e) {
+                console.error(`Error parsing data for ${dateKey}:`, e);
+            }
+        }
+        const completionRate = total === 0 ? 0 : Math.round((completed / total) * 100);
+        return { completed, total, completionRate };
+    }
+
+    /**
+     * 連続継続日数を計算する
+     * @returns {number} 連続継続日数
+     */
+    function getContinuousStreaks() {
+        let streak = 0;
+        let currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // 時刻をリセット
+
+        // 今日のデータを確認
+        const todayKey = getTodayKey();
+        const todayData = localStorage.getItem(`brainhack-${todayKey}`);
+        let todayCompleted = 0;
+        let todayTotal = 0;
+        if (todayData) {
+            const parsedToday = JSON.parse(todayData);
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = parsedToday.cells ? parsedToday.cells.map(c => c.h).join('') : '';
+            tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                todayTotal++;
+                if (cb.hasAttribute('checked') && cb.checked) {
+                    todayCompleted++;
+                }
+            });
+        }
+        // 今日のタスクが一つでもあり、かつそのうち一つでも完了している場合のみ、今日をストリークに含める
+        // または、今日のデータがそもそも存在しない（まだ何も記録していない）場合はストリークをリセットしない
+        const todayIsActive = (todayTotal > 0 && todayCompleted > 0) || (todayTotal === 0 && !todayData);
+
+        // 昨日から遡ってチェック
+        // ただし、もし今日のデータが存在せず、かつ今日がアクティブでないと判断されたら、ストリークは0
+        // (今日何もしていなくてストリークを継続する条件がない場合)
+        if (!todayIsActive && todayData) { // Today's data exists but no completion
+            return 0;
+        } else if (!todayData) { // No data for today, check yesterday for streak
+             // If there's no data for today, we need to check if yesterday was a streak day
+             // If yesterday was a streak day, and today is a gap, then streak ends.
+             // But if we're counting a "continuous streak" for *completed* days,
+             // then a day with no data might not break the streak if it's considered "skipped" for calculation.
+             // For simplicity, let's assume no data means no completion for that day.
+             // If no data for today, the streak should count up to yesterday.
+        }
+
+        // ここからループで遡って計算
+        let checkDate = new Date(currentDate);
+        if (todayIsActive) { // 今日のデータがアクティブなら今日からカウント
+            streak = 1;
+            checkDate.setDate(checkDate.getDate() - 1); // 次は昨日をチェック
+        } else { // 今日のデータがアクティブでないなら、昨日以前から開始する (今日のデータが存在しない場合など)
+             // streak remains 0, and we start checking from yesterday
+        }
+
+        while (true) {
+            const prevDayKey = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+            const prevDayData = localStorage.getItem(`brainhack-${prevDayKey}`);
+
+            if (!prevDayData) {
+                // データがない日は連続が途切れると判断 (または、未来の日付の場合)
+                break;
+            }
+
+            const { completed, total } = calculateCompletionData(prevDayKey);
+            if (total > 0 && completed > 0) {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                // 完了タスクがない日は連続が途切れる
+                break;
+            }
+        }
+        return streak;
+    }
+
+
     // === Dummy Data (Simulates data stored per user in localStorage) ===
-    // In a real application, user data would be stored more robustly.
-    // This dummy data includes a 'history' array with mock completion rates
-    // and comments, and assumes actual cell data is in localStorage.
+    // 'me' ユーザーのデータは動的に計算されるように変更
     const usersData = {
       me: {
-        todayCompletion: { value: "50%", subValue: "4/8 tasks completed", progress: 50 },
-        yesterdayCompletion: { value: "0%", subValue: "0/6 tasks completed", progress: 0 },
-        sevenDayAverage: { value: "40%", subValue: "", progress: 40 },
+        todayCompletion: { value: "0%", subValue: "0/0 tasks completed", progress: 0 }, // Initial dummy values
+        yesterdayCompletion: { value: "0%", subValue: "0/0 tasks completed", progress: 0 },
+        sevenDayAverage: { value: "0%", subValue: "", progress: 0 },
         continuousStreaks: "0 days",
-        history: [
-          { date: "2025-05-26", completion: "50%", progress: 50 },
-          { date: "2025-05-25", completion: "0%", progress: 0 },
-          { date: "2025-05-24", completion: "50%", progress: 50 },
-          { date: "2025-05-23", completion: "50%", progress: 50 },
-          { date: "2025-05-22", completion: "20%", progress: 20 },
-          { date: "2025-05-21", completion: "60%", progress: 60 },
-          { date: "2025-05-20", completion: "60%", progress: 60 },
-          { date: "2025-05-19", completion: "50%", progress: 50 },
-          { date: "2025-05-18", completion: "92%", progress: 92 },
-          { date: "2025-05-17", completion: "88%", progress: 88 },
-          { date: "2025-05-16", completion: "75%", progress: 75 },
-          { date: "2025-05-15", completion: "80%", progress: 80 },
-          { date: "2025-05-14", completion: "65%", progress: 65 },
-          { date: "2025-05-13", completion: "70%", progress: 70 },
-        ]
+        history: [] // Populate dynamically
       },
       userA: {
         todayCompletion: { value: "60%", subValue: "6/10 tasks completed", progress: 60 },
@@ -409,39 +506,6 @@
       }
     };
 
-    // This data would be fetched from localStorage based on the date key
-    // For demonstration, we'll store a mock data for today and yesterday
-    // to simulate the data that index.html would save.
-    // In a real scenario, this would be populated by index.html when saving.
-    function createMockDailyData(dateKey, completionRate) {
-        const totalTasks = 10;
-        const completedTasks = Math.round(totalTasks * (completionRate / 100));
-        return JSON.stringify({
-            title: `Daily Report - ${dateKey}`,
-            date: dateKey,
-            cells: [
-                { r: "0", c: "0", h: `<input type="checkbox"${completedTasks >= 1 ? ' checked="checked"' : ''} disabled><span>Task 1</span>` },
-                { r: "0", c: "1", h: `<input type="checkbox"${completedTasks >= 2 ? ' checked="checked"' : ''} disabled><span>Task 2</span>` },
-                { r: "0", c: "2", h: `<input type="checkbox"${completedTasks >= 3 ? ' checked="checked"' : ''} disabled><span>Task 3</span>` },
-                { r: "0", c: "3", h: `<input type="checkbox"${completedTasks >= 4 ? ' checked="checked"' : ''} disabled><span>Task 4</span>` },
-                { r: "0", c: "4", h: `<input type="checkbox"${completedTasks >= 5 ? ' checked="checked"' : ''} disabled><span>Task 5</span>` },
-                { r: "1", c: "0", h: `<input type="checkbox"${completedTasks >= 6 ? ' checked="checked"' : ''} disabled><span>Task 6</span>` },
-                { r: "1", c: "1", h: `<input type="checkbox"${completedTasks >= 7 ? ' checked="checked"' : ''} disabled><span>Task 7</span>` },
-                { r: "1", c: "2", h: `<input type="checkbox"${completedTasks >= 8 ? ' checked="checked"' : ''} disabled><span>Task 8</span>` },
-                { r: "2", c: "0", h: `<b>Note:</b> ${completedTasks >= 5 ? 'Good progress today!' : 'Need to focus more.'}` },
-                { r: "2", c: "1", h: `<input type="checkbox"${completedTasks >= 9 ? ' checked="checked"' : ''} disabled><span style="font-weight: bold;">Important Task 9</span>` },
-                { r: "2", c: "2", h: `<input type="checkbox"${completedTasks >= 10 ? ' checked="checked"' : ''} disabled><span style="font-weight: bold;">Critical Task 10</span>` },
-            ]
-        });
-    }
-
-    // Simulate localStorage data for 'me' user based on dummy data
-    usersData.me.history.forEach(item => {
-        if (!localStorage.getItem(`brainhack-${item.date}`)) {
-            localStorage.setItem(`brainhack-${item.date}`, createMockDailyData(item.date, parseFloat(item.completion)));
-        }
-    });
-
     // === UI Rendering ===
     const contentDisplay = document.getElementById("content-display");
     const navTabs = document.querySelectorAll(".nav-tab");
@@ -449,6 +513,60 @@
 
     function renderUserContent(userKey) {
       const data = usersData[userKey];
+
+      // 'me' ユーザーのデータは動的に計算
+      if (userKey === 'me') {
+        const todayComp = calculateCompletionData(getTodayKey());
+        data.todayCompletion.value = `${todayComp.completionRate}%`;
+        data.todayCompletion.subValue = `${todayComp.completed}/${todayComp.total} tasks completed`;
+        data.todayCompletion.progress = todayComp.completionRate;
+
+        const yesterdayComp = calculateCompletionData(getYesterdayKey());
+        data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`;
+        data.yesterdayCompletion.subValue = `${yesterComp.completed}/${yesterComp.total} tasks completed`;
+        data.yesterdayCompletion.progress = yesterdayComp.completionRate;
+
+        // 過去7日間の平均を計算
+        let total7DaysCompletion = 0;
+        let count7Days = 0;
+        for (let i = 0; i < 7; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            const comp = calculateCompletionData(dateKey);
+            if (comp.total > 0) { // タスクが存在する日のみカウント
+                total7DaysCompletion += comp.completionRate;
+                count7Days++;
+            }
+        }
+        const sevenDayAverage = count7Days === 0 ? 0 : Math.round(total7DaysCompletion / count7Days);
+        data.sevenDayAverage.value = `${sevenDayAverage}%`;
+        data.sevenDayAverage.progress = sevenDayAverage;
+
+
+        data.continuousStreaks = `${getContinuousStreaks()} days`;
+
+        // 'me' ユーザーのHistoryをLocalStorageから動的に生成
+        data.history = [];
+        // 今日の日付から過去に遡って、LocalStorageにデータがある日付をHistoryに追加
+        let currentDate = new Date();
+        for (let i = 0; i < 365; i++) { // 例: 過去1年分をチェック
+            const dateKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+            const localStorageData = localStorage.getItem(`brainhack-${dateKey}`);
+            if (localStorageData) {
+                const { completionRate } = calculateCompletionData(dateKey);
+                data.history.push({
+                    date: dateKey,
+                    completion: `${completionRate}%`,
+                    progress: completionRate
+                });
+            }
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+        // 日付を降順にソート (新しい日付が最初に来るように)
+        data.history.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
+
       if (!data) {
         contentDisplay.innerHTML = `<p>ユーザー '${userKey}' のデータが見つかりません。</p>`;
         return;
@@ -548,19 +666,22 @@
       let state = localStorage.getItem(`brainhack-${date}`);
 
       // Try to load from URL if not found in localStorage (for direct shared links)
-      if (!state) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const compressedData = urlParams.get('data');
-        if (compressedData) {
-          try {
-            const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
-            const parsedData = JSON.parse(decompressed);
-            if (parsedData.d === date) { // Check if the URL data matches the requested date
-              state = JSON.stringify(parsedData);
-            }
-          } catch (e) {
-            console.error("Error parsing shared data from URL:", e);
+      // ただし、この部分は共有リンクからのアクセス時のみ有効
+      const urlParams = new URLSearchParams(window.location.search);
+      const compressedData = urlParams.get('data');
+
+      // ここが今回の修正のポイント: 通常の遷移では自動ポップアップを出さない
+      // かつ、URLのデータが現在表示しようとしている日付と一致しない場合は無視する
+      if (!state && compressedData) {
+        try {
+          const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
+          const parsedData = JSON.parse(decompressed);
+          // URLのデータの日付が、現在表示しようとしている日付と一致する場合のみ採用
+          if (parsedData.d === date) {
+            state = JSON.stringify(parsedData);
           }
+        } catch (e) {
+          console.error("Error parsing shared data from URL:", e);
         }
       }
 
@@ -581,14 +702,14 @@
         cellsData.forEach(cellData => {
             const r = parseInt(cellData.r);
             const c = parseInt(cellData.c);
-            const rowSpan = parseInt(cellData.gr?.split("span ")[1]) || 1;
-            const colSpan = parseInt(cellData.gc?.split("span ")[1]) || 1;
+            // 結合されたセルで gridRow/gridColumn が undefined になる場合を考慮し、デフォルト値を設定
+            const rowSpan = cellData.gr ? (parseInt(cellData.gr.split("span ")[1]) || 1) : 1;
+            const colSpan = cellData.gc ? (parseInt(cellData.gc.split("span ")[1]) || 1) : 1;
 
             // Place the cell data in the top-left corner of its span
-            // Store original gridRow/gridColumn for rendering merged cells
-            tempGrid[r][c] = { 
-                data: cellData, 
-                rowSpan, 
+            tempGrid[r][c] = {
+                data: cellData,
+                rowSpan,
                 colSpan,
                 gridRowStyle: cellData.gr,
                 gridColumnStyle: cellData.gc
@@ -598,7 +719,7 @@
             for (let i = r; i < r + rowSpan; i++) {
                 for (let j = c; j < c + colSpan; j++) {
                     if (i === r && j === c) continue; // Skip the base cell itself
-                    if (tempGrid[i] && tempGrid[i][j] !== undefined) { // Check if cell exists and is not already a base cell
+                    if (tempGrid[i] && tempGrid[i][j] !== undefined) {
                         tempGrid[i][j] = { data: null, hidden: true };
                     }
                 }
@@ -625,21 +746,34 @@
                 cellDiv.style.gridRow = cellInfo.gridRowStyle;
                 cellDiv.style.gridColumn = cellInfo.gridColumnStyle;
               }
-              
+
               const contentDiv = document.createElement("div");
               contentDiv.className = "cell-content";
-              contentDiv.innerHTML = cellData.h || ''; // Use 'h' for html content
 
-              // Disable checkboxes and apply strikethrough based on 'checked' attribute
-              contentDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                cb.disabled = true; // Make checkboxes non-interactive
-                const span = cb.nextElementSibling;
-                if (span && cb.hasAttribute('checked')) {
-                  span.style.textDecoration = 'line-through';
-                } else {
-                  span.style.textDecoration = 'none';
-                }
+              // 画像は表示しないため、HTMLコンテンツのみを処理
+              // index.htmlで保存されたHTML文字列をDOM要素としてパースし、チェックボックスの状態を明示的に設定
+              const tempParser = new DOMParser();
+              const doc = tempParser.parseFromString(cellData.h || '', 'text/html');
+              const bodyContent = doc.body;
+
+              bodyContent.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                  cb.disabled = true; // Make checkboxes non-interactive
+                  if (cb.hasAttribute('checked')) {
+                      cb.checked = true; // Checked属性があれば、checkedプロパティもtrueにする
+                      const nextSpan = cb.nextElementSibling;
+                      if (nextSpan) {
+                          nextSpan.style.textDecoration = 'line-through';
+                      }
+                  } else {
+                      cb.checked = false; // checked属性がなければfalse
+                      const nextSpan = cb.nextElementSibling;
+                      if (nextSpan) {
+                          nextSpan.style.textDecoration = 'none';
+                      }
+                  }
               });
+              // パースした内容をcontentDivにコピー
+              contentDiv.appendChild(bodyContent);
 
               cellDiv.appendChild(contentDiv);
             }
@@ -655,22 +789,26 @@
       historyModal.style.display = "flex"; // Show the modal
     }
 
+    // === Home Button specific logic (Moved here from record.html for clarity) ===
+    document.getElementById('homeButton').addEventListener('click', function(e) {
+      e.preventDefault(); // デフォルトのリンク遷移を停止
+      window.location.href = 'index.html'; // パラメータなしのindex.htmlに遷移
+    });
+
     // Initial load: show 'me' user content
     document.addEventListener("DOMContentLoaded", () => {
-      renderUserContent('me');
-
-      // Check for 'data' parameter in URL on initial load for shared links
+      // URLパラメータのチェックは、ポップアップを出すためではなく、共有データをlocalStorageに保存するため
       const urlParams = new URLSearchParams(window.location.search);
       const compressedData = urlParams.get('data');
+
       if (compressedData) {
         try {
           const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
           const parsedData = JSON.parse(decompressed);
           if (parsedData.d) { // 'd' is the date key in the shared data
-            // Temporarily store this shared data in localStorage for the specific date
-            // This is crucial for the displayHistoryModal function to find it.
-            // In a real app, you might parse and display directly or use a specific sharing storage.
+            // 共有データをlocalStorageに保存
             localStorage.setItem(`brainhack-${parsedData.d}`, JSON.stringify(parsedData));
+            // この場合、共有データの日付の履歴を自動的に表示する
             displayHistoryModal(parsedData.d);
           }
         } catch (e) {
@@ -678,12 +816,10 @@
           alert("共有データの読み込みに失敗しました。無効なリンクの可能性があります。");
         }
       }
-    });
 
-document.getElementById('homeButton').addEventListener('click', function(e) {
-  e.preventDefault(); // デフォルトのリンク遷移を停止
-  window.location.href = 'index.html'; // パラメータなしのindex.htmlに遷移
-});
+      // 最初のユーザーコンテンツのレンダリング
+      renderUserContent('me');
+    });
 
   </script>
 </body>
