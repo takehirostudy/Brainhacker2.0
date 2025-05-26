@@ -9,17 +9,8 @@
       margin: 0;
       padding: 20px;
       font-family: sans-serif;
-      background: #f8f9fa;
+      background-color: #f5f5f5;
       color: #333;
-    }
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: relative; /* For Home button positioning */
     }
     .header {
       display: flex;
@@ -30,44 +21,10 @@
     .header h1 {
       margin: 0;
       font-size: 2em;
-      color: #333;
     }
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      border-bottom: 1px solid #eee;
-      margin-bottom: 20px;
-    }
-    .nav-tab {
-      padding: 10px 15px;
-      border: 1px solid #eee;
-      border-bottom: none;
-      border-radius: 5px 5px 0 0;
-      background-color: #f1f1f1;
-      cursor: pointer;
-      font-weight: bold;
-      color: #555;
-    }
-    .nav-tab.active {
-      background-color: white;
-      border-color: #ddd;
-      color: #4285f4;
-    }
-    .add-user-btn {
-      padding: 10px 15px;
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .top-right-home-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+    .back-btn {
       padding: 8px 15px;
-      background-color: #4285f4;
+      background-color: #6c757d;
       color: white;
       border: none;
       border-radius: 5px;
@@ -75,175 +32,145 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    .summary-section {
-      display: flex;
-      justify-content: space-around;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .summary-card {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-      flex: 1;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    .summary-card h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #555;
-      font-size: 1.1em;
-    }
-    .summary-card .value {
-      font-size: 2.2em;
-      font-weight: bold;
-      color: #4285f4;
-      margin-bottom: 5px;
-    }
-    .summary-card .sub-value {
-      font-size: 0.9em;
-      color: #777;
-    }
-    .progress-bar-container {
-      width: 80%;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 5px;
-      margin: 10px auto 0;
-      overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%;
-      background-color: #62b462; /* Green for progress */
-      border-radius: 5px;
-      width: 0%; /* Will be set by JS */
+    .back-btn:hover {
+      background-color: #5a6268;
     }
 
-    .streak-section {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 30px;
-      text-align: center;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    .streak-section h3 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: #555;
-    }
-    .streak-value {
-      font-size: 2.2em;
-      font-weight: bold;
-      color: #28a745; /* Green for streak */
-      margin-bottom: 5px;
-    }
-    .streak-label {
-      font-size: 0.9em;
-      color: #777;
-    }
-
-    .history-section h2 {
-      margin-bottom: 15px;
-      color: #333;
-    }
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 15px;
-    }
-    .history-item {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-    .history-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    .history-item .date {
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #4285f4;
-    }
-    .history-item .day-of-week {
-      font-size: 0.9em;
-      color: #777;
-      margin-bottom: 5px;
-    }
-    .history-item .completion-rate {
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 5px;
-    }
-    .history-progress-bar-container {
-      width: 80%;
-      height: 6px;
-      background-color: #e0e0e0;
-      border-radius: 3px;
+    .container {
+      max-width: 1200px;
       margin: 0 auto;
-      overflow: hidden;
-    }
-    .history-progress-bar {
-      height: 100%;
-      background-color: #62b462;
-      border-radius: 3px;
-      width: 0%;
     }
 
-    /* Modal styles for history view */
-    .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1000; /* Sit on top */
-      left: 0;
-      top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-      display: flex; /* Use flex to center content */
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .modal-content {
-      background-color: #fefefe;
-      margin: auto;
+    .record-section {
+      background-color: white;
       padding: 20px;
       border-radius: 8px;
-      width: 90%;
-      max-width: 900px; /* Adjust max-width for better view */
-      height: 80%; /* Adjust height */
-      overflow-y: auto; /* Enable scrolling for content */
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      position: relative; /* For close button positioning */
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
-    
-    .close-btn {
+
+    .record-section h2 {
+      color: #4285f4;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .summary-item {
+      background-color: #e8f0fe;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .summary-item h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    .summary-item p {
+      font-size: 2em;
+      font-weight: bold;
+      color: #4285f4;
+      margin: 5px 0;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .history-item {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .history-item:hover {
+      background-color: #eef;
+    }
+
+    .history-date {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .history-title {
+      flex-grow: 1;
+      margin-left: 20px;
+      font-size: 1em;
+      color: #555;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto; /* Enable scrolling for modal content */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 20px; /* Add margin for spacing from edges */
+      padding: 20px;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 900px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    .close-button {
       color: #aaa;
-      float: right;
+      position: absolute;
+      top: 10px;
+      right: 20px;
       font-size: 30px;
       font-weight: bold;
       cursor: pointer;
-      position: absolute; /* Position relative to modal-content */
-      top: 10px;
-      right: 20px;
     }
-    
-    .close-btn:hover,
-    .close-btn:focus {
+    .close-button:hover,
+    .close-button:focus {
       color: #333;
       text-decoration: none;
+    }
+
+    .history-modal-title {
+      font-size: 1.8em;
+      color: #4285f4;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .history-modal-date {
+      font-size: 1.1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
     .history-grid-display {
@@ -251,564 +178,390 @@
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: 100%; /* Take full height of modal content */
+      height: 60vh; /* Fixed height for the grid in modal */
       min-height: 400px;
       gap: 1px;
-      background-color: #eee;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      padding: 2px;
-      box-sizing: border-box;
+      background-color: #ddd;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: auto; /* Allow grid to scroll if content is too large */
     }
 
     .history-cell {
+      background-color: white;
       border: 1px solid #eee;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; /* Align content to top */
-      align-items: flex-start; /* Align content to left */
-      padding: 1px;
-      font-size: 0.8vw; /* Smaller font size for history view */
-      background-color: white; /* Always white for history view */
-      overflow: hidden;
-      text-align: left;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 3px;
+      box-sizing: border-box;
+      font-size: 0.7em; /* Smaller font size for history view */
       word-break: break-word;
       white-space: pre-wrap;
-      position: relative;
+      overflow: hidden; /* Hide overflow for content */
     }
-    /* Styles for merged cells in history view */
-    .history-cell.merged {
+
+    .history-cell img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .history-cell .editable {
+        /* Reset any contenteditable specific styles that might interfere with display */
+        all: unset; /* Removes all inherited styles */
+        width: 100%;
+        height: 100%;
         display: flex;
-        /* Inherit grid-row and grid-column from data */
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        font-size: 1em; /* Relative to parent font size */
+        text-align: left;
+        padding: 0;
+        border: none;
+        outline: none;
+        overflow: hidden; /* Hide overflow for content in history */
+        word-break: break-word;
+        white-space: pre-wrap;
+        /* Optional: add ellipsis for very long text */
+        text-overflow: ellipsis; 
+        display: -webkit-box;
+        -webkit-line-clamp: 5; /* Limit lines for display */
+        -webkit-box-orient: vertical;
+    }
+    .history-cell input[type="checkbox"] {
+        margin-right: 3px;
+    }
+    .history-cell .completed-text {
+        text-decoration: line-through;
+        color: #888;
     }
 
     .history-cell.hidden {
-        display: none;
-    }
-
-    .history-cell .cell-content {
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Enable scrolling for content within a cell */
-        box-sizing: border-box;
-        padding: 2px;
-    }
-    .history-cell .cell-content > div { /* For Note: divs */
-        margin-bottom: 2px; /* Small spacing for note lines */
-    }
-    .history-cell .cell-content span {
-        display: inline-flex;
-        align-items: flex-start; /* Align checkbox and text to top */
-        width: 100%; /* Ensure spans take full width */
-        margin-bottom: 2px; /* Small spacing for checkbox lines */
-    }
-    .history-cell .cell-content input[type="checkbox"] {
-        margin-right: 5px;
-        flex-shrink: 0; /* Prevent checkbox from shrinking */
-        align-self: center; /* Center checkbox vertically if text is multi-line */
-    }
-    .history-cell .cell-content span[contenteditable="true"] {
-        flex-grow: 1; /* Allow text to take available space */
-        min-width: 0; /* Allow text to shrink below its content size */
-    }
-    .history-cell .cell-content b {
-      font-weight: bold; /* Ensure bold is applied */
+      display: none;
     }
   </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>Brain Hacker Record</h1>
-      <a href="#" id="homeButton" class="top-right-home-btn">Home</a>
+      <h1>Daily Record</h1>
+      <a href="index.html" class="back-btn">Back to Brain Hacker</a>
     </div>
 
-    <div class="nav-tabs">
-      <div class="nav-tab active" data-user="me">you</div>
-      <div class="nav-tab" data-user="userA">userA</div>
-      <div class="nav-tab" data-user="userB">userB</div>
-      <button class="add-user-btn">+ Add User</button>
-    </div>
-
-    <div id="content-display">
+    <div class="record-section">
+      <h2>Today's Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <h3>Today's Completion</h3>
+          <p id="todayCompletion">0%</p>
+        </div>
+        <div class="summary-item">
+          <h3>Yesterday's Completion</h3>
+          <p id="yesterdayCompletion">0%</p>
+        </div>
+        <div class="summary-item">
+          <h3>Average Completion (Last 7 Days)</h3>
+          <p id="avgCompletion7Days">0%</p>
+        </div>
+        <div class="summary-item">
+          <h3>Total Completed Tasks (Today)</h3>
+          <p id="totalCompletedTasks">0</p>
+        </div>
       </div>
+    </div>
+
+    <div class="record-section">
+      <h2>History</h2>
+      <ul id="historyList" class="history-list">
+        </ul>
+    </div>
   </div>
 
-  <div id="historyModal" class="modal">
+  <div id="historyDetailModal" class="modal">
     <div class="modal-content">
-      <span class="close-btn" id="closeHistoryModal">&times;</span>
-      <h2 id="historyModalTitle" style="text-align: center; margin-bottom: 15px;"></h2>
-      <div class="history-grid-display" id="historyGridDisplay">
+      <span class="close-button" id="closeModal">&times;</span>
+      <h2 id="modalTitle" class="history-modal-title"></h2>
+      <p id="modalDate" class="history-modal-date"></p>
+      <div id="historyGridDisplay" class="history-grid-display">
         </div>
     </div>
   </div>
 
   <script>
-    // === Helper Functions ===
+    // --- Utility Functions ---
     function getTodayKey() {
       const now = new Date();
       return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     }
 
-    function getYesterdayKey() {
-      const now = new Date();
-      now.setDate(now.getDate() - 1);
-      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    function getDateKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    function getDayOfWeek(dateString) {
-      const date = new Date(dateString);
-      const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-      return days[date.getDay()];
+    function calculateCompletion(cells) {
+      if (!cells || cells.length === 0) return { percentage: 0, completedCount: 0, totalCount: 0 };
+
+      let totalCheckboxes = 0;
+      let completedCheckboxes = 0;
+
+      cells.forEach(cell => {
+        // Create a temporary div to parse HTML content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = cell.html;
+
+        const checkboxes = tempDiv.querySelectorAll('input[type="checkbox"]');
+        totalCheckboxes += checkboxes.length;
+        checkboxes.forEach(cb => {
+          if (cb.hasAttribute('checked')) { // Check for the 'checked' attribute
+            completedCheckboxes++;
+          }
+        });
+      });
+
+      const percentage = totalCheckboxes > 0 ? (completedCheckboxes / totalCheckboxes * 100).toFixed(1) : 0;
+      return { percentage: parseFloat(percentage), completedCount: completedCheckboxes, totalCount: totalCheckboxes };
     }
 
-    /**
-     * 指定された日付のlocalStorageからデータを読み込み、チェックボックスの完了状況を計算する
-     * @param {string} dateKey - YYYY-MM-DD形式の日付キー
-     * @returns {{completed: number, total: number, completionRate: number}}
-     */
-    function calculateCompletionData(dateKey) {
-        const data = localStorage.getItem(`brainhack-${dateKey}`);
-        let completed = 0;
-        let total = 0;
+    // --- Data Loading and Processing ---
+    function loadBrainhackData(dateKey) {
+      const compressed = localStorage.getItem(`brainhack-${dateKey}`);
+      if (compressed) {
+        try {
+          // *** ここを修正：LZStringからbtoa/encodeURIComponentのデコードに変更 ***
+          const decompressed = decodeURIComponent(atob(compressed));
+          return JSON.parse(decompressed);
+        } catch (e) {
+          console.error(`Failed to load data for ${dateKey}:`, e);
+          return null;
+        }
+      }
+      return null;
+    }
 
+    function getAllBrainhackData() {
+      const allData = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('brainhack-')) {
+          const dateKey = key.replace('brainhack-', '');
+          const data = loadBrainhackData(dateKey);
+          if (data) {
+            allData.push(data);
+          }
+        }
+      }
+      // Sort data by date, newest first
+      allData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return allData;
+    }
+
+    function updateSummary() {
+      const todayData = loadBrainhackData(getTodayKey());
+      const todayStats = todayData ? calculateCompletion(todayData.cells) : { percentage: 0, completedCount: 0 };
+      document.getElementById('todayCompletion').textContent = `${todayStats.percentage}%`;
+      document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
+
+      // Yesterday's Completion
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayKey = getDateKey(yesterday);
+      const yesterdayData = loadBrainhackData(yesterdayKey);
+      const yesterdayStats = yesterdayData ? calculateCompletion(yesterdayData.cells) : { percentage: 0 };
+      document.getElementById('yesterdayCompletion').textContent = `${yesterdayStats.percentage}%`;
+
+      // Average Completion (Last 7 Days)
+      let total7DaysCompletion = 0;
+      let daysCount = 0;
+      for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateKey = getDateKey(date);
+        const data = loadBrainhackData(dateKey);
         if (data) {
-            try {
-                const parsedData = JSON.parse(data);
-                if (parsedData.cells) {
-                    parsedData.cells.forEach(cellData => {
-                        // 一時的なDOM要素を作成し、HTMLをパース
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = cellData.h || '';
-
-                        tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                            total++;
-                            // checked属性と実際のcheckedプロパティを両方確認
-                            // HTML文字列からパースしたinput要素のcheckedプロパティは、checked属性がなければfalseになる
-                            if (cb.hasAttribute('checked') && cb.checked) {
-                                completed++;
-                            }
-                        });
-                    });
-                }
-            } catch (e) {
-                console.error(`Error parsing data for ${dateKey}:`, e);
-            }
+          total7DaysCompletion += calculateCompletion(data.cells).percentage;
+          daysCount++;
         }
-        const completionRate = total === 0 ? 0 : Math.round((completed / total) * 100);
-        return { completed, total, completionRate };
+      }
+      const avg7Days = daysCount > 0 ? (total7DaysCompletion / daysCount).toFixed(1) : 0;
+      document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
     }
 
-    /**
-     * 連続継続日数を計算する
-     * @returns {number} 連続継続日数
-     */
-    function getContinuousStreaks() {
-        let streak = 0;
-        let checkDate = new Date(); // 現在の日付からチェックを開始
-        checkDate.setHours(0, 0, 0, 0); // 時刻をリセット
+    function populateHistoryList() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = ''; // Clear previous entries
+      const allData = getAllBrainhackData();
 
-        // まず今日が完了しているか確認
-        const todayKey = getTodayKey();
-        const { completed: todayCompleted, total: todayTotal } = calculateCompletionData(todayKey);
+      allData.forEach(data => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('history-item');
+        listItem.dataset.date = data.date;
 
-        // 今日のタスクが一つでもあり、かつそのうち一つでも完了している場合のみ、今日をストリークに含める
-        if (todayTotal > 0 && todayCompleted > 0) {
-            streak = 1;
-            checkDate.setDate(checkDate.getDate() - 1); // 次は昨日をチェック
-        } else {
-            // 今日が未完了の場合、ストリークは0から始まる
-            // そして、今日が未完了で、かつ今日以前にストリークが途切れていないか確認するために遡る
-            // ただし、もし今日のデータが全くない（まだ何も記録していない）場合は、ストリークをリセットしない
-            const todayDataExists = localStorage.getItem(`brainhack-${todayKey}`) !== null;
-            if (todayDataExists) { // 今日データがあるが、完了タスクが0の場合、ストリークはリセットされる
-                return 0;
-            }
-            // 今日データがない場合は、昨日からストリークを探すため、チェック日付を昨日に設定し、streakは0のまま
-            checkDate.setDate(checkDate.getDate() - 1);
-        }
+        const dateSpan = document.createElement('span');
+        dateSpan.classList.add('history-date');
+        dateSpan.textContent = data.date;
 
-        // 昨日から遡ってチェック
-        while (true) {
-            const prevDayKey = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
-            const prevDayData = localStorage.getItem(`brainhack-${prevDayKey}`);
+        const titleSpan = document.createElement('span');
+        titleSpan.classList.add('history-title');
+        titleSpan.textContent = data.title || '（タイトルなし）';
 
-            if (!prevDayData) {
-                // データがない日は連続が途切れると判断
-                break;
-            }
+        listItem.append(dateSpan, titleSpan);
+        historyList.appendChild(listItem);
 
-            const { completed, total } = calculateCompletionData(prevDayKey);
-            if (total > 0 && completed > 0) {
-                streak++;
-                checkDate.setDate(checkDate.getDate() - 1);
-            } else {
-                // 完了タスクがない日は連続が途切れる
-                break;
-            }
-        }
-        return streak;
-    }
-
-
-    // === Dummy Data (Simulates data stored per user in localStorage) ===
-    // 'me' ユーザーのデータは動的に計算されるように変更
-    const usersData = {
-      me: {
-        todayCompletion: { value: "0%", subValue: "0/0 tasks completed", progress: 0 }, // Initial dummy values
-        yesterdayCompletion: { value: "0%", subValue: "0/0 tasks completed", progress: 0 },
-        sevenDayAverage: { value: "0%", subValue: "", progress: 0 },
-        continuousStreaks: "0 days",
-        history: [] // Populate dynamically
-      },
-      userA: {
-        todayCompletion: { value: "60%", subValue: "6/10 tasks completed", progress: 60 },
-        yesterdayCompletion: { value: "50%", subValue: "3/6 tasks completed", progress: 50 },
-        sevenDayAverage: { value: "55%", subValue: "", progress: 55 },
-        continuousStreaks: "2 days",
-        history: [
-          { date: "2025-05-26", completion: "60%", progress: 60 },
-          { date: "2025-05-25", completion: "50%", progress: 50 },
-          { date: "2025-05-24", completion: "70%", progress: 70 },
-        ]
-      },
-      userB: {
-        todayCompletion: { value: "90%", subValue: "9/10 tasks completed", progress: 90 },
-        yesterdayCompletion: { value: "80%", subValue: "8/10 tasks completed", progress: 80 },
-        sevenDayAverage: { value: "85%", subValue: "", progress: 85 },
-        continuousStreaks: "7 days",
-        history: [
-          { date: "2025-05-26", completion: "90%", progress: 90 },
-          { date: "2025-05-25", completion: "80%", progress: 80 },
-          { date: "2025-05-24", completion: "95%", progress: 95 },
-        ]
-      }
-    };
-
-    // === UI Rendering ===
-    const contentDisplay = document.getElementById("content-display");
-    const navTabs = document.querySelectorAll(".nav-tab");
-    const addUserBtn = document.querySelector(".add-user-btn");
-
-    function renderUserContent(userKey) {
-      const data = usersData[userKey];
-
-      // 'me' ユーザーのデータは動的に計算
-      if (userKey === 'me') {
-        const todayComp = calculateCompletionData(getTodayKey());
-        data.todayCompletion.value = `${todayComp.completionRate}%`;
-        data.todayCompletion.subValue = `${todayComp.completed}/${todayComp.total} tasks completed`;
-        data.todayCompletion.progress = todayComp.completionRate;
-
-        const yesterdayComp = calculateCompletionData(getYesterdayKey());
-        data.yesterdayCompletion.value = `${yesterdayComp.completionRate}%`;
-        data.yesterdayCompletion.subValue = `${yesterdayComp.completed}/${yesterdayComp.total} tasks completed`;
-        data.yesterdayCompletion.progress = yesterdayComp.completionRate;
-
-        // 過去7日間の平均を計算
-        let total7DaysCompletion = 0;
-        let count7Days = 0;
-        for (let i = 0; i < 7; i++) {
-            const date = new Date();
-            date.setDate(date.getDate() - i);
-            const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-            const comp = calculateCompletionData(dateKey);
-            if (comp.total > 0) { // タスクが存在する日のみカウント
-                total7DaysCompletion += comp.completionRate;
-                count7Days++;
-            }
-        }
-        const sevenDayAverage = count7Days === 0 ? 0 : Math.round(total7DaysCompletion / count7Days);
-        data.sevenDayAverage.value = `${sevenDayAverage}%`;
-        data.sevenDayAverage.progress = sevenDayAverage;
-
-
-        data.continuousStreaks = `${getContinuousStreaks()} days`;
-
-        // 'me' ユーザーのHistoryをLocalStorageから動的に生成
-        data.history = [];
-        // 今日の日付から過去に遡って、LocalStorageにデータがある日付をHistoryに追加
-        let currentDate = new Date();
-        for (let i = 0; i < 365; i++) { // 例: 過去1年分をチェック
-            const dateKey = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-            const localStorageData = localStorage.getItem(`brainhack-${dateKey}`);
-            if (localStorageData) {
-                const { completionRate } = calculateCompletionData(dateKey);
-                data.history.push({
-                    date: dateKey,
-                    completion: `${completionRate}%`,
-                    progress: completionRate
-                });
-            }
-            currentDate.setDate(currentDate.getDate() - 1);
-        }
-        // 日付を降順にソート (新しい日付が最初に来るように)
-        data.history.sort((a, b) => new Date(b.date) - new Date(a.date));
-      }
-
-      if (!data) {
-        contentDisplay.innerHTML = `<p>ユーザー '${userKey}' のデータが見つかりません。</p>`;
-        return;
-      }
-
-      contentDisplay.innerHTML = `
-        <div class="summary-section">
-          <div class="summary-card">
-            <h3>Today's Completion</h3>
-            <div class="value">${data.todayCompletion.value}</div>
-            <div class="sub-value">${data.todayCompletion.subValue}</div>
-            <div class="progress-bar-container"><div class="progress-bar" style="width:${data.todayCompletion.progress}%;"></div></div>
-          </div>
-          <div class="summary-card">
-            <h3>Yesterday's Completion</h3>
-            <div class="value">${data.yesterdayCompletion.value}</div>
-            <div class="sub-value">${data.yesterdayCompletion.subValue}</div>
-            <div class="progress-bar-container"><div class="progress-bar" style="width:${data.yesterdayCompletion.progress}%;"></div></div>
-          </div>
-          <div class="summary-card">
-            <h3>7-Day Average</h3>
-            <div class="value">${data.sevenDayAverage.value}</div>
-            <div class="sub-value">${data.sevenDayAverage.subValue}</div>
-            <div class="progress-bar-container"><div class="progress-bar" style="width:${data.sevenDayAverage.progress}%;"></div></div>
-          </div>
-        </div>
-
-        <div class="streak-section">
-          <h3>Continuous Streaks</h3>
-          <div class="streak-value">${data.continuousStreaks}</div>
-          <div class="streak-label">項目</div>
-        </div>
-
-        <div class="history-section">
-          <h2>History</h2>
-          <div class="history-grid">
-            ${data.history.map(item => `
-              <div class="history-item" data-date="${item.date}">
-                <div class="date">${item.date.slice(5).replace('-', '/')}</div>
-                <div class="day-of-week">(${getDayOfWeek(item.date)})</div>
-                <div class="completion-rate">${item.completion}</div>
-                <div class="history-progress-bar-container">
-                  <div class="history-progress-bar" style="width:${item.progress}%;"></div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
-      addHistoryEventListeners();
-    }
-
-    // === Event Listeners ===
-    navTabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        navTabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        renderUserContent(tab.dataset.user);
-      });
-    });
-
-    addUserBtn.addEventListener("click", () => {
-      alert("「+ Add User」ボタンの機能は未実装です。共有リンクからのユーザー追加は、index.htmlのシェア機能をご利用ください。");
-      // addUserFromShareLink(prompt("共有リンクを貼り付けてください:"));
-    });
-
-    // === History Modal Functions ===
-    const historyModal = document.getElementById("historyModal");
-    const closeHistoryModalBtn = document.getElementById("closeHistoryModal");
-    const historyModalTitle = document.getElementById("historyModalTitle");
-    const historyGridDisplay = document.getElementById("historyGridDisplay");
-
-    function addHistoryEventListeners() {
-      document.querySelectorAll(".history-item").forEach(item => {
-        item.addEventListener("click", (event) => {
-          const date = event.currentTarget.dataset.date;
-          displayHistoryModal(date);
-        });
+        listItem.addEventListener('click', () => displayHistoryModal(data));
       });
     }
 
-    closeHistoryModalBtn.addEventListener("click", () => {
-      historyModal.style.display = "none";
-    });
+    // --- Modal Functions ---
+    const historyDetailModal = document.getElementById('historyDetailModal');
+    const closeModalButton = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDate = document.getElementById('modalDate');
+    const historyGridDisplay = document.getElementById('historyGridDisplay');
 
-    window.addEventListener("click", (event) => {
-      if (event.target === historyModal) {
-        historyModal.style.display = "none";
-      }
-    });
+    function displayHistoryModal(data) {
+      modalTitle.textContent = data.title || '（タイトルなし）';
+      modalDate.textContent = data.date;
+      historyGridDisplay.innerHTML = ''; // Clear previous grid
 
-    function displayHistoryModal(date) {
-      historyModalTitle.textContent = `${date} (${getDayOfWeek(date)}) の Brain Hacker 記録`;
-      historyGridDisplay.innerHTML = ''; // Clear previous content
+      const ROWS = 16;
+      const COLS = 20;
+      const gridCells = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
 
-      let state = localStorage.getItem(`brainhack-${date}`);
+      // Populate a temporary grid with loaded data to handle merged cells
+      data.cells.forEach(cellData => {
+        const r = parseInt(cellData.row);
+        const c = parseInt(cellData.col);
+        if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+          gridCells[r][c] = {
+            html: cellData.html,
+            fontSize: cellData.fontSize,
+            bgColor: cellData.bgColor,
+            display: cellData.display,
+            gridRow: cellData.gridRow,
+            gridColumn: cellData.gridColumn,
+            imgSrc: cellData.imgSrc,
+            alignItems: cellData.alignItems,
+            justifyContent: cellData.justifyContent,
+            textAlign: cellData.textAlign,
+            isMergedBase: true
+          };
+          // Mark cells covered by a merged cell as hidden
+          if (cellData.gridRow && cellData.gridColumn && cellData.display !== 'none') { // Only if it's a visible merged cell
+            const rowSpanMatch = cellData.gridRow.match(/span (\d+)/);
+            const colSpanMatch = cellData.gridColumn.match(/span (\d+)/);
+            const rowSpan = rowSpanMatch ? parseInt(rowSpanMatch[1]) : 1;
+            const colSpan = colSpanMatch ? parseInt(colSpanMatch[1]) : 1;
 
-      // 共有データがURLにあり、かつlocalStorageにデータがない場合のみ、その共有データを読み込む
-      // ただし、record.htmlへの自動ポップアップを抑制するため、このブロックはコメントアウトする
-      /*
-      const urlParams = new URLSearchParams(window.location.search);
-      const compressedData = urlParams.get('data');
-      if (!state && compressedData) {
-        try {
-          const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
-          const parsedData = JSON.parse(decompressed);
-          // URLのデータの日付が、現在表示しようとしている日付と一致する場合のみ採用
-          if (parsedData.d === date) {
-            state = JSON.stringify(parsedData);
-          }
-        } catch (e) {
-          console.error("Error parsing shared data from URL:", e);
-        }
-      }
-      */
-
-      if (!state) {
-        historyGridDisplay.innerHTML = '<p style="text-align: center; width: 100%; padding-top: 50px;">この日付の記録は見つかりませんでした。</p>';
-        historyModal.style.display = "flex";
-        return;
-      }
-
-      try {
-        const parsedFullState = JSON.parse(state);
-        const cellsData = parsedFullState.cells;
-
-        // Create a temporary 20x16 grid for rendering to handle merged cells correctly
-        const tempGrid = Array(16).fill(null).map(() => Array(20).fill(null));
-
-        // Populate the temp grid with cell data, handling merged cells and their spans
-        cellsData.forEach(cellData => {
-            const r = parseInt(cellData.r);
-            const c = parseInt(cellData.c);
-            // 結合されたセルで gridRow/gridColumn が undefined になる場合を考慮し、デフォルト値を設定
-            const rowSpan = cellData.gr ? (parseInt(cellData.gr.split("span ")[1]) || 1) : 1;
-            const colSpan = cellData.gc ? (parseInt(cellData.gc.split("span ")[1]) || 1) : 1;
-
-            // Place the cell data in the top-left corner of its span
-            tempGrid[r][c] = {
-                data: cellData,
-                rowSpan,
-                colSpan,
-                gridRowStyle: cellData.gr,
-                gridColumnStyle: cellData.gc
-            };
-
-            // Mark other cells within the merged area as hidden
             for (let i = r; i < r + rowSpan; i++) {
-                for (let j = c; j < c + colSpan; j++) {
-                    if (i === r && j === c) continue; // Skip the base cell itself
-                    if (tempGrid[i] && tempGrid[i][j] !== undefined) {
-                        tempGrid[i][j] = { data: null, hidden: true };
-                    }
+              for (let j = c; j < c + colSpan; j++) {
+                if (i === r && j === c) continue; // Skip the base cell itself
+                if (i >= 0 && i < ROWS && j >= 0 && j < COLS) {
+                  gridCells[i][j] = { isHidden: true };
                 }
-            }
-        });
-
-        // Render the grid into the modal
-        for (let r = 0; r < 16; r++) {
-          for (let c = 0; c < 20; c++) {
-            const cellInfo = tempGrid[r][c];
-            const cellDiv = document.createElement("div");
-            cellDiv.className = "history-cell";
-            cellDiv.dataset.row = r;
-            cellDiv.dataset.col = c;
-
-            if (cellInfo && cellInfo.hidden) {
-              cellDiv.classList.add("hidden");
-            } else if (cellInfo && cellInfo.data) {
-              const cellData = cellInfo.data;
-              cellDiv.classList.add("merged"); // Mark as merged or regular
-
-              // Apply grid spans for merged cells
-              if (cellInfo.rowSpan > 1 || cellInfo.colSpan > 1) {
-                cellDiv.style.gridRow = cellInfo.gridRowStyle;
-                cellDiv.style.gridColumn = cellInfo.gridColumnStyle;
               }
-
-              const contentDiv = document.createElement("div");
-              contentDiv.className = "cell-content";
-
-              // HTML文字列をパースして子要素を一つずつ追加することで、DOM構造を正確に再現
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(cellData.h || '', 'text/html');
-              // doc.bodyの子要素を直接取得し、それらをcontentDivに追加
-              // Note: `childNodes`を使うことでテキストノードも扱えるようにする
-              Array.from(doc.body.childNodes).forEach(node => {
-                  const clonedNode = node.cloneNode(true); // ノードをクローン
-
-                  // チェックボックスがあれば処理
-                  if (clonedNode.tagName === 'SPAN' && clonedNode.querySelector('input[type="checkbox"]')) {
-                      const cb = clonedNode.querySelector('input[type="checkbox"]');
-                      cb.disabled = true; // 無効化
-                      // checked属性が設定されている場合のみcheckedプロパティをtrueに
-                      if (cb.hasAttribute('checked')) {
-                          cb.checked = true;
-                      } else {
-                          cb.checked = false;
-                      }
-                      const textSpan = cb.nextElementSibling;
-                      if (textSpan) {
-                         // checkedプロパティがtrueなら取り消し線、そうでなければ取り消し線なし
-                         textSpan.style.textDecoration = cb.checked ? 'line-through' : 'none';
-                      }
-                  } else if (clonedNode.tagName === 'DIV' && clonedNode.querySelector('span[contenteditable="true"]')) {
-                      // Note: のためのdivとspan要素を処理
-                      const editableSpan = clonedNode.querySelector('span[contenteditable="true"]');
-                      if (editableSpan) {
-                          editableSpan.removeAttribute('contenteditable'); // 編集不可にする
-                      }
-                  }
-                  contentDiv.appendChild(clonedNode);
-              });
-
-              cellDiv.appendChild(contentDiv);
             }
-            historyGridDisplay.appendChild(cellDiv);
           }
         }
+      });
 
-      } catch (error) {
-        console.error("Error displaying history data:", error);
-        historyGridDisplay.innerHTML = '<p style="text-align: center; width: 100%; padding-top: 50px;">記録データの読み込み中にエラーが発生しました。</p>';
+      // Render cells to DOM
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement('div');
+          cell.classList.add('history-cell');
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          const cellInfo = gridCells[r][c];
+
+          if (cellInfo && cellInfo.isHidden) {
+            cell.classList.add('hidden');
+          } else if (cellInfo) { // This cell is either a base merged cell or a regular cell
+            cell.style.backgroundColor = cellInfo.bgColor || '';
+            cell.style.display = cellInfo.display || 'flex';
+            cell.style.gridRow = cellInfo.gridRow || '';
+            cell.style.gridColumn = cellInfo.gridColumn || '';
+
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable'); // Add editable class for styling consistency
+            editableDiv.style.fontSize = cellInfo.fontSize || '';
+            editableDiv.style.alignItems = cellInfo.alignItems || '';
+            editableDiv.style.justifyContent = cellInfo.justifyContent || '';
+            editableDiv.style.textAlign = cellInfo.textAlign || '';
+            editableDiv.innerHTML = cellInfo.html || '';
+
+            // Handle checkbox state and styling for display
+            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true; // Disable checkboxes in history modal
+                const textSpan = checkbox.nextElementSibling;
+                if (textSpan) {
+                    textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
+                    textSpan.style.color = checkbox.hasAttribute('checked') ? '#888' : '';
+                }
+            });
+
+            // Handle images
+            const img = document.createElement('img');
+            if (cellInfo.imgSrc) {
+                img.src = cellInfo.imgSrc;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
+            }
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
+          } else {
+            // Empty cell (default state if not in loaded data or not a hidden cell)
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable');
+            editableDiv.innerHTML = '';
+            const img = document.createElement('img');
+            img.style.display = 'none';
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
+          }
+          historyGridDisplay.appendChild(cell);
+        }
       }
 
-      historyModal.style.display = "flex"; // Show the modal
+      historyDetailModal.style.display = 'flex'; // Use flex to center the modal
     }
 
-    // === Home Button specific logic (Moved here from record.html for clarity) ===
-    document.getElementById('homeButton').addEventListener('click', function(e) {
-      e.preventDefault(); // デフォルトのリンク遷移を停止
-      window.location.href = 'index.html'; // パラメータなしのindex.htmlに遷移
+    closeModalButton.addEventListener('click', () => {
+      historyDetailModal.style.display = 'none';
     });
 
-    // Initial load: show 'me' user content
-    document.addEventListener("DOMContentLoaded", () => {
-      // URLパラメータのチェックは、共有データをlocalStorageに保存するため（自動ポップアップはさせない）
-      const urlParams = new URLSearchParams(window.location.search);
-      const compressedData = urlParams.get('data');
-
-      if (compressedData) {
-        try {
-          const decompressed = LZString.decompressFromEncodedURIComponent(compressedData);
-          const parsedData = JSON.parse(decompressed);
-          if (parsedData.d) { // 'd' is the date key in the shared data
-            // 共有データをlocalStorageに保存
-            localStorage.setItem(`brainhack-${parsedData.d}`, JSON.stringify(parsedData));
-            // この場合、共有データの日付の履歴を自動的に表示する (これは前回の意図された共有リンクからの自動表示)
-            // ただし、通常のrecord.htmlロード時のポップアップを抑制するため、displayHistoryModalの呼び出しはコメントアウト
-            // displayHistoryModal(parsedData.d); // <- この行をコメントアウト
-          }
-        } catch (e) {
-          console.error("Error loading shared data from URL:", e);
-          // alert("共有データの読み込みに失敗しました。無効なリンクの可能性があります。"); // 通常のエラーアラートは抑制
-        }
+    window.addEventListener('click', (event) => {
+      if (event.target === historyDetailModal) {
+        historyDetailModal.style.display = 'none';
       }
-
-      // 最初のユーザーコンテンツのレンダリング
-      renderUserContent('me');
     });
 
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSummary();
+      populateHistoryList();
+    });
+
+    // Share link processing (if accessed via a share URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedDataParam = urlParams.get('data');
+    if (sharedDataParam) {
+        try {
+            // *** ここも修正：LZStringからbtoa/encodeURIComponentのデコードに変更 ***
+            const decodedData = decodeURIComponent(atob(sharedDataParam));
+            const sharedState = JSON.parse(decodedData);
+            displayHistoryModal(sharedState);
+        } catch (e) {
+            console.error("Error processing shared data:", e);
+            alert("共有されたデータの読み込みに失敗しました。");
+        }
+        // URLからデータパラメータを削除して、通常のURLに戻す (任意)
+        // history.replaceState(null, '', window.location.pathname);
+    }
   </script>
 </body>
 </html>
