@@ -184,7 +184,7 @@
 
     /* Modal styles */
     .modal {
-      display: none;
+      display: none; /* 変更点: 初期状態では非表示にする */
       position: fixed;
       z-index: 1000;
       left: 0;
@@ -281,7 +281,7 @@
         align-items: flex-start;
         justify-content: flex-start;
         flex-direction: column;
-        font-size: 0.5em; /* 変更点: ここを0.5emに変更しました */
+        font-size: 0.5em; /* 変更点: ここは以前に指定した0.5emのまま */
         text-align: left;
         padding: 0;
         border: none;
@@ -414,7 +414,7 @@
           const decompressed = decodeURIComponent(atob(compressed));
           return JSON.parse(decompressed);
         } catch (e) {
-          // console.error(`Failed to load data for ${dateKey}:`, e); // エラーログを有効にする場合はコメントアウト解除
+          console.error(`Failed to load data for ${dateKey}:`, e); // エラーログを有効化
           return null;
         }
       }
@@ -472,9 +472,6 @@
       const avg7Days = daysCount > 0 ? (total7DaysCompletion / daysCount).toFixed(1) : 0;
       document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
       document.getElementById('avg7DaysProgressBar').style.width = `${avg7Days}%`;
-
-      // Total Completed Tasks (Today) は削除されたため、ここでの更新は不要
-      // document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
     }
 
     function populateHistoryList() {
@@ -553,18 +550,9 @@
                     }
                 } else { // そのタスクがその日に完了していない場合
                     if (streaks[taskContent]) {
-                        // ストリーク中のタスクが未完了の場合、ストリークをリセットまたは終了
-                        // ただし、今日は未完了だが過去にはストリークしていたタスクは、そのまま残す
-                        // （ここでは「今日のストリーク継続」に限定するため、今日のデータが最も新しい場合のみ考慮）
                         const todayDate = new Date(getTodayKey());
                         const lastCompletedDateInStreak = new Date(streaks[taskContent].lastCompletedDate);
                         const diffDaysFromLastCompletion = Math.ceil(Math.abs(todayDate.getTime() - lastCompletedDateInStreak.getTime()) / (1000 * 60 * 60 * 24));
-                        
-                        // もし今日のデータが処理中で、かつ昨日の完了分から連続性が途切れた場合は、ストリークをリセット
-                        // (ただし、現在のallDataは降順なので、ここでのリセットは不要。
-                        //  各タスクのストリークは、完了した日を起点に遡って連続性を確認していくのが正しい)
-                        // ここでは、単純に完了しなかった日はカウントせず、連続している日数を数える方針で進めます。
-                        // よって、この`else`ブロックでは特に何もしません。
                     }
                 }
             }
@@ -737,9 +725,9 @@
         try {
             const decodedData = decodeURIComponent(atob(sharedDataParam));
             const sharedState = JSON.parse(decodedData);
-            displayHistoryModal(sharedState);
+            displayHistoryModal(sharedState); // 変更なし: ここは共有データがあれば呼び出される
         } catch (e) {
-            // console.error("Error processing shared data:", e); // エラーログを有効にする場合はコメントアウト解除
+            console.error("Error processing shared data:", e); // エラーログを有効化
             // alert("共有されたデータの読み込みに失敗しました。"); // ユーザーへのアラートを有効にする場合はコメントアウト解除
         }
     }
