@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      padding: 15px; /* 上下のパディングを狭める */
+      padding: 15px;
       font-family: sans-serif;
       background-color: #f5f5f5;
       color: #333;
@@ -16,21 +16,23 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px; /* マージンを狭める */
+      margin-bottom: 20px; /* 少し広めに */
     }
     .header h1 {
       margin: 0;
-      font-size: 1.8em; /* タイトルを少し小さく */
+      font-size: 1.8em;
+      color: #333; /* タイトル色を統一 */
     }
     .back-btn {
-      padding: 6px 12px; /* パディングを狭める */
+      padding: 8px 15px;
       background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 5px;
       text-decoration: none;
-      font-size: 13px; /* フォントサイズを少し小さく */
+      font-size: 14px;
       cursor: pointer;
+      transition: background-color 0.2s ease; /* ホバー効果を追加 */
     }
     .back-btn:hover {
       background-color: #3367d6;
@@ -43,61 +45,67 @@
 
     .record-section {
       background-color: white;
-      padding: 15px; /* パディングを狭める */
+      padding: 20px; /* パディングを少し広めに */
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px; /* マージンを狭める */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 影を柔らかく */
+      margin-bottom: 25px; /* セクション間のマージンを調整 */
     }
 
     .record-section h2 {
       color: #4285f4;
-      border-bottom: 1px solid #e0e0e0; /* ボーダーを細く */
-      padding-bottom: 8px; /* パディングを狭める */
-      margin-bottom: 15px; /* マージンを狭める */
-      font-size: 1.3em; /* h2を少し小さく */
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px; /* パディングを調整 */
+      margin-bottom: 20px; /* マージンを調整 */
+      font-size: 1.4em; /* h2を少し大きく */
+      font-weight: 600; /* フォントの太さ調整 */
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 最小幅を狭める */
-      gap: 10px; /* ギャップを狭める */
-      margin-bottom: 15px; /* マージンを狭める */
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 最小幅を少し広めに */
+      gap: 15px; /* ギャップを調整 */
+      margin-bottom: 10px;
     }
 
     .summary-item {
       background-color: #e8f0fe;
-      padding: 10px; /* パディングを狭める */
-      border-radius: 5px;
+      padding: 15px; /* パディングを調整 */
+      border-radius: 6px; /* 角丸を調整 */
       text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08); /* 影をさらに柔らかく */
       position: relative;
+      display: flex; /* Flexboxで内容を中央寄せ */
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .summary-item h3 {
       margin-top: 0;
       color: #333;
-      font-size: 1em; /* h3を小さく */
+      font-size: 1.05em; /* h3を微調整 */
+      margin-bottom: 10px;
     }
 
     .summary-item .completion-percentage {
-      font-size: 1.8em; /* フォントサイズを小さく */
+      font-size: 2.2em; /* フォントサイズを調整 */
       font-weight: bold;
       color: #4285f4;
-      margin: 3px 0 8px; /* マージンを狭める */
+      margin: 5px 0; /* マージンを調整 */
     }
     .summary-item .completion-tasks {
-      font-size: 0.8em; /* フォントサイズを小さく */
+      font-size: 0.9em; /* フォントサイズを調整 */
       color: #666;
-      margin-top: -5px;
+      margin-top: 0;
     }
 
-    /* プログレスバーのスタイル */
+    /* Progress bar styles */
     .progress-bar-container {
-      width: 90%; /* 幅を広げる */
-      height: 6px; /* 高さを狭める */
+      width: 90%;
+      height: 8px; /* 高さを調整 */
       background-color: #e0e0e0;
-      border-radius: 3px; /* 角丸を小さく */
-      margin: 0 auto 8px; /* マージンを狭める */
+      border-radius: 4px; /* 角丸を調整 */
+      margin: 10px auto 0; /* マージンを調整 */
       overflow: hidden;
     }
 
@@ -105,7 +113,7 @@
       height: 100%;
       background-color: #4CAF50;
       width: 0%;
-      border-radius: 3px;
+      border-radius: 4px;
       transition: width 0.5s ease-out;
     }
 
@@ -117,83 +125,90 @@
     .history-item {
       background-color: #f9f9f9;
       border: 1px solid #e0e0e0;
-      border-radius: 5px;
-      padding: 10px; /* パディングを狭める */
-      margin-bottom: 8px; /* マージンを狭める */
+      border-radius: 6px;
+      padding: 12px 15px; /* パディングを調整 */
+      margin-bottom: 10px; /* マージンを調整 */
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease; /* 影のホバー効果を追加 */
     }
 
     .history-item:hover {
       background-color: #eef;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* ホバー時の影 */
     }
 
     .history-date {
       font-weight: bold;
-      font-size: 1em; /* フォントサイズを小さく */
+      font-size: 1.05em; /* フォントサイズを調整 */
+      color: #444;
     }
 
     .history-title {
       flex-grow: 1;
-      margin-left: 15px; /* マージンを狭める */
-      font-size: 0.9em; /* フォントサイズを小さく */
+      margin-left: 20px; /* マージンを調整 */
+      font-size: 0.95em; /* フォントサイズを調整 */
       color: #555;
+      text-overflow: ellipsis; /* 長いタイトルを省略 */
+      white-space: nowrap; /* 強制的に1行に */
+      overflow: hidden;
     }
 
     /* Continuous Streaks Section */
     .streaks-section {
       background-color: white;
-      padding: 15px; /* パディングを狭める */
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 20px; /* マージンを狭める */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
     }
 
     .streaks-section h2 {
       color: #4285f4;
-      border-bottom: 1px solid #e0e0e0; /* ボーダーを細く */
-      padding-bottom: 8px; /* パディングを狭める */
-      margin-bottom: 15px; /* マージンを狭める */
-      font-size: 1.3em; /* h2を少し小さく */
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      font-weight: 600;
     }
 
-    /* 変更点: Continuous Streaksのレイアウトを横並びにする */
     #continuousStreaksList {
-        display: flex; /* flexboxコンテナにする */
-        flex-wrap: wrap; /* 折り返しを許可 */
-        gap: 10px; /* アイテム間のギャップ */
-        justify-content: flex-start; /* 左から配置 */
-        max-height: 150px; /* 最大高さを設定してスクロールを可能にする */
-        overflow-y: auto; /* 縦スクロールを許可 */
-        padding-right: 10px; /* スクロールバーの幅を考慮 */
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px; /* ギャップを調整 */
+        justify-content: flex-start;
+        max-height: 160px; /* 最大高さを調整 */
+        overflow-y: auto;
+        padding-right: 10px;
     }
 
     .streak-item {
       background-color: #e8f0fe;
-      padding: 8px 12px; /* パディングを狭める */
-      border-radius: 5px;
-      /* flexboxで中央寄せは不要になるため削除 */
-      /* display: flex; */
-      /* align-items: center; */
-      /* justify-content: space-between; */
-      font-size: 0.9em; /* フォントサイズを小さく */
-      white-space: nowrap; /* テキストが途中で改行しないように */
-      flex-shrink: 0; /* 縮まないようにする */
+      padding: 10px 15px; /* パディングを調整 */
+      border-radius: 20px; /* 角丸を大きくしてバッジ風に */
+      font-size: 0.9em;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: flex; /* Flexboxで内容を整列 */
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 影を追加 */
     }
 
     .streak-task-content {
-      /* flex-grow: 1; を削除 */
-      margin-right: 8px; /* マージンを狭める */
+      margin-right: 8px;
       color: #333;
     }
 
-    /* 変更点: 連続達成日数の文字色を青に変更 */
     .streak-days {
       font-weight: bold;
-      color: #4285f4; /* 青色 */
+      color: #4285f4;
+      background-color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.85em; /* 日数のフォントサイズを微調整 */
+      box-shadow: inset 0 0 3px rgba(0,0,0,0.1); /* 内側に影 */
     }
 
     /* Modal styles */
@@ -209,27 +224,30 @@
       justify-content: center;
       align-items: center;
       overflow-y: auto;
+      padding: 20px; /* モーダル自体のパディング */
+      box-sizing: border-box;
     }
 
     .modal-content {
       background-color: #fefefe;
-      margin: 15px; /* マージンを狭める */
-      padding: 15px; /* パディングを狭める */
-      border-radius: 8px;
+      margin: auto; /* 中央寄せ */
+      padding: 25px; /* パディングを調整 */
+      border-radius: 10px; /* 角丸を調整 */
       width: 95%;
-      max-width: 800px; /* 最大幅を狭める */
-      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      max-width: 900px; /* 最大幅を調整 */
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* 影を強調 */
       position: relative;
     }
 
     .close-button {
       color: #aaa;
       position: absolute;
-      top: 8px; /* 位置を調整 */
-      right: 15px; /* 位置を調整 */
-      font-size: 28px; /* サイズを調整 */
+      top: 15px; /* 位置を調整 */
+      right: 20px; /* 位置を調整 */
+      font-size: 32px; /* サイズを調整 */
       font-weight: bold;
       cursor: pointer;
+      transition: color 0.2s ease;
     }
     .close-button:hover,
     .close-button:focus {
@@ -238,17 +256,19 @@
     }
 
     .history-modal-title {
-      font-size: 1.5em; /* サイズを小さく */
+      font-size: 1.8em; /* サイズを調整 */
       color: #4285f4;
-      margin-bottom: 10px; /* マージンを狭める */
+      margin-bottom: 12px; /* マージンを調整 */
       text-align: center;
+      font-weight: 600;
     }
 
     .history-modal-date {
-      font-size: 1em; /* サイズを小さく */
+      font-size: 1.1em; /* サイズを調整 */
       color: #666;
       text-align: center;
-      margin-bottom: 15px; /* マージンを狭める */
+      margin-bottom: 20px; /* マージンを調整 */
+      font-weight: 500;
     }
 
     .history-grid-display {
@@ -256,10 +276,10 @@
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: 50vh; /* 高さを狭める */
-      min-height: 300px; /* 最小高さを調整 */
+      height: 60vh; /* 高さを見やすく調整 */
+      min-height: 400px;
       gap: 1px;
-      background-color: #ddd;
+      background-color: #e0e0e0; /* グリッド背景色を調整 */
       border: 1px solid #ccc;
       border-radius: 5px;
       overflow: auto;
@@ -267,17 +287,18 @@
 
     .history-cell {
       background-color: white;
-      border: 1px solid #eee;
+      border: 1px solid #f0f0f0; /* セルボーダーを明るく */
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 2px; /* パディングを狭める */
+      padding: 3px; /* パディングを調整 */
       box-sizing: border-box;
-      font-size: 0.6em; /* フォントサイズを小さく */
+      font-size: 0.7em; /* フォントサイズを調整 */
       word-break: break-word;
       white-space: pre-wrap;
       overflow: hidden;
+      position: relative; /* img, editableの配置用 */
     }
 
     .history-cell img {
@@ -285,6 +306,11 @@
       max-height: 100%;
       object-fit: contain;
       display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
     }
     .history-cell .editable {
         width: 100%;
@@ -293,7 +319,7 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        font-size: 1em; /* 親のhistory-cellのfont-sizeに対する相対値 */
+        font-size: 1em; /* Relative to parent history-cell font-size */
         text-align: left;
         padding: 0;
         border: none;
@@ -301,23 +327,27 @@
         overflow: hidden;
         word-break: break-word;
         white-space: pre-wrap;
-        text-overflow: ellipsis; 
+        text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 5;
+        -webkit-line-clamp: 5; /* 表示行数を調整 */
         -webkit-box-orient: vertical;
+        position: relative; /* imgとの重なり順を調整 */
+        z-index: 1;
     }
     .history-cell .checkbox-wrapper {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 1px; /* マージンをさらに狭める */
-      line-height: 1.1; /* 行の高さを調整 */
+      margin-bottom: 2px; /* マージンを調整 */
+      line-height: 1.3; /* 行の高さを調整 */
     }
     .history-cell .checkbox-wrapper br {
         display: none;
     }
     .history-cell input[type="checkbox"] {
-        margin-right: 2px; /* マージンを狭める */
-        transform: scale(0.8); /* チェックボックスを少し小さく */
+        margin-right: 4px; /* マージンを調整 */
+        transform: scale(0.9); /* チェックボックスのサイズを調整 */
+        flex-shrink: 0; /* 縮まないように */
+        margin-top: 1px; /* 縦位置調整 */
     }
     .history-cell .completed-text {
         text-decoration: line-through;
@@ -522,64 +552,64 @@
 
     // --- Continuous Streaks Calculation ---
     function calculateContinuousStreaks() {
-        const allData = getAllBrainhackData(); // データは日付降順（新しい順）で取得される
+        const allData = getAllBrainhackData(); // Data is fetched in descending date order (newest first)
         const streaks = {}; // { taskId: { content: "task text", days: 0, lastCompletedDate: "YYYY-MM-DD" } }
 
         for (const data of allData) {
             const date = new Date(data.date);
             
-            // その日の通常のチェックボックスタスクの完了状態を抽出
+            // Extract the completion status of regular checkbox tasks for the day
             const completedTasksToday = {}; // { taskContent: true/false }
             data.cells.forEach(cell => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = cell.html;
 
-                // チェックボックスとそのテキストを抽出
+                // Extract checkbox and its text
                 tempDiv.querySelectorAll('.checkbox-wrapper').forEach(wrapper => {
                     const cb = wrapper.querySelector('input[type="checkbox"]');
                     const textSpan = wrapper.querySelector('.checkbox-text');
                     
-                    if (cb && textSpan && !textSpan.style.fontWeight.includes("bold")) { // 通常のチェックボックスのみ
+                    if (cb && textSpan && !textSpan.style.fontWeight.includes("bold")) { // Only regular checkboxes
                         const taskContent = textSpan.textContent.trim();
-                        if (taskContent) { // 空のタスクは無視
+                        if (taskContent) { // Ignore empty tasks
                             completedTasksToday[taskContent] = cb.hasAttribute('checked');
                         }
                     }
                 });
             });
 
-            // ストリークの更新ロジック
+            // Streak update logic
             for (const taskContent in completedTasksToday) {
-                if (completedTasksToday[taskContent]) { // そのタスクがその日に完了している場合
+                if (completedTasksToday[taskContent]) { // If the task is completed on that day
                     if (streaks[taskContent]) {
                         const lastDate = new Date(streaks[taskContent].lastCompletedDate);
                         const diffTime = Math.abs(date.getTime() - lastDate.getTime());
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                         
-                        // 連続している場合 (昨日または今日)
+                        // If continuous (yesterday or today)
                         if (diffDays === 1 || (diffDays === 0 && date.toDateString() === lastDate.toDateString())) { 
                             streaks[taskContent].days++;
                             streaks[taskContent].lastCompletedDate = data.date;
-                        } else if (diffDays > 1) { // 途切れている
-                            // 新しいストリークを開始（1日目として）
+                        } else if (diffDays > 1) { // Broken streak
+                            // Start a new streak (as day 1)
                             streaks[taskContent].days = 1;
                             streaks[taskContent].lastCompletedDate = data.date;
                         }
                     } else {
-                        // 初めて見つかるタスク
+                        // First time this task is encountered
                         streaks[taskContent] = {
                             content: taskContent,
                             days: 1,
                             lastCompletedDate: data.date
                         };
                     }
-                } else { // そのタスクがその日に完了していない場合
-                    // ストリークが途切れる可能性があるが、ここでは何もしない（次のループで連続しない場合にリセットされる）
+                } else { // If the task is not completed on that day
+                    // The streak might be broken, but we don't do anything here (it will be reset in the next loop if not continuous)
                 }
             }
         }
 
-        // 表示用の処理
+        // Display logic
         const continuousStreaksList = document.getElementById('continuousStreaksList');
         continuousStreaksList.innerHTML = ''; // Clear previous entries
 
@@ -587,9 +617,9 @@
             const lastCompletedDate = new Date(s.lastCompletedDate);
             const today = new Date(getTodayKey());
             const diffDays = Math.abs(today.getTime() - lastCompletedDate.getTime()) / (1000 * 60 * 60 * 24);
-            // 今日または昨日までに完了しており、ストリークが途切れていないもののみ表示
+            // Display only streaks that are active (completed today or yesterday, and streak is not broken)
             return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1));
-        }).sort((a,b) => b.days - a.days); // 日数の多い順にソート
+        }).sort((a,b) => b.days - a.days); // Sort by days in descending order
 
         if (activeStreaks.length === 0) {
             continuousStreaksList.innerHTML = `
@@ -687,19 +717,19 @@
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
             
-            // editableDivのinnerHTMLを直接設定する前に、既存の内容をクリア
+            // Clear existing content before setting innerHTML
             editableDiv.innerHTML = ''; 
             
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = cellInfo.html || '';
 
-            // tempDiv の子要素を editableDiv に直接追加
+            // Append child elements of tempDiv directly to editableDiv
             while (tempDiv.firstChild) {
                 editableDiv.appendChild(tempDiv.firstChild);
             }
 
             editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.disabled = true; // モーダル内のチェックボックスは無効化
+                checkbox.disabled = true; // Disable checkboxes in modal
                 const textSpan = checkbox.nextElementSibling;
                 if (textSpan) {
                     textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
@@ -708,20 +738,20 @@
             });
 
             const img = document.createElement('img');
-            // 画像データが存在し、かつそれが有効なbase64画像データであれば表示
+            // Display image data if it exists and is a valid base64 image
             if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
                 img.src = cellInfo.imgSrc;
                 img.style.display = 'block';
-                editableDiv.style.display = 'none'; // 画像がある場合はeditableDivを非表示
+                editableDiv.style.display = 'none'; // Hide editableDiv if image is present
             } else {
                 img.src = "";
                 img.style.display = 'none';
-                editableDiv.style.display = 'flex'; // 画像がない場合はeditableDivを表示
+                editableDiv.style.display = 'flex'; // Show editableDiv if no image
             }
             cell.appendChild(editableDiv);
             cell.appendChild(img);
           } else {
-            // セル情報がない場合は、空のeditableDivとimgを作成
+            // If no cell info, create an empty editableDiv and img
             const editableDiv = document.createElement('div');
             editableDiv.classList.add('editable');
             editableDiv.innerHTML = '';
@@ -753,20 +783,6 @@
       populateHistoryList();
       calculateContinuousStreaks();
     });
-
-    // Share link processing (if accessed via a share URL)
-    const urlParams = new URLSearchParams(window.location.search);
-    const sharedDataParam = urlParams.get('data');
-    if (sharedDataParam) {
-        try {
-            const decodedData = decodeURIComponent(atob(sharedDataParam));
-            const sharedState = JSON.parse(decodedData);
-            displayHistoryModal(sharedState);
-        } catch (e) {
-            console.error("Error processing shared data:", e);
-            // alert("共有されたデータの読み込みに失敗しました。");
-        }
-    }
   </script>
 </body>
 </html>
