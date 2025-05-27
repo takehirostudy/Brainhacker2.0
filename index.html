@@ -1019,6 +1019,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.editable').forEach(editableDiv => {
       attachCheckboxListeners(editableDiv);
   });
+if (undoHistory.length === 0) {
+      saveState(); // 現在のグリッドの状態を保存（undoHistoryにも追加される）
+  }
 });
 
 </script>
