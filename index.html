@@ -166,8 +166,8 @@
       display: block;
     }
     
-    /* Modal for sharing */
-    .modal {
+    /* Modal for sharing - 削除対象のためスタイルは不要ですが、残しておきます。 */
+    /* .modal {
       display: none;
       position: fixed;
       z-index: 1000;
@@ -176,14 +176,14 @@
       width: 100%;
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
-      display: flex; /* 追加: 中央揃えのため */
-      justify-content: center; /* 追加: 中央揃えのため */
-      align-items: center; /* 追加: 中央揃えのため */
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     
     .modal-content {
       background-color: #fefefe;
-      margin: auto; /* marginをautoに変更 */
+      margin: auto;
       padding: 20px;
       border-radius: 5px;
       width: 80%;
@@ -218,8 +218,9 @@
       border-radius: 4px;
       cursor: pointer;
       float: right;
-    }
-    /* History Modal specific styles */
+    } */
+
+    /* History Modal specific styles (record.html用なのでindex.htmlでは本来不要) */
     .history-modal-content {
       background-color: #fefefe;
       margin: 5% auto; /* Adjust margin for more space */
@@ -273,10 +274,7 @@
         -webkit-line-clamp: 3; /* Limit to 3 lines */
         -webkit-box-orient: vertical;
     }
-    /* .history-cell input[type='checkbox'] {
-      margin-right: 3px;
-    } */ /* このスタイルはeditable内のチェックボックスに影響しないように注意 */
-
+    
     /* チェックボックスの改行間隔を狭めるためのスタイル */
     .checkbox-wrapper {
       display: flex;
@@ -311,7 +309,6 @@
         <div id="dateDisplay"></div>
       </div>
       <div class="nav-buttons">
-        <button id="shareBtn" class="nav-btn">Share</button>
         <a href="record.html" class="nav-btn">Record</a>
       </div>
     </div>
@@ -346,17 +343,7 @@
     <div class="grid-container" id="grid"></div>
   </div>
 
-  <div id="shareModal" class="modal">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h2>Share Your Brain Hacker</h2>
-      <p>Copy this link to share your Brain Hacker with others:</p>
-      <input type="text" id="shareLink" class="share-input" readonly>
-      <button id="copyBtn" class="copy-btn">Copy Link</button>
-    </div>
-  </div>
-
-<script>
+  <script>
 // === 日付とタイトル ===
 function getTodayKey() {
   const now = new Date();
@@ -425,7 +412,6 @@ function saveState() {
   };
   
   // Save to localStorage for daily persistence
-  // encodeURIComponentとbtoaを使用してデータを圧縮（既存のindex.html.a.htmlの形式）
   localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(fullState))));
 
   // Add to undo history
@@ -1012,44 +998,6 @@ document.getElementById('alignCenterBtn').addEventListener('click', () => {
     autoSave();
 });
 
-
-// === シェア機能 ===
-const shareModal = document.getElementById("shareModal");
-const shareBtn = document.getElementById("shareBtn");
-const closeShareModalBtn = shareModal.querySelector(".close-btn");
-const shareLinkInput = document.getElementById("shareLink");
-const copyBtn = document.getElementById("copyBtn");
-
-shareBtn.addEventListener("click", () => {
-  saveState(); // 最新の状態を保存してからリンクを生成
-  const currentState = localStorage.getItem(`brainhack-${getTodayKey()}`);
-  if (currentState) {
-    const encodedState = btoa(encodeURIComponent(currentState)); // 圧縮・エンコード済み文字列をさらにBase64エンコード
-    const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedState}`;
-    shareLinkInput.value = shareUrl;
-    shareModal.style.display = "flex";
-  } else {
-    alert("共有するデータがありません。");
-  }
-});
-
-closeShareModalBtn.addEventListener("click", () => {
-  shareModal.style.display = "none";
-});
-
-copyBtn.addEventListener("click", () => {
-  shareLinkInput.select();
-  document.execCommand("copy");
-  alert("リンクがコピーされました！");
-  shareModal.style.display = "none";
-});
-
-window.addEventListener("click", (event) => {
-  if (event.target === shareModal) {
-    shareModal.style.display = "none";
-  }
-});
-
 // === 初期ロード ===
 document.addEventListener("DOMContentLoaded", () => {
   restoreState(); // ページロード時に状態を復元
@@ -1065,27 +1013,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// URLパラメータからの共有データ読み込み
-const urlParams = new URLSearchParams(window.location.search);
-const sharedDataParam = urlParams.get('data');
-if (sharedDataParam) {
-    try {
-        const decodedParam = decodeURIComponent(sharedDataParam); // Base64デコード前のURLエンコードをデコード
-        const decompressed = atob(decodedParam); // Base64デコード
-        const sharedState = JSON.parse(decompressed);
-        restoreState(sharedState); // 共有された状態を復元
-        // 共有された状態を復元した後もチェックボックスリスナーをアタッチ
-        document.querySelectorAll('.editable').forEach(editableDiv => {
-            attachCheckboxListeners(editableDiv);
-        });
-        // 共有された状態を表示した後に、共有モーダルは表示しない。
-        // これはrecord.htmlの機能であり、index.htmlでは不要なはず。
-        // shareModal.style.display = "flex"; // もしこれが原因ならコメントアウトするか削除
-    } catch (e) {
-        console.error("Error processing shared data:", e);
-        alert("共有されたデータの読み込みに失敗しました。");
-    }
-}
 </script>
 </body>
 </html>
