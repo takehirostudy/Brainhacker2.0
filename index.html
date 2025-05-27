@@ -129,13 +129,15 @@
       border: 1px solid #ddd;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      /* 変更点: justify-content と align-items を flex-start に変更 */
+      justify-content: flex-start; 
+      align-items: flex-start;    
       padding: 1px;
       font-size: 1vw;
       background-color: white;
       /* Ensure cells are always positioned based on their grid area */
       position: relative; /* Add relative positioning for consistent behavior */
+      box-sizing: border-box; /* 変更点: box-sizing を追加 */
     }
     
     .cell.selected {
@@ -567,7 +569,7 @@ function restoreState(stateToRestore) {
     
     editable.style.fontSize = data.fontSize || "";
     editable.style.alignItems = data.alignItems || "";
-    editable.style.justifyContent = data.alignItems || ""; // justifyContentとalignItemsが同じになっていたため修正
+    editable.style.justifyContent = data.justifyContent || ""; // justifyContentとalignItemsが同じになっていたため修正
     editable.style.textAlign = data.textAlign || "";
     
     cell.style.backgroundColor = data.bgColor || "";
