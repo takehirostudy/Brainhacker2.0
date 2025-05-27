@@ -273,14 +273,13 @@
       display: block;
     }
     .history-cell .editable {
-        /* Reset any contenteditable specific styles that might interfere with display */
-        all: unset; /* Removes all inherited styles */
+        /* all: unset; を削除し、必要なプロパティを明示的に設定 */
         width: 100%;
         height: 100%;
-        display: flex;
+        display: flex; /* 追加: flexコンテナとして振る舞う */
+        flex-direction: column; /* 追加: 子要素を縦に並べる */
         align-items: flex-start;
         justify-content: flex-start;
-        flex-direction: column;
         font-size: 0.5em; /* 変更点: ここは以前に指定した0.5emのまま */
         text-align: left;
         padding: 0;
@@ -294,6 +293,16 @@
         display: -webkit-box;
         -webkit-line-clamp: 5; /* Limit lines for display */
         -webkit-box-orient: vertical;
+    }
+    /* index.htmlのcheckbox-wrapperスタイルをhistory-cellにも適用 */
+    .history-cell .checkbox-wrapper {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .history-cell .checkbox-wrapper br {
+        display: none; /* history-cell内のbrを非表示にする */
     }
     .history-cell input[type="checkbox"] {
         margin-right: 3px;
@@ -661,11 +670,22 @@
 
             const editableDiv = document.createElement('div');
             editableDiv.classList.add('editable');
-            editableDiv.style.fontSize = cellInfo.fontSize || ''; // ここは元のまま
+            editableDiv.style.fontSize = cellInfo.fontSize || '';
             editableDiv.style.alignItems = cellInfo.alignItems || '';
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
-            editableDiv.innerHTML = cellInfo.html || '';
+            // editableDivのinnerHTMLを直接設定する前に、重複を避けるために既存の内容をクリア
+            editableDiv.innerHTML = ''; 
+            
+            // `tempDiv` を作成し、`cellInfo.html` から内容を一時的に格納
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = cellInfo.html || '';
+
+            // `tempDiv` の子要素を `editableDiv` に直接追加
+            // これにより、保存されたHTMLがeditableDivの直下に追加され、二重の`editable`divが作成されるのを防ぐ
+            while (tempDiv.firstChild) {
+                editableDiv.appendChild(tempDiv.firstChild);
+            }
 
             editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 checkbox.disabled = true;
@@ -677,11 +697,15 @@
             });
 
             const img = document.createElement('img');
-            if (cellInfo.imgSrc) {
+            // 画像データが存在し、かつそれが有効なbase64画像データであれば表示
+            if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
                 img.src = cellInfo.imgSrc;
                 img.style.display = 'block';
+                editableDiv.style.display = 'none'; // 画像がある場合はeditableDivを非表示
             } else {
+                img.src = "";
                 img.style.display = 'none';
+                editableDiv.style.display = 'flex'; // 画像がない場合はeditableDivを表示
             }
             cell.appendChild(editableDiv);
             cell.appendChild(img);
