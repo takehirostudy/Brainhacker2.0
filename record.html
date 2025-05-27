@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      padding: 20px;
+      padding: 15px; /* 上下のパディングを狭める */
       font-family: sans-serif;
       background-color: #f5f5f5;
       color: #333;
@@ -16,26 +16,24 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px; /* マージンを狭める */
     }
     .header h1 {
       margin: 0;
-      font-size: 2em;
+      font-size: 1.8em; /* タイトルを少し小さく */
     }
     .back-btn {
-      padding: 8px 15px;
-      /* Homeボタンの色を青色に変更 */
-      background-color: #4285f4; /* 青色 */
+      padding: 6px 12px; /* パディングを狭める */
+      background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 5px;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px; /* フォントサイズを少し小さく */
       cursor: pointer;
     }
     .back-btn:hover {
-      /* ホバー時の色も調整 */
-      background-color: #3367d6; /* 少し濃い青 */
+      background-color: #3367d6;
     }
 
     .container {
@@ -45,68 +43,69 @@
 
     .record-section {
       background-color: white;
-      padding: 20px;
+      padding: 15px; /* パディングを狭める */
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      margin-bottom: 20px; /* マージンを狭める */
     }
 
     .record-section h2 {
       color: #4285f4;
-      border-bottom: 2px solid #e0e0e0;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0; /* ボーダーを細く */
+      padding-bottom: 8px; /* パディングを狭める */
+      margin-bottom: 15px; /* マージンを狭める */
+      font-size: 1.3em; /* h2を少し小さく */
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 最小幅を狭める */
+      gap: 10px; /* ギャップを狭める */
+      margin-bottom: 15px; /* マージンを狭める */
     }
 
     .summary-item {
       background-color: #e8f0fe;
-      padding: 15px;
+      padding: 10px; /* パディングを狭める */
       border-radius: 5px;
       text-align: center;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      position: relative; /* プログレスバーの親要素とするため */
+      position: relative;
     }
 
     .summary-item h3 {
       margin-top: 0;
       color: #333;
-      font-size: 1.1em;
+      font-size: 1em; /* h3を小さく */
     }
 
     .summary-item .completion-percentage {
-      font-size: 2em;
+      font-size: 1.8em; /* フォントサイズを小さく */
       font-weight: bold;
       color: #4285f4;
-      margin: 5px 0 10px; /* バーとの間隔を調整 */
+      margin: 3px 0 8px; /* マージンを狭める */
     }
     .summary-item .completion-tasks {
-      font-size: 0.9em;
+      font-size: 0.8em; /* フォントサイズを小さく */
       color: #666;
-      margin-top: -5px; /* 上の行との間隔を調整 */
+      margin-top: -5px;
     }
 
     /* プログレスバーのスタイル */
     .progress-bar-container {
-      width: 80%;
-      height: 8px;
+      width: 90%; /* 幅を広げる */
+      height: 6px; /* 高さを狭める */
       background-color: #e0e0e0;
-      border-radius: 4px;
-      margin: 0 auto 10px;
+      border-radius: 3px; /* 角丸を小さく */
+      margin: 0 auto 8px; /* マージンを狭める */
       overflow: hidden;
     }
 
     .progress-bar {
       height: 100%;
-      background-color: #4CAF50; /* 緑色 */
-      width: 0%; /* JavaScriptで設定 */
-      border-radius: 4px;
+      background-color: #4CAF50;
+      width: 0%;
+      border-radius: 3px;
       transition: width 0.5s ease-out;
     }
 
@@ -119,8 +118,8 @@
       background-color: #f9f9f9;
       border: 1px solid #e0e0e0;
       border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 10px;
+      padding: 10px; /* パディングを狭める */
+      margin-bottom: 8px; /* マージンを狭める */
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -134,57 +133,72 @@
 
     .history-date {
       font-weight: bold;
-      font-size: 1.1em;
+      font-size: 1em; /* フォントサイズを小さく */
     }
 
     .history-title {
       flex-grow: 1;
-      margin-left: 20px;
-      font-size: 1em;
+      margin-left: 15px; /* マージンを狭める */
+      font-size: 0.9em; /* フォントサイズを小さく */
       color: #555;
     }
 
     /* Continuous Streaks Section */
     .streaks-section {
       background-color: white;
-      padding: 20px;
+      padding: 15px; /* パディングを狭める */
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      margin-bottom: 20px; /* マージンを狭める */
     }
 
     .streaks-section h2 {
       color: #4285f4;
-      border-bottom: 2px solid #e0e0e0;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0; /* ボーダーを細く */
+      padding-bottom: 8px; /* パディングを狭める */
+      margin-bottom: 15px; /* マージンを狭める */
+      font-size: 1.3em; /* h2を少し小さく */
+    }
+
+    /* 変更点: Continuous Streaksのレイアウトを横並びにする */
+    #continuousStreaksList {
+        display: flex; /* flexboxコンテナにする */
+        flex-wrap: wrap; /* 折り返しを許可 */
+        gap: 10px; /* アイテム間のギャップ */
+        justify-content: flex-start; /* 左から配置 */
+        max-height: 150px; /* 最大高さを設定してスクロールを可能にする */
+        overflow-y: auto; /* 縦スクロールを許可 */
+        padding-right: 10px; /* スクロールバーの幅を考慮 */
     }
 
     .streak-item {
       background-color: #e8f0fe;
-      padding: 10px 15px;
+      padding: 8px 12px; /* パディングを狭める */
       border-radius: 5px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 1.0em;
+      /* flexboxで中央寄せは不要になるため削除 */
+      /* display: flex; */
+      /* align-items: center; */
+      /* justify-content: space-between; */
+      font-size: 0.9em; /* フォントサイズを小さく */
+      white-space: nowrap; /* テキストが途中で改行しないように */
+      flex-shrink: 0; /* 縮まないようにする */
     }
 
     .streak-task-content {
-      flex-grow: 1;
-      margin-right: 10px;
+      /* flex-grow: 1; を削除 */
+      margin-right: 8px; /* マージンを狭める */
       color: #333;
     }
 
+    /* 変更点: 連続達成日数の文字色を青に変更 */
     .streak-days {
       font-weight: bold;
-      color: #d9534f; /* 赤色 */
+      color: #4285f4; /* 青色 */
     }
 
     /* Modal styles */
     .modal {
-      display: none; /* 変更点: 初期状態では非表示にする */
+      display: none;
       position: fixed;
       z-index: 1000;
       left: 0;
@@ -194,16 +208,16 @@
       background-color: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
-      overflow-y: auto; /* Enable scrolling for modal content */
+      overflow-y: auto;
     }
 
     .modal-content {
       background-color: #fefefe;
-      margin: 20px; /* Add margin for spacing from edges */
-      padding: 20px;
+      margin: 15px; /* マージンを狭める */
+      padding: 15px; /* パディングを狭める */
       border-radius: 8px;
       width: 95%;
-      max-width: 900px;
+      max-width: 800px; /* 最大幅を狭める */
       box-shadow: 0 8px 16px rgba(0,0,0,0.25);
       position: relative;
     }
@@ -211,9 +225,9 @@
     .close-button {
       color: #aaa;
       position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 30px;
+      top: 8px; /* 位置を調整 */
+      right: 15px; /* 位置を調整 */
+      font-size: 28px; /* サイズを調整 */
       font-weight: bold;
       cursor: pointer;
     }
@@ -224,17 +238,17 @@
     }
 
     .history-modal-title {
-      font-size: 1.8em;
+      font-size: 1.5em; /* サイズを小さく */
       color: #4285f4;
-      margin-bottom: 15px;
+      margin-bottom: 10px; /* マージンを狭める */
       text-align: center;
     }
 
     .history-modal-date {
-      font-size: 1.1em;
+      font-size: 1em; /* サイズを小さく */
       color: #666;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px; /* マージンを狭める */
     }
 
     .history-grid-display {
@@ -242,13 +256,13 @@
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: 60vh; /* Fixed height for the grid in modal */
-      min-height: 400px;
+      height: 50vh; /* 高さを狭める */
+      min-height: 300px; /* 最小高さを調整 */
       gap: 1px;
       background-color: #ddd;
       border: 1px solid #ccc;
       border-radius: 5px;
-      overflow: auto; /* Allow grid to scroll if content is too large */
+      overflow: auto;
     }
 
     .history-cell {
@@ -258,12 +272,12 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 3px;
+      padding: 2px; /* パディングを狭める */
       box-sizing: border-box;
-      font-size: 0.7em; /* Smaller font size for history view */
+      font-size: 0.6em; /* フォントサイズを小さく */
       word-break: break-word;
       white-space: pre-wrap;
-      overflow: hidden; /* Hide overflow for content */
+      overflow: hidden;
     }
 
     .history-cell img {
@@ -273,39 +287,37 @@
       display: block;
     }
     .history-cell .editable {
-        /* all: unset; を削除し、必要なプロパティを明示的に設定 */
         width: 100%;
         height: 100%;
-        display: flex; /* 追加: flexコンテナとして振る舞う */
-        flex-direction: column; /* 追加: 子要素を縦に並べる */
+        display: flex;
+        flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        font-size: 0.5em; /* 変更点: ここは以前に指定した0.5emのまま */
+        font-size: 1em; /* 親のhistory-cellのfont-sizeに対する相対値 */
         text-align: left;
         padding: 0;
         border: none;
         outline: none;
-        overflow: hidden; /* Hide overflow for content in history */
+        overflow: hidden;
         word-break: break-word;
         white-space: pre-wrap;
-        /* Optional: add ellipsis for very long text */
         text-overflow: ellipsis; 
         display: -webkit-box;
-        -webkit-line-clamp: 5; /* Limit lines for display */
+        -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
     }
-    /* index.htmlのcheckbox-wrapperスタイルをhistory-cellにも適用 */
     .history-cell .checkbox-wrapper {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 2px;
-      line-height: 1.2;
+      margin-bottom: 1px; /* マージンをさらに狭める */
+      line-height: 1.1; /* 行の高さを調整 */
     }
     .history-cell .checkbox-wrapper br {
-        display: none; /* history-cell内のbrを非表示にする */
+        display: none;
     }
     .history-cell input[type="checkbox"] {
-        margin-right: 3px;
+        margin-right: 2px; /* マージンを狭める */
+        transform: scale(0.8); /* チェックボックスを少し小さく */
     }
     .history-cell .completed-text {
         text-decoration: line-through;
@@ -320,7 +332,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Daily Record</h1>
+      <h1>Record</h1>
       <a href="index.html" class="back-btn">Home</a>
     </div>
 
@@ -423,7 +435,7 @@
           const decompressed = decodeURIComponent(atob(compressed));
           return JSON.parse(decompressed);
         } catch (e) {
-          console.error(`Failed to load data for ${dateKey}:`, e); // エラーログを有効化
+          console.error(`Failed to load data for ${dateKey}:`, e);
           return null;
         }
       }
@@ -521,9 +533,13 @@
             data.cells.forEach(cell => {
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = cell.html;
-                tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                    const textSpan = cb.nextElementSibling;
-                    if (textSpan && !textSpan.style.fontWeight.includes("bold")) { // 通常のチェックボックスのみ
+
+                // チェックボックスとそのテキストを抽出
+                tempDiv.querySelectorAll('.checkbox-wrapper').forEach(wrapper => {
+                    const cb = wrapper.querySelector('input[type="checkbox"]');
+                    const textSpan = wrapper.querySelector('.checkbox-text');
+                    
+                    if (cb && textSpan && !textSpan.style.fontWeight.includes("bold")) { // 通常のチェックボックスのみ
                         const taskContent = textSpan.textContent.trim();
                         if (taskContent) { // 空のタスクは無視
                             completedTasksToday[taskContent] = cb.hasAttribute('checked');
@@ -540,7 +556,8 @@
                         const diffTime = Math.abs(date.getTime() - lastDate.getTime());
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                         
-                        if (diffDays === 1) { // 連続している
+                        // 連続している場合 (昨日または今日)
+                        if (diffDays === 1 || (diffDays === 0 && date.toDateString() === lastDate.toDateString())) { 
                             streaks[taskContent].days++;
                             streaks[taskContent].lastCompletedDate = data.date;
                         } else if (diffDays > 1) { // 途切れている
@@ -548,9 +565,8 @@
                             streaks[taskContent].days = 1;
                             streaks[taskContent].lastCompletedDate = data.date;
                         }
-                        // diffDays === 0 は同じ日付で、初回処理済みか、重複データなので何もしない
                     } else {
-                        // 初めて見つかるタスク、または途切れて新規ストリーク開始
+                        // 初めて見つかるタスク
                         streaks[taskContent] = {
                             content: taskContent,
                             days: 1,
@@ -558,11 +574,7 @@
                         };
                     }
                 } else { // そのタスクがその日に完了していない場合
-                    if (streaks[taskContent]) {
-                        const todayDate = new Date(getTodayKey());
-                        const lastCompletedDateInStreak = new Date(streaks[taskContent].lastCompletedDate);
-                        const diffDaysFromLastCompletion = Math.ceil(Math.abs(todayDate.getTime() - lastCompletedDateInStreak.getTime()) / (1000 * 60 * 60 * 24));
-                    }
+                    // ストリークが途切れる可能性があるが、ここでは何もしない（次のループで連続しない場合にリセットされる）
                 }
             }
         }
@@ -576,7 +588,7 @@
             const today = new Date(getTodayKey());
             const diffDays = Math.abs(today.getTime() - lastCompletedDate.getTime()) / (1000 * 60 * 60 * 24);
             // 今日または昨日までに完了しており、ストリークが途切れていないもののみ表示
-            return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1)); // diffDays=0は今日、diffDays=1は昨日
+            return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1));
         }).sort((a,b) => b.days - a.days); // 日数の多い順にソート
 
         if (activeStreaks.length === 0) {
@@ -674,21 +686,20 @@
             editableDiv.style.alignItems = cellInfo.alignItems || '';
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
-            // editableDivのinnerHTMLを直接設定する前に、重複を避けるために既存の内容をクリア
+            
+            // editableDivのinnerHTMLを直接設定する前に、既存の内容をクリア
             editableDiv.innerHTML = ''; 
             
-            // `tempDiv` を作成し、`cellInfo.html` から内容を一時的に格納
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = cellInfo.html || '';
 
-            // `tempDiv` の子要素を `editableDiv` に直接追加
-            // これにより、保存されたHTMLがeditableDivの直下に追加され、二重の`editable`divが作成されるのを防ぐ
+            // tempDiv の子要素を editableDiv に直接追加
             while (tempDiv.firstChild) {
                 editableDiv.appendChild(tempDiv.firstChild);
             }
 
             editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.disabled = true;
+                checkbox.disabled = true; // モーダル内のチェックボックスは無効化
                 const textSpan = checkbox.nextElementSibling;
                 if (textSpan) {
                     textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
@@ -710,6 +721,7 @@
             cell.appendChild(editableDiv);
             cell.appendChild(img);
           } else {
+            // セル情報がない場合は、空のeditableDivとimgを作成
             const editableDiv = document.createElement('div');
             editableDiv.classList.add('editable');
             editableDiv.innerHTML = '';
@@ -739,7 +751,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       updateSummary();
       populateHistoryList();
-      calculateContinuousStreaks(); // 新しいストリーク計算関数を呼び出す
+      calculateContinuousStreaks();
     });
 
     // Share link processing (if accessed via a share URL)
@@ -749,10 +761,10 @@
         try {
             const decodedData = decodeURIComponent(atob(sharedDataParam));
             const sharedState = JSON.parse(decodedData);
-            displayHistoryModal(sharedState); // 変更なし: ここは共有データがあれば呼び出される
+            displayHistoryModal(sharedState);
         } catch (e) {
-            console.error("Error processing shared data:", e); // エラーログを有効化
-            // alert("共有されたデータの読み込みに失敗しました。"); // ユーザーへのアラートを有効にする場合はコメントアウト解除
+            console.error("Error processing shared data:", e);
+            // alert("共有されたデータの読み込みに失敗しました。");
         }
     }
   </script>
