@@ -1,399 +1,748 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brain Hacker Record</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: sans-serif;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .title-area {
-            flex-grow: 1;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .nav-btn {
-            padding: 8px 15px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .record-list {
-            list-style: none;
-            padding: 0;
-        }
-        .record-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            margin-bottom: 5px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .record-item span {
-            font-weight: bold;
-        }
-        .record-item button {
-            padding: 5px 10px;
-            background-color: #4285f4;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        /* History Modal specific styles */
-        .history-modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1000; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
-            display: flex; /* Use flexbox for centering */
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-        }
-        .history-modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* Adjust margin for more space */
-            padding: 20px;
-            border-radius: 5px;
-            width: 90%; /* Wider for better content display */
-            max-width: 800px; /* Max width for readability */
-            height: 80%; /* Adjust height */
-            overflow-y: auto; /* Enable scrolling for content */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            position: relative; /* For close button positioning */
-        }
-        .close-button {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute; /* Position relative to modal content */
-            top: 10px;
-            right: 20px;
-            cursor: pointer;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .history-modal-header {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .history-modal-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .history-modal-date {
-            font-size: 1.1em;
-            color: #555;
-        }
-        .history-grid-display {
-            display: grid;
-            grid-template-columns: repeat(20, 1fr);
-            grid-template-rows: repeat(16, 1fr);
-            width: 100%;
-            height: auto; /* Adjust height based on content */
-            min-height: 400px; /* Minimum height for visibility */
-            gap: 1px;
-            background-color: #eee;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            padding: 2px;
-            box-sizing: border-box; /* Include padding and border in the element's total width and height */
-        }
-        .history-cell {
-            border: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* コンテンツが上に詰まるように */
-            align-items: flex-start;   /* コンテンツが左に詰まるように */
-            padding: 1px;
-            font-size: 0.8vw; /* 基本フォントサイズ（history-cell .editable で上書き） */
-            background-color: white;
-            overflow: hidden; /* Hide overflow content */
-            text-align: left;
-            word-break: break-word;
-            white-space: pre-wrap;
-        }
-        .history-cell .editable {
-            all: unset; /* Reset all editable styles for static display */
-            font-size: 0.5vw; /* ★ここを0.5vwに変更 */
-            padding: 2px;
-            color: #333;
-            overflow: hidden; /* Hide overflow for static display */
-            text-overflow: ellipsis; /* Add ellipsis for overflowing text */
-            display: -webkit-box;
-            -webkit-line-clamp: 3; /* Limit to 3 lines */
-            -webkit-box-orient: vertical;
-            width: 100%; /* editableがセル内で全幅を占めるように */
-            height: 100%; /* editableがセル内で全高を占めるように */
-            flex-shrink: 0; /* 縮小させない */
-            box-sizing: border-box; /* パディングを含めて幅を計算 */
-        }
-        .history-cell img {
-            width: 100%;
-            height: auto; /* 画像の高さは自動調整 */
-            max-height: 100%; /* セルからはみ出さないように最大高さを制限 */
-            object-fit: contain;
-            display: block;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Hacker Record</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    .back-btn {
+      padding: 8px 15px;
+      /* Homeボタンの色を青色に変更 */
+      background-color: #4285f4; /* 青色 */
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      /* ホバー時の色も調整 */
+      background-color: #3367d6; /* 少し濃い青 */
+    }
 
-        /* チェックボックスの改行間隔を狭めるためのスタイル */
-        .checkbox-wrapper {
-            display: flex;
-            align-items: flex-start; /* チェックボックスとテキストを上揃え */
-            margin-bottom: 2px; /* 各チェックボックス行の下マージンを狭める */
-            line-height: 1.2; /* 行の高さを調整 */
-        }
-        /* editable内のbrタグが不要になるように、margin-bottomで制御 */
-        .editable br {
-            display: none;
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        /* チェックボックスとテキストのスタイル */
-        .checkbox-text {
-            flex-grow: 1; /* テキストが残りスペースを埋める */
-            word-break: break-all; /* 長い単語でも折り返す */
-            white-space: pre-wrap; /* 改行を保持 */
-            margin-left: 3px; /* チェックボックスとの間隔 */
-        }
+    .record-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
 
-        /* チェックされたテキストのスタイル */
-        .checkbox-text.checked-item {
-            text-decoration: line-through;
-            color: #888;
-        }
-    </style>
+    .record-section h2 {
+      color: #4285f4;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .summary-item {
+      background-color: #e8f0fe;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative; /* プログレスバーの親要素とするため */
+    }
+
+    .summary-item h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.1em;
+    }
+
+    .summary-item .completion-percentage {
+      font-size: 2em;
+      font-weight: bold;
+      color: #4285f4;
+      margin: 5px 0 10px; /* バーとの間隔を調整 */
+    }
+    .summary-item .completion-tasks {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: -5px; /* 上の行との間隔を調整 */
+    }
+
+    /* プログレスバーのスタイル */
+    .progress-bar-container {
+      width: 80%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 0 auto 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #4CAF50; /* 緑色 */
+      width: 0%; /* JavaScriptで設定 */
+      border-radius: 4px;
+      transition: width 0.5s ease-out;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .history-item {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .history-item:hover {
+      background-color: #eef;
+    }
+
+    .history-date {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .history-title {
+      flex-grow: 1;
+      margin-left: 20px;
+      font-size: 1em;
+      color: #555;
+    }
+
+    /* Continuous Streaks Section */
+    .streaks-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+
+    .streaks-section h2 {
+      color: #4285f4;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    .streak-item {
+      background-color: #e8f0fe;
+      padding: 10px 15px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.0em;
+    }
+
+    .streak-task-content {
+      flex-grow: 1;
+      margin-right: 10px;
+      color: #333;
+    }
+
+    .streak-days {
+      font-weight: bold;
+      color: #d9534f; /* 赤色 */
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto; /* Enable scrolling for modal content */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 20px; /* Add margin for spacing from edges */
+      padding: 20px;
+      border-radius: 8px;
+      width: 95%;
+      max-width: 900px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      position: relative;
+    }
+
+    .close-button {
+      color: #aaa;
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 30px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close-button:hover,
+    .close-button:focus {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .history-modal-title {
+      font-size: 1.8em;
+      color: #4285f4;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .history-modal-date {
+      font-size: 1.1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .history-grid-display {
+      display: grid;
+      grid-template-columns: repeat(20, 1fr);
+      grid-template-rows: repeat(16, 1fr);
+      width: 100%;
+      height: 60vh; /* Fixed height for the grid in modal */
+      min-height: 400px;
+      gap: 1px;
+      background-color: #ddd;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: auto; /* Allow grid to scroll if content is too large */
+    }
+
+    .history-cell {
+      background-color: white;
+      border: 1px solid #eee;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 3px;
+      box-sizing: border-box;
+      font-size: 0.7em; /* Smaller font size for history view */
+      word-break: break-word;
+      white-space: pre-wrap;
+      overflow: hidden; /* Hide overflow for content */
+    }
+
+    .history-cell img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .history-cell .editable {
+        /* Reset any contenteditable specific styles that might interfere with display */
+        all: unset; /* Removes all inherited styles */
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        font-size: 0.5em; /* 変更点: ここを0.5emに変更しました */
+        text-align: left;
+        padding: 0;
+        border: none;
+        outline: none;
+        overflow: hidden; /* Hide overflow for content in history */
+        word-break: break-word;
+        white-space: pre-wrap;
+        /* Optional: add ellipsis for very long text */
+        text-overflow: ellipsis; 
+        display: -webkit-box;
+        -webkit-line-clamp: 5; /* Limit lines for display */
+        -webkit-box-orient: vertical;
+    }
+    .history-cell input[type="checkbox"] {
+        margin-right: 3px;
+    }
+    .history-cell .completed-text {
+        text-decoration: line-through;
+        color: #888;
+    }
+
+    .history-cell.hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="title-area">
-                <h1>Brain Hacker Record</h1>
-            </div>
-            <div class="nav-buttons">
-                <a href="index.html" class="nav-btn">Home</a>
-            </div>
-        </div>
-        
-        <ul id="recordList" class="record-list">
-            </ul>
+  <div class="container">
+    <div class="header">
+      <h1>Daily Record</h1>
+      <a href="index.html" class="back-btn">Home</a>
     </div>
 
-    <div id="historyModal" class="history-modal">
-        <div class="history-modal-content">
-            <span class="close-button">&times;</span>
-            <div class="history-modal-header">
-                <div id="historyModalTitle" class="history-modal-title"></div>
-                <div id="historyModalDate" class="history-modal-date"></div>
-            </div>
-            <div id="historyGridDisplay" class="history-grid-display">
-                </div>
+    <div class="record-section">
+      <h2>Today's Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <h3>Today's Completion</h3>
+          <p class="completion-percentage" id="todayCompletion">0%</p>
+          <p class="completion-tasks" id="todayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="todayProgressBar"></div>
+          </div>
+        </div>
+        <div class="summary-item">
+          <h3>Yesterday's Completion</h3>
+          <p class="completion-percentage" id="yesterdayCompletion">0%</p>
+          <p class="completion-tasks" id="yesterdayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="yesterdayProgressBar"></div>
+          </div>
+        </div>
+        <div class="summary-item">
+          <h3>Average Completion (Last 7 Days)</h3>
+          <p class="completion-percentage" id="avgCompletion7Days">0%</p>
+          <p class="completion-tasks">&nbsp;</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="avg7DaysProgressBar"></div>
+          </div>
+        </div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const recordList = document.getElementById("recordList");
-            const historyModal = document.getElementById("historyModal");
-            const closeButton = document.querySelector(".close-button");
-            const historyModalTitle = document.getElementById("historyModalTitle");
-            const historyModalDate = document.getElementById("historyModalDate");
-            const historyGridDisplay = document.getElementById("historyGridDisplay");
+    <div class="streaks-section">
+      <h2>Continuous Streaks</h2>
+      <div id="continuousStreaksList">
+        <div class="streak-item">
+          <span class="streak-task-content">No active streaks found.</span>
+          <span class="streak-days"></span>
+        </div>
+      </div>
+    </div>
 
-            // LocalStorageからすべてのBrain Hackerレコードを取得
-            const records = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith("brainhack-")) {
-                    const date = key.replace("brainhack-", "");
-                    let data = null;
-                    try {
-                        const compressed = localStorage.getItem(key);
-                        if (compressed) {
-                             // Data might be from index.html (encoded) or directly stored (if not re-encoded)
-                            let jsonString;
-                            try {
-                                jsonString = decodeURIComponent(atob(compressed));
-                            } catch (e) {
-                                // If base64 decoding fails, try direct JSON parsing
-                                jsonString = compressed;
-                            }
-                            data = JSON.parse(jsonString);
-                        }
-                    } catch (e) {
-                        console.error(`Error parsing record for key ${key}:`, e);
-                        data = { date: date, title: "Corrupted Data" }; // 破損データを表示
-                    }
-                    if (data) {
-                        records.push({
-                            key: key,
-                            date: date,
-                            title: data.title || "No Title",
-                            fullState: data
-                        });
-                    }
-                }
-            }
+    <div class="record-section">
+      <h2>History</h2>
+      <ul id="historyList" class="history-list">
+        </ul>
+    </div>
+  </div>
 
-            // 日付でソート（新しい順）
-            records.sort((a, b) => new Date(b.date) - new Date(a.date));
+  <div id="historyDetailModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="closeModal">&times;</span>
+      <h2 id="modalTitle" class="history-modal-title"></h2>
+      <p id="modalDate" class="history-modal-date"></p>
+      <div id="historyGridDisplay" class="history-grid-display">
+        </div>
+    </div>
+  </div>
 
-            // リストに表示
-            records.forEach(record => {
-                const listItem = document.createElement("li");
-                listItem.className = "record-item";
-                listItem.innerHTML = `
-                    <span>${record.date} - ${record.title}</span>
-                    <button data-key="${record.key}">View</button>
-                `;
-                recordList.appendChild(listItem);
-            });
+  <script>
+    // --- Utility Functions ---
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
 
-            // Viewボタンのクリックイベント
-            recordList.addEventListener("click", (event) => {
-                if (event.target.tagName === "BUTTON") {
-                    const key = event.target.dataset.key;
-                    const record = records.find(r => r.key === key);
-                    if (record && record.fullState) {
-                        displayHistory(record.fullState);
-                        historyModal.style.display = "flex"; // モーダルを表示
-                    } else {
-                        alert("データが破損しているか、見つかりませんでした。");
-                    }
-                }
-            });
+    function getDateKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
 
-            // 閉じるボタンのクリックイベント
-            closeButton.addEventListener("click", () => {
-                historyModal.style.display = "none";
-            });
+    function calculateCompletion(cells) {
+      if (!cells || cells.length === 0) return { percentage: 0, completedCount: 0, totalCount: 0 };
 
-            // モーダルの外側をクリックで閉じる
-            window.addEventListener("click", (event) => {
-                if (event.target === historyModal) {
-                    historyModal.style.display = "none";
-                }
-            });
+      let totalCheckboxes = 0;
+      let completedCheckboxes = 0;
 
-            function displayHistory(fullState) {
-                historyModalTitle.textContent = fullState.title || "No Title";
-                historyModalDate.textContent = fullState.date;
-                historyGridDisplay.innerHTML = ""; // 既存のグリッドをクリア
+      cells.forEach(cell => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = cell.html;
 
-                // グリッドのセルを生成
-                for (let row = 0; row < 16; row++) {
-                    for (let col = 0; col < 20; col++) {
-                        const cell = document.createElement("div");
-                        cell.className = "history-cell";
-                        cell.dataset.row = row;
-                        cell.dataset.col = col;
-                        
-                        const editable = document.createElement("div");
-                        editable.className = "editable";
-                        editable.setAttribute("contenteditable", "false"); // 履歴なので編集不可
-                        
-                        const img = document.createElement("img");
-                        img.style.display = "none"; // Initially hidden
+        const checkboxes = tempDiv.querySelectorAll('input[type="checkbox"]');
+        totalCheckboxes += checkboxes.length;
+        checkboxes.forEach(cb => {
+          if (cb.hasAttribute('checked')) {
+            completedCheckboxes++;
+          }
+        });
+      });
 
-                        cell.appendChild(editable);
-                        cell.appendChild(img);
-                        historyGridDisplay.appendChild(cell);
-                    }
-                }
+      const percentage = totalCheckboxes > 0 ? (completedCheckboxes / totalCheckboxes * 100).toFixed(1) : 0;
+      return { percentage: parseFloat(percentage), completedCount: completedCheckboxes, totalCount: totalCheckboxes };
+    }
 
-                // 状態を適用
-                fullState.cells.forEach(data => {
-                    const cell = historyGridDisplay.querySelector(`.history-cell[data-row='${data.row}'][data-col='${data.col}']`);
-                    if (cell) {
-                        const editable = cell.querySelector(".editable");
-                        const img = cell.querySelector("img");
+    // --- Data Loading and Processing ---
+    function loadBrainhackData(dateKey) {
+      const compressed = localStorage.getItem(`brainhack-${dateKey}`);
+      if (compressed) {
+        try {
+          const decompressed = decodeURIComponent(atob(compressed));
+          return JSON.parse(decompressed);
+        } catch (e) {
+          // console.error(`Failed to load data for ${dateKey}:`, e); // エラーログを有効にする場合はコメントアウト解除
+          return null;
+        }
+      }
+      return null;
+    }
 
-                        if (editable) {
-                            editable.innerHTML = typeof data.html === 'string' ? data.html : "";
-                            editable.style.fontSize = data.fontSize || "";
-                            editable.style.alignItems = data.alignItems || "";
-                            editable.style.justifyContent = data.justifyContent || "";
-                            editable.style.textAlign = data.textAlign || "";
-                            
-                            // チェックボックスのリスナーをアタッチ
-                            attachCheckboxListeners(editable);
-                        }
-                        
-                        cell.style.backgroundColor = data.bgColor || "";
-                        cell.style.display = data.display || "flex";
-                        cell.style.gridRow = data.gridRow || "";
-                        cell.style.gridColumn = data.gridColumn || "";
+    function getAllBrainhackData() {
+      const allData = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('brainhack-')) {
+          const dateKey = key.replace('brainhack-', '');
+          const data = loadBrainhackData(dateKey);
+          if (data) {
+            allData.push(data);
+          }
+        }
+      }
+      allData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return allData;
+    }
 
-                        if (img && data.imgSrc && data.imgSrc.startsWith("data:image/")) {
-                            img.src = data.imgSrc;
-                            img.style.display = 'block';
-                        } else if (img) {
-                            img.src = "";
-                            img.style.display = 'none';
-                        }
-                    }
-                });
-            }
+    function updateSummary() {
+      const todayData = loadBrainhackData(getTodayKey());
+      const todayStats = todayData ? calculateCompletion(todayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
+      document.getElementById('todayCompletion').textContent = `${todayStats.percentage}%`;
+      document.getElementById('todayTasks').textContent = `${todayStats.completedCount}/${todayStats.totalCount} tasks completed`;
+      document.getElementById('todayProgressBar').style.width = `${todayStats.percentage}%`;
 
-            // チェックボックスのイベントリスナーをアタッチする共通関数（index.htmlと同じ）
-            function attachCheckboxListeners(containerElement) {
-                if (!containerElement) return;
-                containerElement.querySelectorAll("input[type='checkbox']").forEach(cb => {
-                    // 既存のリスナーを削除 (二重登録防止)
-                    cb.removeEventListener("change", handleCheckboxChange);
-                    // 新しいリスナーを追加
-                    cb.addEventListener("change", handleCheckboxChange);
+      // Yesterday's Completion
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayKey = getDateKey(yesterday);
+      const yesterdayData = loadBrainhackData(yesterdayKey);
+      const yesterdayStats = yesterdayData ? calculateCompletion(yesterdayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
+      document.getElementById('yesterdayCompletion').textContent = `${yesterdayStats.percentage}%`;
+      document.getElementById('yesterdayTasks').textContent = `${yesterdayStats.completedCount}/${yesterdayStats.totalCount} tasks completed`;
+      document.getElementById('yesterdayProgressBar').style.width = `${yesterdayStats.percentage}%`;
 
-                    // ロード時に初期状態を適用
+      // Average Completion (Last 7 Days)
+      let total7DaysCompletion = 0;
+      let daysCount = 0;
+      for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateKey = getDateKey(date);
+        const data = loadBrainhackData(dateKey);
+        if (data) {
+          total7DaysCompletion += calculateCompletion(data.cells).percentage;
+          daysCount++;
+        }
+      }
+      const avg7Days = daysCount > 0 ? (total7DaysCompletion / daysCount).toFixed(1) : 0;
+      document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
+      document.getElementById('avg7DaysProgressBar').style.width = `${avg7Days}%`;
+
+      // Total Completed Tasks (Today) は削除されたため、ここでの更新は不要
+      // document.getElementById('totalCompletedTasks').textContent = todayStats.completedCount;
+    }
+
+    function populateHistoryList() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      const allData = getAllBrainhackData();
+
+      allData.forEach(data => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('history-item');
+        listItem.dataset.date = data.date;
+
+        const dateSpan = document.createElement('span');
+        dateSpan.classList.add('history-date');
+        dateSpan.textContent = data.date;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.classList.add('history-title');
+        titleSpan.textContent = data.title || '（タイトルなし）';
+
+        listItem.append(dateSpan, titleSpan);
+        historyList.appendChild(listItem);
+
+        listItem.addEventListener('click', () => displayHistoryModal(data));
+      });
+    }
+
+    // --- Continuous Streaks Calculation ---
+    function calculateContinuousStreaks() {
+        const allData = getAllBrainhackData(); // データは日付降順（新しい順）で取得される
+        const streaks = {}; // { taskId: { content: "task text", days: 0, lastCompletedDate: "YYYY-MM-DD" } }
+
+        for (const data of allData) {
+            const date = new Date(data.date);
+            
+            // その日の通常のチェックボックスタスクの完了状態を抽出
+            const completedTasksToday = {}; // { taskContent: true/false }
+            data.cells.forEach(cell => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = cell.html;
+                tempDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                     const textSpan = cb.nextElementSibling;
-                    if (textSpan) {
-                        textSpan.classList.toggle('checked-item', cb.checked);
+                    if (textSpan && !textSpan.style.fontWeight.includes("bold")) { // 通常のチェックボックスのみ
+                        const taskContent = textSpan.textContent.trim();
+                        if (taskContent) { // 空のタスクは無視
+                            completedTasksToday[taskContent] = cb.hasAttribute('checked');
+                        }
                     }
                 });
-            }
+            });
 
-            // チェックボックス変更時のハンドラ（ここでは保存は不要、表示のみ）
-            function handleCheckboxChange(event) {
-                const checkbox = event.target;
+            // ストリークの更新ロジック
+            for (const taskContent in completedTasksToday) {
+                if (completedTasksToday[taskContent]) { // そのタスクがその日に完了している場合
+                    if (streaks[taskContent]) {
+                        const lastDate = new Date(streaks[taskContent].lastCompletedDate);
+                        const diffTime = Math.abs(date.getTime() - lastDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        if (diffDays === 1) { // 連続している
+                            streaks[taskContent].days++;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        } else if (diffDays > 1) { // 途切れている
+                            // 新しいストリークを開始（1日目として）
+                            streaks[taskContent].days = 1;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        }
+                        // diffDays === 0 は同じ日付で、初回処理済みか、重複データなので何もしない
+                    } else {
+                        // 初めて見つかるタスク、または途切れて新規ストリーク開始
+                        streaks[taskContent] = {
+                            content: taskContent,
+                            days: 1,
+                            lastCompletedDate: data.date
+                        };
+                    }
+                } else { // そのタスクがその日に完了していない場合
+                    if (streaks[taskContent]) {
+                        // ストリーク中のタスクが未完了の場合、ストリークをリセットまたは終了
+                        // ただし、今日は未完了だが過去にはストリークしていたタスクは、そのまま残す
+                        // （ここでは「今日のストリーク継続」に限定するため、今日のデータが最も新しい場合のみ考慮）
+                        const todayDate = new Date(getTodayKey());
+                        const lastCompletedDateInStreak = new Date(streaks[taskContent].lastCompletedDate);
+                        const diffDaysFromLastCompletion = Math.ceil(Math.abs(todayDate.getTime() - lastCompletedDateInStreak.getTime()) / (1000 * 60 * 60 * 24));
+                        
+                        // もし今日のデータが処理中で、かつ昨日の完了分から連続性が途切れた場合は、ストリークをリセット
+                        // (ただし、現在のallDataは降順なので、ここでのリセットは不要。
+                        //  各タスクのストリークは、完了した日を起点に遡って連続性を確認していくのが正しい)
+                        // ここでは、単純に完了しなかった日はカウントせず、連続している日数を数える方針で進めます。
+                        // よって、この`else`ブロックでは特に何もしません。
+                    }
+                }
+            }
+        }
+
+        // 表示用の処理
+        const continuousStreaksList = document.getElementById('continuousStreaksList');
+        continuousStreaksList.innerHTML = ''; // Clear previous entries
+
+        const activeStreaks = Object.values(streaks).filter(s => {
+            const lastCompletedDate = new Date(s.lastCompletedDate);
+            const today = new Date(getTodayKey());
+            const diffDays = Math.abs(today.getTime() - lastCompletedDate.getTime()) / (1000 * 60 * 60 * 24);
+            // 今日または昨日までに完了しており、ストリークが途切れていないもののみ表示
+            return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1)); // diffDays=0は今日、diffDays=1は昨日
+        }).sort((a,b) => b.days - a.days); // 日数の多い順にソート
+
+        if (activeStreaks.length === 0) {
+            continuousStreaksList.innerHTML = `
+                <div class="streak-item">
+                    <span class="streak-task-content">No active streaks found.</span>
+                    <span class="streak-days"></span>
+                </div>
+            `;
+        } else {
+            activeStreaks.forEach(streak => {
+                const item = document.createElement('div');
+                item.classList.add('streak-item');
+                item.innerHTML = `
+                    <span class="streak-task-content">${streak.content}</span>
+                    <span class="streak-days">${streak.days} days</span>
+                `;
+                continuousStreaksList.appendChild(item);
+            });
+        }
+    }
+
+
+    // --- Modal Functions ---
+    const historyDetailModal = document.getElementById('historyDetailModal');
+    const closeModalButton = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDate = document.getElementById('modalDate');
+    const historyGridDisplay = document.getElementById('historyGridDisplay');
+
+    function displayHistoryModal(data) {
+      modalTitle.textContent = data.title || '（タイトルなし）';
+      modalDate.textContent = data.date;
+      historyGridDisplay.innerHTML = '';
+
+      const ROWS = 16;
+      const COLS = 20;
+      const gridCells = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
+
+      data.cells.forEach(cellData => {
+        const r = parseInt(cellData.row);
+        const c = parseInt(cellData.col);
+        if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+          gridCells[r][c] = {
+            html: cellData.html,
+            fontSize: cellData.fontSize,
+            bgColor: cellData.bgColor,
+            display: cellData.display,
+            gridRow: cellData.gridRow,
+            gridColumn: cellData.gridColumn,
+            imgSrc: cellData.imgSrc,
+            alignItems: cellData.alignItems,
+            justifyContent: cellData.justifyContent,
+            textAlign: cellData.textAlign,
+            isMergedBase: true
+          };
+          if (cellData.gridRow && cellData.gridColumn && cellData.display !== 'none') {
+            const rowSpanMatch = cellData.gridRow.match(/span (\d+)/);
+            const colSpanMatch = cellData.gridColumn.match(/span (\d+)/);
+            const rowSpan = rowSpanMatch ? parseInt(rowSpanMatch[1]) : 1;
+            const colSpan = colSpanMatch ? parseInt(colSpanMatch[1]) : 1;
+
+            for (let i = r; i < r + rowSpan; i++) {
+              for (let j = c; j < c + colSpan; j++) {
+                if (i === r && j === c) continue;
+                if (i >= 0 && i < ROWS && j >= 0 && j < COLS) {
+                  gridCells[i][j] = { isHidden: true };
+                }
+              }
+            }
+          }
+        }
+      });
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement('div');
+          cell.classList.add('history-cell');
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          const cellInfo = gridCells[r][c];
+
+          if (cellInfo && cellInfo.isHidden) {
+            cell.classList.add('hidden');
+          } else if (cellInfo) {
+            cell.style.backgroundColor = cellInfo.bgColor || '';
+            cell.style.display = cellInfo.display || 'flex';
+            cell.style.gridRow = cellInfo.gridRow || '';
+            cell.style.gridColumn = cellInfo.gridColumn || '';
+
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable');
+            editableDiv.style.fontSize = cellInfo.fontSize || ''; // ここは元のまま
+            editableDiv.style.alignItems = cellInfo.alignItems || '';
+            editableDiv.style.justifyContent = cellInfo.justifyContent || '';
+            editableDiv.style.textAlign = cellInfo.textAlign || '';
+            editableDiv.innerHTML = cellInfo.html || '';
+
+            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true;
                 const textSpan = checkbox.nextElementSibling;
                 if (textSpan) {
-                    textSpan.classList.toggle('checked-item', checkbox.checked);
+                    textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
+                    textSpan.style.color = checkbox.hasAttribute('checked') ? '#888' : '';
                 }
-                // record.htmlでは保存は行わない
+            });
+
+            const img = document.createElement('img');
+            if (cellInfo.imgSrc) {
+                img.src = cellInfo.imgSrc;
+                img.style.display = 'block';
+            } else {
+                img.style.display = 'none';
             }
-        });
-    </script>
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
+          } else {
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable');
+            editableDiv.innerHTML = '';
+            const img = document.createElement('img');
+            img.style.display = 'none';
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
+          }
+          historyGridDisplay.appendChild(cell);
+        }
+      }
+
+      historyDetailModal.style.display = 'flex';
+    }
+
+    closeModalButton.addEventListener('click', () => {
+      historyDetailModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === historyDetailModal) {
+        historyDetailModal.style.display = 'none';
+      }
+    });
+
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSummary();
+      populateHistoryList();
+      calculateContinuousStreaks(); // 新しいストリーク計算関数を呼び出す
+    });
+
+    // Share link processing (if accessed via a share URL)
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedDataParam = urlParams.get('data');
+    if (sharedDataParam) {
+        try {
+            const decodedData = decodeURIComponent(atob(sharedDataParam));
+            const sharedState = JSON.parse(decodedData);
+            displayHistoryModal(sharedState);
+        } catch (e) {
+            // console.error("Error processing shared data:", e); // エラーログを有効にする場合はコメントアウト解除
+            // alert("共有されたデータの読み込みに失敗しました。"); // ユーザーへのアラートを有効にする場合はコメントアウト解除
+        }
+    }
+  </script>
 </body>
 </html>
