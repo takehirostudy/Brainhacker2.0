@@ -234,7 +234,7 @@
   margin-bottom: 2px;
   line-height: 1.2;
   width: 100%; 
-  clear: both; 
+  clear: both;
 }
     }
     /* editable内のbrタグが不要になるように、margin-bottomで制御 */
@@ -1025,14 +1025,34 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
   if (confirm("選択したセルの内容を削除しますか？")) {
     selectedCells.forEach(cell => {
       const editable = cell.querySelector(".editable");
-      const img = cell.querySelector("img"); // 修正箇所
+      const img = cell.querySelector("img");
       if (editable) editable.innerHTML = "";
       if (img) {
         img.src = "";
         img.style.display = "none";
       }
-      cell.style.backgroundColor = ""; // 背景色もリセット
-      // 結合されたセルだった場合、分割する
+      cell.style.backgroundColor = "";
+      
+      // 結合されたセルだった場合の処理
+      const rowSpan = parseInt(cell.style.gridRow.replace("span ", "") || "1");
+      const colSpan = parseInt(cell.style.gridColumn.replace("span ", "") || "1");
+      
+      if (rowSpan > 1 || colSpan > 1) {
+        // 結合されたセルの場合、関連する隠れたセルを表示に戻す
+        const startRow = parseInt(cell.dataset.row);
+        const startCol = parseInt(cell.dataset.col);
+        
+        for (let r = startRow; r < startRow + rowSpan; r++) {
+          for (let c = startCol; c < startCol + colSpan; c++) {
+            const relatedCell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+            if (relatedCell && relatedCell !== cell) {
+              relatedCell.style.display = "flex";
+            }
+          }
+        }
+      }
+      
+      // セルの結合スタイルをリセット
       cell.style.gridRow = "";
       cell.style.gridColumn = "";
       cell.style.display = "flex";
