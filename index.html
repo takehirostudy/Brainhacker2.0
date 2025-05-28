@@ -154,15 +154,15 @@
       display: flex;
       align-items: flex-start;
       justify-content: flex-start;
-      flex-direction: column;
+      flex-direction: column; /* Changed to column to stack inline elements like .checkbox-wrapper */
       font-size: 1vw;
       text-align: left;
       padding: 2px;
       border: none;
       outline: none;
       overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
+      white-space: pre-wrap; /* Preserve whitespace and allow wrapping */
+      word-break: break-word; /* Break long words */
     }
 
     .cell img {
@@ -228,29 +228,34 @@
     }
 
     /* チェックボックスの改行間隔を狭めるためのスタイル */
+    /* ここから修正されたCSS */
     .checkbox-wrapper {
-  display: flex;
-  align-items: center;
-  margin-bottom: 2px;
-  line-height: 1.5;
-  width: 100%;
-}
+      display: flex; /* Ensures checkbox and text are on the same line */
+      align-items: flex-start; /* Aligns checkbox and text at the top*/
+      margin-bottom: 2px;
+      line-height: 1.5;
+      width: 100%; /* Ensures the wrapper takes full width*/
+      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    }
 
-.checkbox-wrapper input[type="checkbox"] {
-  margin-right: 5px;
-  margin-top: 2px;
-}
+    .checkbox-wrapper input[type="checkbox"] {
+      margin-right: 5px;
+      margin-top: 2px; /* Adjust as needed for vertical alignment*/
+      flex-shrink: 0; /* Prevent checkbox from shrinking*/
+    }
 
-.checkbox-text {
-  flex-grow: 1;
-  word-break: break-word;
-  white-space: pre-wrap;
-}
+    .checkbox-text {
+      flex-grow: 1; /* Allows text to take up remaining space*/
+      word-break: break-word;
+      white-space: pre-wrap;
+      min-width: 0; /* Allows text to shrink within the flex container*/
+    }
 
-.checkbox-text.checked-item {
-  text-decoration: line-through;
-  color: #888;
-}
+    .checkbox-text.checked-item {
+      text-decoration: line-through;
+      color: #888;
+    }
+    /* ここまで修正されたCSS */
 
   </style>
 </head>
@@ -829,10 +834,12 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
         if (range && editable.contains(range.commonAncestorContainer)) {
             range.deleteContents();
             range.insertNode(checkboxWrapper);
-            range.setStart(textSpan, 1);
-            range.collapse(true);
+            // 新しいRangeを作成し、textSpanの末尾にカーソルを移動
+            const newRange = document.createRange();
+            newRange.setStart(textSpan, 1);
+            newRange.collapse(true);
             selection.removeAllRanges();
-            selection.addRange(newRange); // newRange ではなく range を使う
+            selection.addRange(newRange);
         } else {
             editable.appendChild(checkboxWrapper);
             const newRange = document.createRange();
@@ -877,10 +884,11 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
             range.deleteContents();
             range.insertNode(checkboxWrapper);
 
-            range.setStart(textSpan, 1);
-            range.collapse(true);
+            const newRange = document.createRange(); // 新しいRangeを作成
+            newRange.setStart(textSpan, 1);
+            newRange.collapse(true);
             selection.removeAllRanges();
-            selection.addRange(newRange); // newRange ではなく range を使う
+            selection.addRange(newRange); // newRange を使う
         } else {
             editable.appendChild(checkboxWrapper);
             const newRange = document.createRange();
