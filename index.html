@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Brain Hacker</title>
+  <title>Brain Hacker Record</title>
   <style>
     /* CSSここから */
     body {
@@ -11,31 +11,31 @@
       padding: 15px;
       font-family: sans-serif;
       background-color: #f5f5f5;
+      color: #333;
     }
-    
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
     }
-    
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      min-height: 40px; 
+      min-height: 40px; /* index.htmlと合わせる */
     }
-    
-    .title-area {
-      flex-grow: 1;
+
+    h1 {
+      color: #333;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin: 0; /* h1のデフォルトマージンを完全にリセット */
+      padding: 0; /* 必要であればパディングもリセット */
     }
-    
-    .nav-buttons {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .nav-btn {
+
+    .back-btn {
       padding: 8px 15px;
       background-color: #4285f4;
       color: white;
@@ -46,143 +46,237 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-    
-    .nav-btn:hover {
+
+    .back-btn:hover {
       background-color: #3367d6;
     }
 
-    .title-input {
-      font-size: 2em;
-      width: 100%;
-      border: none;
-      background-color: transparent;
-      color: #333;
-      outline: none;
-      text-align: center;
-      margin: 0 0 10px 0; 
-    }
-    
-    .title-input::placeholder {
-      color: #999;
-    }
-    
-    #dateDisplay {
-      font-weight: bold;
-      font-size: 1.2em;
-      margin-bottom: 0; /* これが修正点 */
-      color: #333;
-    }
-    
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 15px;
+    .record-section {
       background-color: white;
-      padding: 10px;
-      border-radius: 8px; 
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
-    }
-    
-    button {
-      padding: 6px 10px;
-      font-size: 14px;
-      background-color: #e8f0fe;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #333;
-    }
-    
-    button:hover {
-      background-color: #e9e9e9;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
     }
 
-    .color-btn {
-      width: 24px;
-      height: 24px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
+    .record-section h2 {
+      color: #4285f4;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      font-weight: 600;
     }
-    
-    .size-btn {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 10px;
+    }
+
+    .summary-item {
       background-color: #e8f0fe;
+      padding: 15px;
+      border-radius: 6px;
+      text-align: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-item h3 {
+      margin-top: 0;
+      color: #333;
+      font-size: 1.05em;
+      margin-bottom: 10px;
+    }
+
+    .summary-item .completion-percentage {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #4285f4;
+      margin: 5px 0;
+    }
+    .summary-item .completion-tasks {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 0;
+    }
+
+    /* Progress bar styles */
+    .progress-bar-container {
+      width: 90%;
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin: 10px auto 0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #4CAF50;
+      width: 0%;
+      border-radius: 4px;
+      transition: width 0.5s ease-out;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .history-item {
+      background-color: #f9f9f9;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       cursor: pointer;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .history-item:hover {
+      background-color: #eef;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .history-date {
+      font-weight: bold;
+      font-size: 1.05em;
+      color: #444;
+    }
+
+    .history-title {
+      flex-grow: 1;
+      margin-left: 20px;
+      font-size: 0.95em;
+      color: #555;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    /* Continuous Streaks Section */
+    .streaks-section {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+    }
+
+    .streaks-section h2 {
+      color: #4285f4;
+      border-bottom: 1px solid #e0e0e0;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      font-weight: 600;
+    }
+
+    #continuousStreaksList {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: flex-start;
+        max-height: 160px;
+        overflow-y: auto;
+        padding-right: 10px;
+    }
+
+    .streak-item {
+      background-color: #e8f0fe;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      white-space: nowrap;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .streak-task-content {
+      margin-right: 8px;
+      color: #333;
+    }
+
+    .streak-days {
+      font-weight: bold;
+      color: #4285f4;
+      background-color: white;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.85em;
+      box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
       justify-content: center;
-    }
-    
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(20, 1fr);
-      grid-template-rows: repeat(16, 1fr);
-      width: 100%;
-      height: 75vh;
-      gap: 1px;
-      background-color: white;
-      border-radius: 8px; 
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
-      padding: 2px;
-    }
-    
-    .cell {
-      border: 1px solid #ddd;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start; 
-      align-items: flex-start;    
-      padding: 1px;
-      font-size: 1vw;
-      background-color: white;
-      position: relative; 
-      box-sizing: border-box; 
-    }
-    
-    .cell.selected {
-      outline: 2px solid #4285f4;
-    }
-    
-    .editable {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      flex-direction: column;
-      font-size: 1vw;
-      text-align: left;
-      padding: 2px;
-      border: none;
-      outline: none;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    
-    .cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: block;
-    }
-    
-    /* History Modal specific styles (record.html用なのでindex.htmlでは本来不要) */
-    .history-modal-content {
-      background-color: #fefefe;
-      margin: 5% auto; /* Adjust margin for more space */
+      align-items: center;
+      overflow-y: auto;
       padding: 20px;
-      border-radius: 5px;
-      width: 90%; /* Wider for better content display */
-      max-width: 800px; /* Max width for readability */
-      height: 80%; /* Adjust height */
-      overflow-y: auto; /* Enable scrolling for content */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      box-sizing: border-box;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: auto;
+      padding: 25px;
+      border-radius: 10px;
+      width: 95%;
+      max-width: 900px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .close-button {
+      color: #aaa;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .close-button:hover,
+    .close-button:focus {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .history-modal-title {
+      font-size: 1.8em;
+      color: #4285f4;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .history-modal-date {
+      font-size: 1.1em;
+      color: #666;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 500;
     }
 
     .history-grid-display {
@@ -190,67 +284,86 @@
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: auto; /* Adjust height based on content */
-      min-height: 400px; /* Minimum height for visibility */
+      height: 60vh;
+      min-height: 400px;
       gap: 1px;
-      background-color: #eee;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      padding: 2px;
-      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+      background-color: #e0e0e0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: auto;
     }
 
     .history-cell {
-      border: 1px solid #eee;
+      background-color: white;
+      border: 1px solid #f0f0f0;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 1px;
-      font-size: 0.8vw; /* Smaller font size for history view */
-      background-color: white;
-      overflow: hidden; /* Hide overflow content */
-      text-align: left;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 3px;
+      box-sizing: border-box;
+      font-size: 0.7em;
       word-break: break-word;
       white-space: pre-wrap;
+      overflow: hidden;
+      position: relative;
     }
 
+    .history-cell img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
     .history-cell .editable {
-        all: unset; /* Reset all editable styles for static display */
-        font-size: 0.8vw; /* Keep consistent font size */
-        padding: 2px;
-        color: #333;
-        overflow: hidden; /* Hide overflow for static display */
-        text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        font-size: 1em;
+        text-align: left;
+        padding: 0;
+        border: none;
+        outline: none;
+        overflow: hidden;
+        word-break: break-word;
+        white-space: pre-wrap;
+        text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 3; /* Limit to 3 lines */
+        -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
+        position: relative;
+        z-index: 1;
     }
-    
-    /* チェックボックスの改行間隔を狭めるためのスタイル */
-    .checkbox-wrapper {
+    .history-cell .checkbox-wrapper {
       display: flex;
-      align-items: flex-start; /* チェックボックスとテキストを上揃え */
-      margin-bottom: 2px; /* 各チェックボックス行の下マージンを狭める */
-      line-height: 1.2; /* 行の高さを調整 */
+      align-items: flex-start;
+      margin-bottom: 2px;
+      line-height: 1.3;
     }
-    /* editable内のbrタグが不要になるように、margin-bottomで制御 */
-    .editable br {
+    .history-cell .checkbox-wrapper br {
+        display: none;
+    }
+    .history-cell input[type="checkbox"] {
+        margin-right: 4px;
+        transform: scale(0.9);
+        flex-shrink: 0;
+        margin-top: 1px;
+    }
+    .history-cell .completed-text {
+        text-decoration: line-through;
+        color: #888;
+    }
+
+    .history-cell.hidden {
       display: none;
-    }
-
-    /* チェックボックスとテキストのスタイル */
-    .checkbox-text {
-      flex-grow: 1; /* テキストが残りスペースを埋める */
-      word-break: break-all; /* 長い単語でも折り返す */
-      white-space: pre-wrap; /* 改行を保持 */
-      margin-left: 3px; /* チェックボックスとの間隔 */
-    }
-
-    /* チェックされたテキストのスタイル */
-    .checkbox-text.checked-item {
-      text-decoration: line-through;
-      color: #888;
     }
     /* CSSここまで */
   </style>
@@ -258,830 +371,427 @@
 <body>
   <div class="container">
     <div class="header">
-      <div class="title-area">
-        <div id="dateDisplay"></div>
-      </div>
-      <div class="nav-buttons">
-        <a href="record.html" class="nav-btn">Record</a>
+      <h1>Record</h1>
+      <a href="index.html" class="back-btn">Home</a>
+    </div>
+
+    <div class="record-section">
+      <h2>Today's Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <h3>Today's Completion</h3>
+          <p class="completion-percentage" id="todayCompletion">0%</p>
+          <p class="completion-tasks" id="todayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="todayProgressBar"></div>
+          </div>
+        </div>
+        <div class="summary-item">
+          <h3>Yesterday's Completion</h3>
+          <p class="completion-percentage" id="yesterdayCompletion">0%</p>
+          <p class="completion-tasks" id="yesterdayTasks">0/0 tasks completed</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="yesterdayProgressBar"></div>
+          </div>
+        </div>
+        <div class="summary-item">
+          <h3>Average Completion (Last 7 Days)</h3>
+          <p class="completion-percentage" id="avgCompletion7Days">0%</p>
+          <p class="completion-tasks">&nbsp;</p>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="avg7DaysProgressBar"></div>
+          </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="streaks-section">
+      <h2>Continuous Streaks</h2>
+      <div id="continuousStreaksList">
+        <div class="streak-item">
+          <span class="streak-task-content">No active streaks found.</span>
+          <span class="streak-days"></span>
+        </div>
       </div>
     </div>
-    
-    <input class="title-input" id="pageTitle" placeholder="Brain Hacker Home" />
-    
-    <div class="controls">
-      <button class="color-btn" data-color="#ffa500" style="background-color:#ffa500;"></button>
-      <button class="color-btn" data-color="#f2c1c1" style="background-color:#f2c1c1;"></button>
-      <button class="color-btn" data-color="#ffef5b" style="background-color:#ffef5b;"></button>
-      <button class="color-btn" data-color="#d0f0c0" style="background-color:#d0f0c0;"></button>
-      <button class="color-btn" data-color="#a2dff7" style="background-color:#a2dff7;"></button>
-      <button class="color-btn" data-color="#d8d8d8" style="background-color:#d8d8d8;"></button>
-      <button class="color-btn" data-color="#ffffff" style="background-color:#ffffff;"></button>
-      <button id="mergeBtn">integrate</button>
-      <button id="splitBtn">separate</button>
-      <button id="insertCheckboxBtn">✅ check</button>
-      <button id="insertBoldCheckboxBtn">☑️ check</button>
-      <button id="insertNoteBtn">📝 note</button> <button id="uploadImageBtn">🖼️</button>
-      <input type="file" id="imageInput" accept="image/*" style="display: none;" />
-      <button class="size-btn" data-size="2.56vw" style="font-size:2.56vw;">A</button>
-      <button class="size-btn" data-size="1.92vw" style="font-size:1.92vw;">A</button>
-      <button class="size-btn" data-size="1.6vw" style="font-size:1.6vw;">A</button>
-      <button class="size-btn" data-size="1.0vw" style="font-size:1.0vw;">A</button>
-      <button class="size-btn" data-size="0.6vw" style="font-size:0.6vw;">A</button>
-      <button id="undoBtn">↩️</button> <button id="resetBtn">🔄</button>
-      <button id="deleteBtn">🗑️</button>
-      <button id="alignTopLeftBtn">left alignment</button>
-      <button id="alignCenterBtn">centered</button>
+
+    <div class="record-section">
+      <h2>History</h2>
+      <ul id="historyList" class="history-list">
+        </ul>
     </div>
-    
-    <div class="grid-container" id="grid"></div>
+  </div>
+
+  <div id="historyDetailModal" class="modal">
+    <div class="modal-content">
+      <span class="close-button" id="closeModal">&times;</span>
+      <h2 id="modalTitle" class="history-modal-title"></h2>
+      <p id="modalDate" class="history-modal-date"></p>
+      <div id="historyGridDisplay" class="history-grid-display">
+        </div>
+    </div>
   </div>
 
   <script>
-// === 日付とタイトル ===
-function getTodayKey() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-function getYesterdayKey() {
-  const now = new Date();
-  now.setDate(now.getDate() - 1);
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-}
-document.getElementById("dateDisplay").textContent = `${getTodayKey()} (${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][new Date().getDay()]})`;
-
-// === 自動保存のためのDebounce機能 ===
-let autoSaveTimeout;
-const AUTO_SAVE_DELAY = 1000; // 1秒 (1000ms)
-
-function autoSave() {
-  clearTimeout(autoSaveTimeout);
-  autoSaveTimeout = setTimeout(() => {
-    saveState();
-    console.log("Grid state automatically saved.");
-  }, AUTO_SAVE_DELAY);
-}
-
-// === 状態保存と復元（Undo機能のために履歴を管理） ===
-const undoHistory = [];
-const MAX_HISTORY = 20; // 保存する履歴の最大数
-
-function saveState() {
-  const state = [...document.querySelectorAll(".cell")].map(cell => {
-    const editable = cell.querySelector(".editable");
-    const img = cell.querySelector("img");
-    // チェックボックスの状態をHTMLに反映させる (重要)
-    if (editable) { // editableが存在することを確認
-        editable.querySelectorAll("input[type='checkbox']").forEach(cb => {
-            // isChecked プロパティを直接読み取る
-            cb.checked ? cb.setAttribute("checked", "checked") : cb.removeAttribute("checked");
-            // また、テキストのスタイルも保存時に更新されていることを確認
-            const textSpan = cb.nextElementSibling;
-            if (textSpan) {
-                textSpan.classList.toggle('checked-item', cb.checked);
-            }
-        });
-    }
-    
-    return {
-      row: cell.dataset.row,
-      col: cell.dataset.col,
-      html: editable ? editable.innerHTML : '', // editableがnullの場合に備える
-      fontSize: editable ? editable.style.fontSize : '',
-      bgColor: cell.style.backgroundColor,
-      display: cell.style.display,
-      gridRow: cell.style.gridRow,
-      gridColumn: cell.style.gridColumn,
-      imgSrc: (img && img.src && img.src !== "undefined" && img.src !== "null" && img.style.display !== 'none') ? img.src : "",
-      alignItems: editable ? editable.style.alignItems : '',
-      justifyContent: editable ? editable.style.justifyContent : '',
-      textAlign: editable ? editable.style.textAlign : ''
-    };
-  });
-
-  const fullState = {
-    title: document.getElementById("pageTitle").value,
-    date: getTodayKey(),
-    cells: state
-  };
-  
-  // Save to localStorage for daily persistence
-  localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(fullState))));
-
-  // Add to undo history
-  undoHistory.push(JSON.parse(JSON.stringify(fullState))); // Deep copy
-  if (undoHistory.length > MAX_HISTORY) {
-    undoHistory.shift(); // Remove oldest state
-  }
-  console.log("State saved. History size:", undoHistory.length);
-}
-
-// === チェックボックスのイベントリスナーをアタッチする共通関数 ===
-function attachCheckboxListeners(containerElement) {
-    if (!containerElement) return; // コンテナ要素がnullでないことを確認
-    containerElement.querySelectorAll("input[type='checkbox']").forEach(cb => {
-        // 既存のリスナーを削除 (二重登録防止)
-        cb.removeEventListener("change", handleCheckboxChange);
-        // 新しいリスナーを追加
-        cb.addEventListener("change", handleCheckboxChange);
-
-        // ロード時に初期状態を適用
-        const textSpan = cb.nextElementSibling;
-        if (textSpan) {
-            textSpan.classList.toggle('checked-item', cb.checked);
-        }
-    });
-}
-
-function handleCheckboxChange(event) {
-    const checkbox = event.target;
-    const textSpan = checkbox.nextElementSibling;
-    if (textSpan) {
-        textSpan.classList.toggle('checked-item', checkbox.checked);
-    }
-    autoSave();
-}
-
-
-function restoreState(stateToRestore) {
-  clearSelections(); // Clear selections before restoring
-
-  let state;
-  let isLoadedFromLocalStorage = false;
-
-  // If restoring from localStorage (initial load or explicit restore)
-  if (!stateToRestore) {
-    const compressed = localStorage.getItem(`brainhack-${getTodayKey()}`);
-    if (compressed) {
-      try {
-        state = JSON.parse(decodeURIComponent(atob(compressed))); // Decode and parse
-        isLoadedFromLocalStorage = true;
-      } catch (e) {
-        console.error("Failed to load today's grid state from localStorage:", e);
-        // Fallback to yesterday's state if today's is corrupted
-      }
+    // --- Utility Functions ---
+    function getTodayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     }
 
-    if (!state) { // Check for yesterday's state if today's is empty or corrupted
-      const yCompressed = localStorage.getItem(`brainhack-${getYesterdayKey()}`);
-      if (yCompressed) {
-        try {
-          const parsed = JSON.parse(decodeURIComponent(atob(yCompressed)));
-          parsed.cells.forEach(c => {
-            const temp = document.createElement("div");
-            temp.innerHTML = c.html;
-            
-            // 太字のチェックボックス項目を削除 (太字は持ち越さない)
-            const filteredNodes = [...temp.childNodes].filter(node => {
-              // <div>.checkbox-wrapper > <input> + <span> 構造に対応
-              const wrapper = node.classList?.contains('checkbox-wrapper') ? node : null;
-              const cb = wrapper ? wrapper.querySelector("input[type='checkbox']") : null;
-              const sp = cb ? cb.nextElementSibling : null; // span.checkbox-text
-              
-              return !(cb && sp?.style.fontWeight === "bold"); // 太字のチェックボックスをフィルタリング
-            });
-            
-            // 通常のチェックボックスのチェックと取り消し線をリセット
-            filteredNodes.forEach(node => {
-              const cb = node.querySelector?.("input[type='checkbox']");
-              const sp = cb ? cb.nextElementSibling : null; // span.checkbox-text
-              if (cb && sp && !sp.style.fontWeight.includes("bold")) {
-                cb.removeAttribute("checked");
-                // クラスを削除してスタイルをリセット
-                sp.classList.remove("checked-item"); 
-              }
-            });
-            
-            const wrapper = document.createElement("div");
-            filteredNodes.forEach(n => wrapper.appendChild(n.cloneNode(true)));
-            c.html = wrapper.innerHTML;
-          });
-          state = {
-              title: parsed.title,
-              date: getTodayKey(), // Set today's date for restored content
-              cells: parsed.cells
-          };
-          // Save the restored yesterday's state as today's state
-          localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(state))));
-          isLoadedFromLocalStorage = true;
-        } catch (e) {
-            console.error("Failed to load yesterday's grid state from localStorage:", e);
-        }
-      }
-    }
-  } else {
-      state = stateToRestore; // Use provided state for undo
-  }
-
-  if (!state) return;
-  const parsedFullState = typeof state === 'string' ? JSON.parse(state) : state;
-  const parsedCells = parsedFullState.cells;
-
-  document.getElementById("pageTitle").value = parsedFullState.title || "Brain Hacker Home";
-
-  // Reset all cells to default before applying state, crucial for merge/split fix
-  document.querySelectorAll(".cell").forEach(cell => {
-    cell.style.display = "flex";
-    cell.style.gridRow = "";
-    cell.style.gridColumn = "";
-    const editable = cell.querySelector(".editable");
-    const img = cell.querySelector("img");
-    if (editable) editable.innerHTML = "";
-    if (img) {
-        img.src = "";
-        img.style.display = "none";
-    }
-    cell.style.backgroundColor = "";
-    if (editable) {
-        editable.style.fontSize = "";
-        editable.style.alignItems = "";
-        editable.style.justifyContent = "";
-        editable.style.textAlign = "";
-    }
-  });
-
-  parsedCells.forEach(data => {
-    const cell = document.querySelector(`.cell[data-row='${data.row}'][data-col='${data.col}']`);
-    if (!cell) {
-        console.warn(`Cell not found for row: ${data.row}, col: ${data.col}. Skipping.`);
-        return; // cell が null ならば、このセルに関する処理はスキップ
+    function getDateKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    const editable = cell.querySelector(".editable");
-    const img = cell.querySelector("img");
-    
-    // editable または img が null ならば、このセルの要素処理をスキップ
-    // ただし、これらはHTMLに常に存在するため、通常はnullにならないはず
-    if (!editable || !img) {
-        console.warn(`Editable or Image element not found in cell at row: ${data.row}, col: ${data.col}. Skipping part of restoration.`);
-        return; 
-    }
-    
-    editable.innerHTML = typeof data.html === 'string' ? data.html : "";
-    
-    editable.style.fontSize = data.fontSize || "";
-    editable.style.alignItems = data.alignItems || "";
-    editable.style.justifyContent = data.justifyContent || ""; // justifyContentとalignItemsが同じになっていたため修正
-    editable.style.textAlign = data.textAlign || "";
-    
-    cell.style.backgroundColor = data.bgColor || "";
-    cell.style.display = data.display || "flex"; // Default to flex if display is not set
-    cell.style.gridRow = data.gridRow || "";
-    cell.style.gridColumn = data.gridColumn || "";
-    
-    if (data.imgSrc && data.imgSrc.startsWith("data:image/")) {
-      img.src = data.imgSrc;
-      img.style.display = "block";
-    } else {
-      img.src = "";
-      img.style.display = "none";
-    }
+    function calculateCompletion(cells) {
+      if (!cells || cells.length === 0) return { percentage: 0, completedCount: 0, totalCount: 0 };
 
-    // `editable` の内容をセットした後、チェックボックスのリスナーをアタッチ
-    attachCheckboxListeners(editable);
-  });
-  console.log("State restored.");
+      let totalCheckboxes = 0;
+      let completedCheckboxes = 0;
 
-  // 最初のロード時に履歴に追加
-  if (isLoadedFromLocalStorage && undoHistory.length === 0) {
-      // isLoadedFromLocalStorage が true の場合、parsedFullState は LocalStorage からロードされた状態
-      // これを undoHistory に追加して、最初のUndoでこの状態に戻れるようにする
-      undoHistory.push(JSON.parse(JSON.stringify(parsedFullState))); 
-  }
-}
+      cells.forEach(cell => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = cell.html;
 
-
-// === グリッド生成 ===
-const pageTitle = document.getElementById("pageTitle");
-// pageTitleのinputイベントリスナーをautoSaveを呼び出すように変更
-pageTitle.removeEventListener("input", saveState); // 既存のsaveStateを削除
-pageTitle.addEventListener("input", () => {
-    // localStorage.setItem("pageTitle", document.getElementById("pageTitle").value); // この行は冗長なので削除
-    autoSave(); // Title change should also autoSave
-});
-
-const grid = document.getElementById("grid");
-for (let row = 0; row < 16; row++) {
-  for (let col = 0; col < 20; col++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.dataset.row = row;
-    cell.dataset.col = col;
-    cell.setAttribute("tabindex", "0"); // Make cells focusable
-    
-    const editable = document.createElement("div");
-    editable.className = "editable";
-    editable.setAttribute("contenteditable", "true");
-    
-    // editable の内容変更時に autoSave を呼び出す
-    // editable.removeEventListener("input", saveState); // 既存のsaveStateを削除 (念のため)
-    editable.addEventListener("input", autoSave);
-    
-    const img = document.createElement("img");
-    img.style.display = "none"; // Initially hidden
-
-    cell.appendChild(editable);
-    cell.appendChild(img);
-    grid.appendChild(cell);
-
-    // Initial state for each cell - No need to push to undoHistory here.
-    // The initial state will be correctly handled by DOMContentLoaded -> restoreState -> saveState.
-  }
-}
-
-
-// --- セル選択ロジック ---
-let selectedCells = [];
-let isMouseDown = false;
-let startCell = null;
-
-grid.addEventListener("mousedown", (e) => {
-  if (e.target.closest(".cell")) {
-    isMouseDown = true;
-    startCell = e.target.closest(".cell");
-    clearSelections();
-    toggleCellSelection(startCell);
-  }
-});
-
-grid.addEventListener("mouseover", (e) => {
-  if (isMouseDown && e.target.closest(".cell")) {
-    const currentCell = e.target.closest(".cell");
-    if (startCell && currentCell) {
-      selectRange(startCell, currentCell);
-    }
-  }
-});
-
-grid.addEventListener("mouseup", () => {
-  isMouseDown = false;
-  startCell = null;
-});
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    clearSelections();
-  }
-});
-
-function clearSelections() {
-  selectedCells.forEach((cell) => cell.classList.remove("selected"));
-  selectedCells = [];
-}
-
-function toggleCellSelection(cell) {
-  if (!cell) return;
-  cell.classList.toggle("selected");
-  if (cell.classList.contains("selected")) {
-    selectedCells.push(cell);
-  } else {
-    selectedCells = selectedCells.filter((c) => c !== cell);
-  }
-}
-
-function selectRange(start, end) {
-  clearSelections();
-  const startRow = parseInt(start.dataset.row);
-  const startCol = parseInt(start.dataset.col);
-  const endRow = parseInt(end.dataset.row);
-  const endCol = parseInt(end.dataset.col);
-
-  const minRow = Math.min(startRow, endRow);
-  const maxRow = Math.max(startRow, endRow);
-  const minCol = Math.min(startCol, endCol);
-  const maxCol = Math.max(startCol, endCol);
-
-  for (let r = minRow; r <= maxRow; r++) {
-    for (let c = minCol; c <= maxCol; c++) {
-      const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-      if (cell) {
-        cell.classList.add("selected");
-        selectedCells.push(cell);
-      }
-    }
-  }
-}
-
-// --- コントロールボタン機能 ---
-document.querySelectorAll(".color-btn").forEach((button) => {
-  button.addEventListener("click", () => {
-    const color = button.dataset.color;
-    selectedCells.forEach((cell) => {
-      cell.style.backgroundColor = color;
-    });
-    autoSave();
-  });
-});
-
-document.querySelectorAll(".size-btn").forEach((button) => {
-  button.addEventListener("click", () => {
-    selectedCells.forEach((cell) => {
-      const editable = cell.querySelector(".editable");
-      if (editable) { // editableが存在することを確認
-        editable.style.fontSize = button.dataset.size;
-      }
-    });
-    autoSave();
-  });
-});
-
-document.getElementById("mergeBtn").addEventListener("click", () => {
-  if (selectedCells.length < 2) {
-    alert("結合するには2つ以上のセルを選択してください。");
-    return;
-  }
-
-  // Calculate bounding box of selected cells
-  let minRow = Infinity, maxRow = -Infinity, minCol = Infinity, maxCol = -Infinity;
-  selectedCells.forEach(cell => {
-    const row = parseInt(cell.dataset.row);
-    const col = parseInt(cell.dataset.col);
-    minRow = Math.min(minRow, row);
-    maxRow = Math.max(maxRow, row);
-    minCol = Math.min(minCol, col);
-    maxCol = Math.max(maxCol, col);
-  });
-
-  const rowSpan = maxRow - minRow + 1;
-  const colSpan = maxCol - minCol + 1;
-
-  const firstCell = document.querySelector(`.cell[data-row='${minRow}'][data-col='${minCol}']`);
-  if (!firstCell) return;
-
-  // Combine content of selected cells into the first cell
-  let combinedHtml = "";
-  selectedCells.sort((a, b) => { // Sort to ensure consistent content order
-      const rowA = parseInt(a.dataset.row);
-      const colA = parseInt(a.dataset.col);
-      const rowB = parseInt(b.dataset.row);
-      const colB = parseInt(b.dataset.col);
-      if (rowA !== rowB) return rowA - rowB;
-      return colA - colB;
-  }).forEach(cell => {
-      if (cell !== firstCell) {
-          const editableContent = cell.querySelector(".editable")?.innerHTML.trim(); // Optional chainingでnullチェック
-          if (editableContent) {
-              combinedHtml += editableContent + "<br>"; // Add content with line break
+        const checkboxes = tempDiv.querySelectorAll('input[type="checkbox"]');
+        totalCheckboxes += checkboxes.length;
+        checkboxes.forEach(cb => {
+          if (cb.hasAttribute('checked')) {
+            completedCheckboxes++;
           }
-      }
-  });
+        });
+      });
 
-  const firstCellEditable = firstCell.querySelector(".editable");
-  if (firstCellEditable) { // firstCellEditableが存在することを確認
-      // Prepend combined content to first cell's existing content
-      if (combinedHtml) {
-          firstCellEditable.innerHTML = combinedHtml + firstCellEditable.innerHTML;
-      }
-
-      // Re-attach listeners to the merged cell's content
-      attachCheckboxListeners(firstCellEditable); // 追加: マージ後のチェックボックスリスナー再アタッチ
-  }
-
-  // Apply grid styles to the first cell
-  firstCell.style.gridRow = `span ${rowSpan}`;
-  firstCell.style.gridColumn = `span ${colSpan}`;
-  
-  // Hide other selected cells
-  selectedCells.forEach(cell => {
-    if (cell !== firstCell) {
-      cell.style.display = "none";
-      const editable = cell.querySelector(".editable");
-      if(editable) editable.innerHTML = ""; // Clear content of hidden cells
+      const percentage = totalCheckboxes > 0 ? (completedCheckboxes / totalCheckboxes * 100).toFixed(1) : 0;
+      return { percentage: parseFloat(percentage), completedCount: completedCheckboxes, totalCount: totalCheckboxes };
     }
-  });
-  
-  clearSelections();
-  autoSave();
-});
 
-document.getElementById("splitBtn").addEventListener("click", () => {
-  if (selectedCells.length !== 1) {
-    alert("分割するには1つの結合されたセルを選択してください。");
-    return;
-  }
-
-  const mergedCell = selectedCells[0];
-  const startRow = parseInt(mergedCell.dataset.row);
-  const startCol = parseInt(mergedCell.dataset.col);
-  const rowSpan = parseInt(mergedCell.style.gridRow.replace("span ", "") || "1");
-  const colSpan = parseInt(mergedCell.style.gridColumn.replace("span ", "") || "1");
-
-  // Restore original display and clear grid-span styles
-  mergedCell.style.gridRow = "";
-  mergedCell.style.gridColumn = "";
-  mergedCell.style.display = "flex"; // Ensure it's visible
-
-  // Restore other cells that were hidden
-  for (let r = startRow; r < startRow + rowSpan; r++) {
-    for (let c = startCol; c < startCol + colSpan; c++) {
-      const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-      if (cell && cell !== mergedCell) {
-        cell.style.display = "flex";
-      }
-    }
-  }
-  clearSelections();
-  autoSave();
-});
-
-document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
-  if (selectedCells.length === 0) {
-    alert("セルを選択してください。");
-    return;
-  }
-  selectedCells.forEach(cell => {
-    const editable = cell.querySelector(".editable");
-    if (editable) {
-        // 現在の選択範囲を保持
-        const selection = window.getSelection();
-        const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-        const currentContent = editable.innerHTML;
-
-        // 新しいチェックボックス要素
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.className = 'checkbox-wrapper';
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        const textSpan = document.createElement('span');
-        textSpan.className = 'checkbox-text';
-        textSpan.contentEditable = 'true'; // ここでeditableに設定
-        textSpan.textContent = ' '; // 初期テキストとしてスペースを挿入
-        
-        checkboxWrapper.appendChild(checkbox);
-        checkboxWrapper.appendChild(textSpan);
-
-        // 挿入位置を考慮
-        if (range && editable.contains(range.commonAncestorContainer)) {
-            range.deleteContents(); // 選択範囲を削除
-            range.insertNode(checkboxWrapper); // チェックボックスを挿入
-            
-            // 挿入後、新しいテキスト要素にカーソルを移動
-            range.setStart(textSpan, 1); // スペースの後にカーソル
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        } else {
-            // 選択範囲がない場合、末尾に追加
-            editable.appendChild(checkboxWrapper);
-            // 末尾に追加した場合もカーソルを移動
-            const newRange = document.createRange();
-            const newSelection = window.getSelection();
-            newRange.setStart(textSpan, 1);
-            newRange.collapse(true);
-            newSelection.removeAllRanges();
-            newSelection.addRange(newRange);
+    // --- Data Loading and Processing ---
+    function loadBrainhackData(dateKey) {
+      const compressed = localStorage.getItem(`brainhack-${dateKey}`);
+      if (compressed) {
+        try {
+          const decompressed = decodeURIComponent(atob(compressed));
+          return JSON.parse(decompressed);
+        } catch (e) {
+          console.error(`Failed to load data for ${dateKey}:`, e);
+          return null;
         }
-
-        // 新しく挿入されたチェックボックスにイベントリスナーをアタッチ
-        attachCheckboxListeners(checkboxWrapper);
+      }
+      return null;
     }
-  });
-  autoSave();
-});
 
-document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
-  if (selectedCells.length === 0) {
-    alert("セルを選択してください。");
-    return;
-  }
-  selectedCells.forEach(cell => {
-    const editable = cell.querySelector(".editable");
-    if (editable) {
-        const selection = window.getSelection();
-        const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-
-        const checkboxWrapper = document.createElement('div');
-        checkboxWrapper.className = 'checkbox-wrapper';
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        const textSpan = document.createElement('span');
-        textSpan.className = 'checkbox-text';
-        textSpan.contentEditable = 'true';
-        textSpan.style.fontWeight = 'bold'; // 太字スタイルを適用
-        textSpan.textContent = ' '; // 初期テキストとしてスペースを挿入
-        
-        checkboxWrapper.appendChild(checkbox);
-        checkboxWrapper.appendChild(textSpan);
-
-        if (range && editable.contains(range.commonAncestorContainer)) {
-            range.deleteContents();
-            range.insertNode(checkboxWrapper);
-            
-            range.setStart(textSpan, 1);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-        } else {
-            editable.appendChild(checkboxWrapper);
-            const newRange = document.createRange();
-            const newSelection = window.getSelection();
-            newRange.setStart(textSpan, 1);
-            newRange.collapse(true);
-            newSelection.removeAllRanges();
-            newSelection.addRange(newRange);
+    function getAllBrainhackData() {
+      const allData = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('brainhack-')) {
+          const dateKey = key.replace('brainhack-', '');
+          const data = loadBrainhackData(dateKey);
+          if (data) {
+            allData.push(data);
+          }
         }
-        attachCheckboxListeners(checkboxWrapper); // イベントリスナーをアタッチ
+      }
+      allData.sort((a, b) => new Date(b.date) - new Date(a.date));
+      return allData;
     }
-  });
-  autoSave();
-});
 
-document.getElementById("insertNoteBtn").addEventListener("click", () => {
-    if (selectedCells.length === 0) {
-        alert("セルを選択してください。");
-        return;
+    function updateSummary() {
+      const todayData = loadBrainhackData(getTodayKey());
+      const todayStats = todayData ? calculateCompletion(todayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
+      document.getElementById('todayCompletion').textContent = `${todayStats.percentage}%`;
+      document.getElementById('todayTasks').textContent = `${todayStats.completedCount}/${todayStats.totalCount} tasks completed`;
+      document.getElementById('todayProgressBar').style.width = `${todayStats.percentage}%`;
+
+      // Yesterday's Completion
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayKey = getDateKey(yesterday);
+      const yesterdayData = loadBrainhackData(yesterdayKey);
+      const yesterdayStats = yesterdayData ? calculateCompletion(yesterdayData.cells) : { percentage: 0, completedCount: 0, totalCount: 0 };
+      
+      document.getElementById('yesterdayCompletion').textContent = `${yesterdayStats.percentage}%`;
+      document.getElementById('yesterdayTasks').textContent = `${yesterdayStats.completedCount}/${yesterdayStats.totalCount} tasks completed`;
+      document.getElementById('yesterdayProgressBar').style.width = `${yesterdayStats.percentage}%`;
+
+      // Average Completion (Last 7 Days)
+      let total7DaysCompletion = 0;
+      let daysCount = 0;
+      for (let i = 0; i < 7; i++) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateKey = getDateKey(date);
+        const data = loadBrainhackData(dateKey);
+        if (data) {
+          total7DaysCompletion += calculateCompletion(data.cells).percentage;
+          daysCount++;
+        }
+      }
+      const avg7Days = daysCount > 0 ? (total7DaysCompletion / daysCount).toFixed(1) : 0;
+      document.getElementById('avgCompletion7Days').textContent = `${avg7Days}%`;
+      document.getElementById('avg7DaysProgressBar').style.width = `${avg7Days}%`;
     }
-    selectedCells.forEach(cell => {
-        const editable = cell.querySelector(".editable");
-        if (editable) {
-            const selection = window.getSelection();
-            const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
-            const noteSpan = document.createElement('span');
-            noteSpan.contentEditable = 'true';
-            noteSpan.style.display = 'block'; // Block display for new line
-            noteSpan.style.color = '#555'; // Adjust color for notes
-            noteSpan.style.fontStyle = 'italic'; // Italic style for notes
-            noteSpan.textContent = ' '; // Initial text
+    function populateHistoryList() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      const allData = getAllBrainhackData();
+
+      allData.forEach(data => {
+        const listItem = document.createElement('li');
+        listItem.classList.add('history-item');
+        listItem.dataset.date = data.date;
+
+        const dateSpan = document.createElement('span');
+        dateSpan.classList.add('history-date');
+        dateSpan.textContent = data.date;
+
+        const titleSpan = document.createElement('span');
+        titleSpan.classList.add('history-title');
+        titleSpan.textContent = data.title || '（タイトルなし）';
+
+        listItem.append(dateSpan, titleSpan);
+        historyList.appendChild(listItem);
+
+        listItem.addEventListener('click', () => displayHistoryModal(data));
+      });
+    }
+
+    // --- Continuous Streaks Calculation ---
+    function calculateContinuousStreaks() {
+        const allData = getAllBrainhackData(); // Data is fetched in descending date order (newest first)
+        const streaks = {}; // { taskId: { content: "task text", days: 0, lastCompletedDate: "YYYY-MM-DD" } }
+
+        for (const data of allData) {
+            const date = new Date(data.date);
             
-            if (range && editable.contains(range.commonAncestorContainer)) {
-                range.deleteContents();
-                range.insertNode(noteSpan);
-                range.setStart(noteSpan, 1);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            } else {
-                editable.appendChild(noteSpan);
-                const newRange = document.createRange();
-                const newSelection = window.getSelection();
-                newRange.setStart(noteSpan, 1);
-                newRange.collapse(true);
-                newSelection.removeAllRanges();
-                newSelection.addRange(newRange);
+            // Extract the completion status of regular checkbox tasks for the day
+            const completedTasksToday = {}; // { taskContent: true/false }
+            data.cells.forEach(cell => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = cell.html;
+
+                // Extract checkbox and its text
+                tempDiv.querySelectorAll('.checkbox-wrapper').forEach(wrapper => {
+                    const cb = wrapper.querySelector('input[type="checkbox"]');
+                    const textSpan = wrapper.querySelector('.checkbox-text');
+                    
+                    if (cb && textSpan && !textSpan.style.fontWeight.includes("bold")) { // Only regular checkboxes
+                        const taskContent = textSpan.textContent.trim();
+                        if (taskContent) { // Ignore empty tasks
+                            completedTasksToday[taskContent] = cb.hasAttribute('checked');
+                        }
+                    }
+                });
+            });
+
+            // Streak update logic
+            for (const taskContent in completedTasksToday) {
+                if (completedTasksToday[taskContent]) { // If the task is completed on that day
+                    if (streaks[taskContent]) {
+                        const lastDate = new Date(streaks[taskContent].lastCompletedDate);
+                        const diffTime = Math.abs(date.getTime() - lastDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        // If continuous (yesterday or today)
+                        if (diffDays === 1 || (diffDays === 0 && date.toDateString() === lastDate.toDateString())) { 
+                            streaks[taskContent].days++;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        } else if (diffDays > 1) { // Broken streak
+                            // Start a new streak (as day 1)
+                            streaks[taskContent].days = 1;
+                            streaks[taskContent].lastCompletedDate = data.date;
+                        }
+                    } else {
+                        // First time this task is encountered
+                        streaks[taskContent] = {
+                            content: taskContent,
+                            days: 1,
+                            lastCompletedDate: data.date
+                        };
+                    }
+                } else { // If the task is not completed on that day
+                    // The streak might be broken, but we don't do anything here (it will be reset in the next loop if not continuous)
+                }
             }
         }
-    });
-    autoSave();
-});
 
-document.getElementById("uploadImageBtn").addEventListener("click", () => {
-    document.getElementById("imageInput").click();
-});
+        // Display logic
+        const continuousStreaksList = document.getElementById('continuousStreaksList');
+        continuousStreaksList.innerHTML = ''; // Clear previous entries
 
-document.getElementById("imageInput").addEventListener("change", (event) => {
-    if (selectedCells.length === 0) {
-        alert("セルを選択してください。");
-        return;
+        const activeStreaks = Object.values(streaks).filter(s => {
+            const lastCompletedDate = new Date(s.lastCompletedDate);
+            const today = new Date(getTodayKey());
+            const diffDays = Math.abs(today.getTime() - lastCompletedDate.getTime()) / (1000 * 60 * 60 * 24);
+            // Display only streaks that are active (completed today or yesterday, and streak is not broken)
+            return s.days > 0 && (diffDays <= 1 || (diffDays === 0 && s.days >= 1));
+        }).sort((a,b) => b.days - a.days); // Sort by days in descending order
+
+        if (activeStreaks.length === 0) {
+            continuousStreaksList.innerHTML = `
+                <div class="streak-item">
+                    <span class="streak-task-content">No active streaks found.</span>
+                    <span class="streak-days"></span>
+                </div>
+            `;
+        } else {
+            activeStreaks.forEach(streak => {
+                const item = document.createElement('div');
+                item.classList.add('streak-item');
+                item.innerHTML = `
+                    <span class="streak-task-content">${streak.content}</span>
+                    <span class="streak-days">${streak.days} days</span>
+                `;
+                continuousStreaksList.appendChild(item);
+            });
+        }
     }
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            selectedCells.forEach(cell => {
-                const img = cell.querySelector("img");
-                const editable = cell.querySelector(".editable"); // editableも取得
-                if (img) {
-                    img.src = e.target.result;
-                    img.style.display = "block";
-                    if (editable) editable.innerHTML = ""; // 画像を挿入したらテキストをクリア
+
+
+    // --- Modal Functions ---
+    const historyDetailModal = document.getElementById('historyDetailModal');
+    const closeModalButton = document.getElementById('closeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDate = document.getElementById('modalDate');
+    const historyGridDisplay = document.getElementById('historyGridDisplay');
+
+    function displayHistoryModal(data) {
+      modalTitle.textContent = data.title || '（タイトルなし）';
+      modalDate.textContent = data.date;
+      historyGridDisplay.innerHTML = '';
+
+      const ROWS = 16;
+      const COLS = 20;
+      const gridCells = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
+
+      data.cells.forEach(cellData => {
+        const r = parseInt(cellData.row);
+        const c = parseInt(cellData.col);
+        if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+          gridCells[r][c] = {
+            html: cellData.html,
+            fontSize: cellData.fontSize,
+            bgColor: cellData.bgColor,
+            display: cellData.display,
+            gridRow: cellData.gridRow,
+            gridColumn: cellData.gridColumn,
+            imgSrc: cellData.imgSrc,
+            alignItems: cellData.alignItems,
+            justifyContent: cellData.justifyContent,
+            textAlign: cellData.textAlign,
+            isMergedBase: true
+          };
+          if (cellData.gridRow && cellData.gridColumn && cellData.display !== 'none') {
+            const rowSpanMatch = cellData.gridRow.match(/span (\d+)/);
+            const colSpanMatch = cellData.gridColumn.match(/span (\d+)/);
+            const rowSpan = rowSpanMatch ? parseInt(rowSpanMatch[1]) : 1;
+            const colSpan = colSpanMatch ? parseInt(colSpanMatch[1]) : 1;
+
+            for (let i = r; i < r + rowSpan; i++) {
+              for (let j = c; j < c + colSpan; j++) {
+                if (i === r && j === c) continue;
+                if (i >= 0 && i < ROWS && j >= 0 && j < COLS) {
+                  gridCells[i][j] = { isHidden: true };
+                }
+              }
+            }
+          }
+        }
+      });
+
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const cell = document.createElement('div');
+          cell.classList.add('history-cell');
+          cell.dataset.row = r;
+          cell.dataset.col = c;
+
+          const cellInfo = gridCells[r][c];
+
+          if (cellInfo && cellInfo.isHidden) {
+            cell.classList.add('hidden');
+          } else if (cellInfo) {
+            cell.style.backgroundColor = cellInfo.bgColor || '';
+            cell.style.display = cellInfo.display || 'flex';
+            cell.style.gridRow = cellInfo.gridRow || '';
+            cell.style.gridColumn = cellInfo.gridColumn || '';
+
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable');
+            editableDiv.style.fontSize = cellInfo.fontSize || '';
+            editableDiv.style.alignItems = cellInfo.alignItems || '';
+            editableDiv.style.justifyContent = cellInfo.justifyContent || '';
+            editableDiv.style.textAlign = cellInfo.textAlign || '';
+            
+            // Clear existing content before setting innerHTML
+            editableDiv.innerHTML = ''; 
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = cellInfo.html || '';
+
+            // Append child elements of tempDiv directly to editableDiv
+            while (tempDiv.firstChild) {
+                editableDiv.appendChild(tempDiv.firstChild);
+            }
+
+            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.disabled = true; // Disable checkboxes in modal
+                const textSpan = checkbox.nextElementSibling;
+                if (textSpan) {
+                    textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
+                    textSpan.style.color = checkbox.hasAttribute('checked') ? '#888' : '';
                 }
             });
-            autoSave();
-        };
-        reader.readAsDataURL(file);
-    }
-});
 
-
-document.getElementById("undoBtn").addEventListener("click", () => {
-  if (undoHistory.length > 1) { // Current state is always the last one
-    undoHistory.pop(); // Remove current state
-    const previousState = undoHistory[undoHistory.length - 1];
-    if (previousState) {
-      restoreState(previousState);
-    } else {
-      // If no history, clear the grid
-      document.querySelectorAll(".cell").forEach(cell => {
-        const editable = cell.querySelector(".editable");
-        const img = cell.querySelector("img");
-        if (editable) editable.innerHTML = "";
-        if (img) { img.src = ""; img.style.display = "none"; }
-        cell.style.backgroundColor = "";
-        cell.style.gridRow = "";
-        cell.style.gridColumn = "";
-        cell.style.display = "flex";
-      });
-      document.getElementById("pageTitle").value = "Brain Hacker Home";
-    }
-    console.log("Undo performed. History size:", undoHistory.length);
-  } else {
-    alert("これ以上戻る履歴がありません。");
-  }
-});
-
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-    if (confirm("全てのグリッド内容と設定をリセットしますか？この操作は元に戻せません。")) {
-        localStorage.removeItem(`brainhack-${getTodayKey()}`);
-        document.querySelectorAll(".cell").forEach(cell => {
-            const editable = cell.querySelector(".editable");
-            const img = cell.querySelector("img");
-            if (editable) editable.innerHTML = "";
-            if (img) { img.src = ""; img.style.display = "none"; }
-            cell.style.backgroundColor = "";
-            cell.style.gridRow = "";
-            cell.style.gridColumn = "";
-            cell.style.display = "flex";
-            if (editable) {
-                editable.style.fontSize = "";
-                editable.style.alignItems = "";
-                editable.style.justifyContent = "";
-                editable.style.textAlign = "";
+            const img = document.createElement('img');
+            // Display image data if it exists and is a valid base64 image
+            if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
+                img.src = cellInfo.imgSrc;
+                img.style.display = 'block';
+                editableDiv.style.display = 'none'; // Hide editableDiv if image is present
+            } else {
+                img.src = "";
+                img.style.display = 'none';
+                editableDiv.style.display = 'flex'; // Show editableDiv if no image
             }
-        });
-        document.getElementById("pageTitle").value = "Brain Hacker Home";
-        undoHistory.length = 0; // Clear undo history
-        saveState(); // Save initial blank state
-        console.log("Grid reset.");
-    }
-});
-
-document.getElementById("deleteBtn").addEventListener("click", () => {
-  if (selectedCells.length === 0) {
-    alert("削除するセルを選択してください。");
-    return;
-  }
-  if (confirm("選択したセルの内容を削除しますか？")) {
-    selectedCells.forEach(cell => {
-      const editable = cell.querySelector(".editable");
-      const img = cell.querySelector("img");
-      if (editable) editable.innerHTML = "";
-      if (img) {
-        img.src = "";
-        img.style.display = "none";
-      }
-      cell.style.backgroundColor = ""; // 背景色もリセット
-      // 結合されたセルだった場合、分割する
-      cell.style.gridRow = "";
-      cell.style.gridColumn = "";
-      cell.style.display = "flex";
-    });
-    clearSelections();
-    autoSave();
-  }
-});
-
-
-document.getElementById("alignTopLeftBtn").addEventListener("click", () => {
-  if (selectedCells.length === 0) {
-    alert("セルを選択してください。");
-    return;
-  }
-  selectedCells.forEach(cell => {
-    const editable = cell.querySelector(".editable");
-    if (editable) {
-      editable.style.alignItems = "flex-start";
-      editable.style.justifyContent = "flex-start";
-      editable.style.textAlign = "left";
-    }
-  });
-  autoSave();
-});
-
-document.getElementById("alignCenterBtn").addEventListener("click", () => {
-  if (selectedCells.length === 0) {
-    alert("セルを選択してください。");
-    return;
-  }
-  selectedCells.forEach(cell => {
-    const editable = cell.querySelector(".editable");
-    if (editable) {
-      editable.style.alignItems = "center";
-      editable.style.justifyContent = "center";
-      editable.style.textAlign = "center";
-    }
-  });
-  autoSave();
-});
-
-
-// === 初期ロード ===
-document.addEventListener("DOMContentLoaded", () => {
-  restoreState(); // Load today's or yesterday's state
-  // Initial save of the restored state to history
-  if (undoHistory.length === 0) {
-      const initialCompressed = localStorage.getItem(`brainhack-${getTodayKey()}`);
-      if (initialCompressed) {
-          try {
-              const initialState = JSON.parse(decodeURIComponent(atob(initialCompressed)));
-              undoHistory.push(JSON.parse(JSON.stringify(initialState)));
-          } catch (e) {
-              console.error("Error parsing initial state for history:", e);
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
+          } else {
+            // If no cell info, create an empty editableDiv and img
+            const editableDiv = document.createElement('div');
+            editableDiv.classList.add('editable');
+            editableDiv.innerHTML = '';
+            const img = document.createElement('img');
+            img.style.display = 'none';
+            cell.appendChild(editableDiv);
+            cell.appendChild(img);
           }
+          historyGridDisplay.appendChild(cell);
+        }
       }
-  }
-});
 
+      historyDetailModal.style.display = 'flex';
+    }
+
+    closeModalButton.addEventListener('click', () => {
+      historyDetailModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === historyDetailModal) {
+        historyDetailModal.style.display = 'none';
+      }
+    });
+
+    // --- Initialization ---
+    document.addEventListener('DOMContentLoaded', () => {
+      updateSummary();
+      populateHistoryList();
+      calculateContinuousStreaks();
+    });
   </script>
 </body>
 </html>
