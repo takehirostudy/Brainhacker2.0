@@ -23,13 +23,12 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      /* ヘッダーの最小高さを設定し、内容がずれてもボタン位置を安定させる */
-      min-height: 40px; /* index.htmlと合わせる */
+      min-height: 40px; /* index.htmlと合わせることで、ボタン位置の安定化に寄与 */
     }
 
     h1 {
       color: #333;
-      font-size: 1.2em; 
+      font-size: 1.2em;
       font-weight: bold;
       margin: 0; /* h1のデフォルトマージンを完全にリセット */
       padding: 0; /* 必要であればパディングもリセット */
@@ -50,9 +49,6 @@
     .back-btn:hover {
       background-color: #3367d6;
     }
-    /* ... 既存のCSSは省略 ... */
-  </style>
-</head>
 
     .container {
       max-width: 1200px;
@@ -61,36 +57,36 @@
 
     .record-section {
       background-color: white;
-      padding: 20px; /* パディングを少し広めに */
+      padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* 影を柔らかく */
-      margin-bottom: 25px; /* セクション間のマージンを調整 */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
     }
 
     .record-section h2 {
       color: #4285f4;
       border-bottom: 1px solid #e0e0e0;
-      padding-bottom: 10px; /* パディングを調整 */
-      margin-bottom: 20px; /* マージンを調整 */
-      font-size: 1.4em; /* h2を少し大きく */
-      font-weight: 600; /* フォントの太さ調整 */
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      font-weight: 600;
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 最小幅を少し広めに */
-      gap: 15px; /* ギャップを調整 */
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
       margin-bottom: 10px;
     }
 
     .summary-item {
       background-color: #e8f0fe;
-      padding: 15px; /* パディングを調整 */
-      border-radius: 6px; /* 角丸を調整 */
+      padding: 15px;
+      border-radius: 6px;
       text-align: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08); /* 影をさらに柔らかく */
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
       position: relative;
-      display: flex; /* Flexboxで内容を中央寄せ */
+      display: flex;
       flex-direction: column;
       justify-content: space-between;
       align-items: center;
@@ -99,18 +95,18 @@
     .summary-item h3 {
       margin-top: 0;
       color: #333;
-      font-size: 1.05em; /* h3を微調整 */
+      font-size: 1.05em;
       margin-bottom: 10px;
     }
 
     .summary-item .completion-percentage {
-      font-size: 2.2em; /* フォントサイズを調整 */
+      font-size: 2.2em;
       font-weight: bold;
       color: #4285f4;
-      margin: 5px 0; /* マージンを調整 */
+      margin: 5px 0;
     }
     .summary-item .completion-tasks {
-      font-size: 0.9em; /* フォントサイズを調整 */
+      font-size: 0.9em;
       color: #666;
       margin-top: 0;
     }
@@ -118,10 +114,10 @@
     /* Progress bar styles */
     .progress-bar-container {
       width: 90%;
-      height: 8px; /* 高さを調整 */
+      height: 8px;
       background-color: #e0e0e0;
-      border-radius: 4px; /* 角丸を調整 */
-      margin: 10px auto 0; /* マージンを調整 */
+      border-radius: 4px;
+      margin: 10px auto 0;
       overflow: hidden;
     }
 
@@ -142,33 +138,33 @@
       background-color: #f9f9f9;
       border: 1px solid #e0e0e0;
       border-radius: 6px;
-      padding: 12px 15px; /* パディングを調整 */
-      margin-bottom: 10px; /* マージンを調整 */
+      padding: 12px 15px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
-      transition: background-color 0.2s ease, box-shadow 0.2s ease; /* 影のホバー効果を追加 */
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .history-item:hover {
       background-color: #eef;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08); /* ホバー時の影 */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
     .history-date {
       font-weight: bold;
-      font-size: 1.05em; /* フォントサイズを調整 */
+      font-size: 1.05em;
       color: #444;
     }
 
     .history-title {
       flex-grow: 1;
-      margin-left: 20px; /* マージンを調整 */
-      font-size: 0.95em; /* フォントサイズを調整 */
+      margin-left: 20px;
+      font-size: 0.95em;
       color: #555;
-      text-overflow: ellipsis; /* 長いタイトルを省略 */
-      white-space: nowrap; /* 強制的に1行に */
+      text-overflow: ellipsis;
+      white-space: nowrap;
       overflow: hidden;
     }
 
@@ -193,23 +189,23 @@
     #continuousStreaksList {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px; /* ギャップを調整 */
+        gap: 12px;
         justify-content: flex-start;
-        max-height: 160px; /* 最大高さを調整 */
+        max-height: 160px;
         overflow-y: auto;
         padding-right: 10px;
     }
 
     .streak-item {
       background-color: #e8f0fe;
-      padding: 10px 15px; /* パディングを調整 */
-      border-radius: 20px; /* 角丸を大きくしてバッジ風に */
+      padding: 10px 15px;
+      border-radius: 20px;
       font-size: 0.9em;
       white-space: nowrap;
       flex-shrink: 0;
-      display: flex; /* Flexboxで内容を整列 */
+      display: flex;
       align-items: center;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* 影を追加 */
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
     .streak-task-content {
@@ -223,8 +219,8 @@
       background-color: white;
       padding: 4px 8px;
       border-radius: 12px;
-      font-size: 0.85em; /* 日数のフォントサイズを微調整 */
-      box-shadow: inset 0 0 3px rgba(0,0,0,0.1); /* 内側に影 */
+      font-size: 0.85em;
+      box-shadow: inset 0 0 3px rgba(0,0,0,0.1);
     }
 
     /* Modal styles */
@@ -240,27 +236,27 @@
       justify-content: center;
       align-items: center;
       overflow-y: auto;
-      padding: 20px; /* モーダル自体のパディング */
+      padding: 20px;
       box-sizing: border-box;
     }
 
     .modal-content {
       background-color: #fefefe;
-      margin: auto; /* 中央寄せ */
-      padding: 25px; /* パディングを調整 */
-      border-radius: 10px; /* 角丸を調整 */
+      margin: auto;
+      padding: 25px;
+      border-radius: 10px;
       width: 95%;
-      max-width: 900px; /* 最大幅を調整 */
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* 影を強調 */
+      max-width: 900px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       position: relative;
     }
 
     .close-button {
       color: #aaa;
       position: absolute;
-      top: 15px; /* 位置を調整 */
-      right: 20px; /* 位置を調整 */
-      font-size: 32px; /* サイズを調整 */
+      top: 15px;
+      right: 20px;
+      font-size: 32px;
       font-weight: bold;
       cursor: pointer;
       transition: color 0.2s ease;
@@ -272,18 +268,18 @@
     }
 
     .history-modal-title {
-      font-size: 1.8em; /* サイズを調整 */
+      font-size: 1.8em;
       color: #4285f4;
-      margin-bottom: 12px; /* マージンを調整 */
+      margin-bottom: 12px;
       text-align: center;
       font-weight: 600;
     }
 
     .history-modal-date {
-      font-size: 1.1em; /* サイズを調整 */
+      font-size: 1.1em;
       color: #666;
       text-align: center;
-      margin-bottom: 20px; /* マージンを調整 */
+      margin-bottom: 20px;
       font-weight: 500;
     }
 
@@ -292,10 +288,10 @@
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: 60vh; /* 高さを見やすく調整 */
+      height: 60vh;
       min-height: 400px;
       gap: 1px;
-      background-color: #e0e0e0; /* グリッド背景色を調整 */
+      background-color: #e0e0e0;
       border: 1px solid #ccc;
       border-radius: 5px;
       overflow: auto;
@@ -303,18 +299,18 @@
 
     .history-cell {
       background-color: white;
-      border: 1px solid #f0f0f0; /* セルボーダーを明るく */
+      border: 1px solid #f0f0f0;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      padding: 3px; /* パディングを調整 */
+      padding: 3px;
       box-sizing: border-box;
-      font-size: 0.7em; /* フォントサイズを調整 */
+      font-size: 0.7em;
       word-break: break-word;
       white-space: pre-wrap;
       overflow: hidden;
-      position: relative; /* img, editableの配置用 */
+      position: relative;
     }
 
     .history-cell img {
@@ -335,7 +331,7 @@
         flex-direction: column;
         align-items: flex-start;
         justify-content: flex-start;
-        font-size: 1em; /* Relative to parent history-cell font-size */
+        font-size: 1em;
         text-align: left;
         padding: 0;
         border: none;
@@ -345,25 +341,25 @@
         white-space: pre-wrap;
         text-overflow: ellipsis;
         display: -webkit-box;
-        -webkit-line-clamp: 5; /* 表示行数を調整 */
+        -webkit-line-clamp: 5;
         -webkit-box-orient: vertical;
-        position: relative; /* imgとの重なり順を調整 */
+        position: relative;
         z-index: 1;
     }
     .history-cell .checkbox-wrapper {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 2px; /* マージンを調整 */
-      line-height: 1.3; /* 行の高さを調整 */
+      margin-bottom: 2px;
+      line-height: 1.3;
     }
     .history-cell .checkbox-wrapper br {
         display: none;
     }
     .history-cell input[type="checkbox"] {
-        margin-right: 4px; /* マージンを調整 */
-        transform: scale(0.9); /* チェックボックスのサイズを調整 */
-        flex-shrink: 0; /* 縮まないように */
-        margin-top: 1px; /* 縦位置調整 */
+        margin-right: 4px;
+        transform: scale(0.9);
+        flex-shrink: 0;
+        margin-top: 1px;
     }
     .history-cell .completed-text {
         text-decoration: line-through;
