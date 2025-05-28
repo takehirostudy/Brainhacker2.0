@@ -627,6 +627,11 @@ grid.addEventListener("mouseover", (e) => {
       selectRange(startCell, currentCell);
     }
   }
+  // If mouse leaves the grid while dragging, stop the selection
+  if (isMouseDown && !e.target.closest(".grid-container")) {
+    isMouseDown = false;
+    startCell = null;
+  }
 });
 
 grid.addEventListener("mouseup", () => {
@@ -701,7 +706,7 @@ document.querySelectorAll(".size-btn").forEach((button) => {
   });
 });
 
-// ★修正済み: insertCheckboxBtn 関数
+// ★修正済み: insertCheckboxBtn 関数 (空のタスクバーと新しい行挿入の仕様に対応)
 document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
@@ -710,6 +715,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   selectedCells.forEach(cell => {
     const editable = cell.querySelector(".editable");
     if (editable) {
+        // 現在の選択範囲を取得
         const selection = window.getSelection();
         const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
@@ -720,20 +726,26 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
         const textSpan = document.createElement('span');
         textSpan.className = 'checkbox-text';
         textSpan.contentEditable = 'true';
-        textSpan.textContent = 'タスク'; // 初期テキストを設定
+        textSpan.textContent = ''; // ★変更: 初期テキストを空にする (ユーザーがすぐに入力できる状態)
 
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(textSpan);
 
+        // 新しいチェックボックスを挿入し、カーソルをタスクバーに移動
         if (range && editable.contains(range.commonAncestorContainer)) {
-            range.deleteContents();
-            range.insertNode(checkboxWrapper);
-            textSpan.focus();
-            selection.collapseToEnd();
+            range.deleteContents(); // 選択範囲の内容を削除
+            range.insertNode(checkboxWrapper); // チェックボックスを挿入
+            // 挿入後、新しい要素の末尾にカーソルを移動
+            range.setEndAfter(checkboxWrapper);
+            range.collapse(false); // 範囲の終わりにカーソルを移動
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textSpan.focus(); // ★重要: テキストスパンにフォーカス
         } else {
+            // セルに何も内容がない場合や、選択範囲がない場合はeditableの末尾に追加
             editable.appendChild(checkboxWrapper);
-            textSpan.focus();
-            selection.collapseToEnd();
+            textSpan.focus(); // ★重要: テキストスパンにフォーカス
+            selection.collapseToEnd(); // カーソルをeditableの末尾に移動
         }
         // ★重要: チェックボックス挿入後にリスナーをアタッチ
         attachCheckboxListeners(checkboxWrapper);
@@ -742,7 +754,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   autoSave();
 });
 
-// ★修正済み: insertBoldCheckboxBtn 関数
+// ★修正済み: insertBoldCheckboxBtn 関数 (空のタスクバーと新しい行挿入の仕様に対応)
 document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
@@ -751,6 +763,7 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
   selectedCells.forEach(cell => {
     const editable = cell.querySelector(".editable");
     if (editable) {
+        // 現在の選択範囲を取得
         const selection = window.getSelection();
         const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 
@@ -762,20 +775,26 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
         textSpan.className = 'checkbox-text';
         textSpan.contentEditable = 'true';
         textSpan.style.fontWeight = 'bold';
-        textSpan.textContent = '重要なタスク'; // 初期テキストを設定
+        textSpan.textContent = ''; // ★変更: 初期テキストを空にする (ユーザーがすぐに入力できる状態)
 
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(textSpan);
 
+        // 新しいチェックボックスを挿入し、カーソルをタスクバーに移動
         if (range && editable.contains(range.commonAncestorContainer)) {
-            range.deleteContents();
-            range.insertNode(checkboxWrapper);
-            textSpan.focus();
-            selection.collapseToEnd();
+            range.deleteContents(); // 選択範囲の内容を削除
+            range.insertNode(checkboxWrapper); // チェックボックスを挿入
+            // 挿入後、新しい要素の末尾にカーソルを移動
+            range.setEndAfter(checkboxWrapper);
+            range.collapse(false); // 範囲の終わりにカーソルを移動
+            selection.removeAllRanges();
+            selection.addRange(range);
+            textSpan.focus(); // ★重要: テキストスパンにフォーカス
         } else {
+            // セルに何も内容がない場合や、選択範囲がない場合はeditableの末尾に追加
             editable.appendChild(checkboxWrapper);
-            textSpan.focus();
-            selection.collapseToEnd();
+            textSpan.focus(); // ★重要: テキストスパンにフォーカス
+            selection.collapseToEnd(); // カーソルをeditableの末尾に移動
         }
         // ★重要: チェックボックス挿入後にリスナーをアタッチ
         attachCheckboxListeners(checkboxWrapper);
