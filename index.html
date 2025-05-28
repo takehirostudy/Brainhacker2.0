@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      padding: 15px; /* マージンとパディングの一貫性: record.htmlのbodyに合わせる */
+      padding: 15px;
       font-family: sans-serif;
       background-color: #f5f5f5;
     }
@@ -22,10 +22,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      /* ヘッダーの最小高さを設定し、内容がずれてもボタン位置を安定させる */
+      min-height: 40px; /* 例: ボタンの高さ+上下パディング+α */
     }
     
     .title-area {
       flex-grow: 1;
+      /* index.html の日付表示とrecord.htmlのh1の垂直方向のずれを吸収するため、
+         必要であればここにもmin-heightやpaddingを調整する */
     }
     
     .nav-buttons {
@@ -42,11 +46,11 @@
       text-decoration: none;
       font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s ease; /* ナビゲーションボタンのスタイル一致 */
+      transition: background-color 0.2s ease;
     }
     
     .nav-btn:hover {
-      background-color: #3367d6; /* ナビゲーションボタンのスタイル一致 */
+      background-color: #3367d6;
     }
 
     .title-input {
@@ -54,15 +58,15 @@
       width: 100%;
       border: none;
       background-color: transparent;
-      /* プレースホルダーの文字色をグレーに */
-      color: #333; /* 入力時の文字色 */
+      color: #333;
       outline: none;
       text-align: center;
-      margin: 10px 0;
+      /* ここを調整して、ヘッダー直下の垂直位置を揃える */
+      margin: 0 0 10px 0; /* 上マージンを0に設定 */
     }
     
     .title-input::placeholder {
-      color: #999; /* Brain Hacker Home の文字色をグレーに */
+      color: #999;
     }
     
     #dateDisplay {
@@ -71,6 +75,9 @@
       margin-bottom: 10px;
       color: #333;
     }
+    /* ... 既存のCSSは省略 ... */
+  </style>
+</head>
     
     .controls {
       display: flex;
