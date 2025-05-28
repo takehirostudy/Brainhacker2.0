@@ -12,17 +12,29 @@
       background-color: #f5f5f5;
       color: #333;
     }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px; /* 少し広めに */
+      margin-bottom: 20px;
+      /* ヘッダーの最小高さを設定し、内容がずれてもボタン位置を安定させる */
+      min-height: 40px; /* index.htmlと合わせる */
     }
-    .header h1 {
-      margin: 0;
-      font-size: 1.8em;
-      color: #333; /* タイトル色を統一 */
+
+    h1 {
+      color: #333;
+      font-size: 1.2em; 
+      font-weight: bold;
+      margin: 0; /* h1のデフォルトマージンを完全にリセット */
+      padding: 0; /* 必要であればパディングもリセット */
     }
+
     .back-btn {
       padding: 8px 15px;
       background-color: #4285f4;
@@ -32,11 +44,15 @@
       text-decoration: none;
       font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s ease; /* ホバー効果を追加 */
+      transition: background-color 0.2s ease;
     }
+
     .back-btn:hover {
       background-color: #3367d6;
     }
+    /* ... 既存のCSSは省略 ... */
+  </style>
+</head>
 
     .container {
       max-width: 1200px;
