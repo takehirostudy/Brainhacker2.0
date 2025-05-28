@@ -975,7 +975,7 @@ document.getElementById("undoBtn").addEventListener("click", () => {
       // If no history, clear the grid
       document.querySelectorAll(".cell").forEach(cell => {
         const editable = cell.querySelector(".editable");
-        const img = cell.querySelector(".img");
+        const img = cell.querySelector("img"); // 修正箇所
         if (editable) editable.innerHTML = "";
         if (img) { img.src = ""; img.style.display = "none"; }
         cell.style.backgroundColor = "";
@@ -997,7 +997,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
         localStorage.removeItem(`brainhack-${getTodayKey()}`);
         document.querySelectorAll(".cell").forEach(cell => {
             const editable = cell.querySelector(".editable");
-            const img = cell.querySelector(".img");
+            const img = cell.querySelector("img"); // 修正箇所
             if (editable) editable.innerHTML = "";
             if (img) { img.src = ""; img.style.display = "none"; }
             cell.style.backgroundColor = "";
@@ -1026,7 +1026,7 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
   if (confirm("選択したセルの内容を削除しますか？")) {
     selectedCells.forEach(cell => {
       const editable = cell.querySelector(".editable");
-      const img = cell.querySelector(".img");
+      const img = cell.querySelector("img"); // 修正箇所
       if (editable) editable.innerHTML = "";
       if (img) {
         img.src = "";
