@@ -21,15 +21,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      /* ヘッダーの最小高さを設定し、内容がずれてもボタン位置を安定させる */
-      min-height: 40px; /* 例: ボタンの高さ+上下パディング+α */
+      margin-bottom: 20px; /* ヘッダーの下マージンは維持 */
+      min-height: 40px; 
     }
     
     .title-area {
       flex-grow: 1;
-      /* index.html の日付表示とrecord.htmlのh1の垂直方向のずれを吸収するため、
-         必要であればここにもmin-heightやpaddingを調整する */
     }
     
     .nav-buttons {
@@ -61,8 +58,7 @@
       color: #333;
       outline: none;
       text-align: center;
-      /* ここを調整して、ヘッダー直下の垂直位置を揃える */
-      margin: 0 0 10px 0; /* 上マージンを0に設定 */
+      margin: 0 0 10px 0; 
     }
     
     .title-input::placeholder {
@@ -72,12 +68,10 @@
     #dateDisplay {
       font-weight: bold;
       font-size: 1.2em;
-      margin-bottom: 10px;
+      /* ここからmargin-bottom: 10px; を削除 */
+      margin-bottom: 0; /* 明示的に0に設定 */
       color: #333;
     }
-    /* ... 既存のCSSは省略 ... */
-  </style>
-</head>
     
     .controls {
       display: flex;
@@ -86,8 +80,8 @@
       margin-bottom: 15px;
       background-color: white;
       padding: 10px;
-      border-radius: 8px; /* シャドウとボーダーの一貫性: record.htmlのrecord-sectionに合わせる */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* シャドウとボーダーの一貫性: record.htmlのrecord-sectionに合わせる */
+      border-radius: 8px; 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
     }
     
     button {
@@ -132,8 +126,8 @@
       height: 75vh;
       gap: 1px;
       background-color: white;
-      border-radius: 8px; /* シャドウとボーダーの一貫性: record.htmlのrecord-sectionに合わせる */
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* シャドウとボーダーの一貫性: record.htmlのrecord-sectionに合わせる */
+      border-radius: 8px; 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
       padding: 2px;
     }
     
@@ -178,60 +172,6 @@
       display: block;
     }
     
-    /* Modal for sharing - 削除対象のためスタイルは不要ですが、残しておきます。 */
-    /* .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    .modal-content {
-      background-color: #fefefe;
-      margin: auto;
-      padding: 20px;
-      border-radius: 5px;
-      width: 80%;
-      max-width: 500px;
-    }
-    
-    .close-btn {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    
-    .close-btn:hover {
-      color: #333;
-    }
-    
-    .share-input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    
-    .copy-btn {
-      background-color: #4285f4;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 4px;
-      cursor: pointer;
-      float: right;
-    } */
-
     /* History Modal specific styles (record.html用なのでindex.htmlでは本来不要) */
     .history-modal-content {
       background-color: #fefefe;
@@ -589,10 +529,10 @@ function restoreState(stateToRestore) {
     
     if (data.imgSrc && data.imgSrc.startsWith("data:image/")) {
       img.src = data.imgSrc;
-      img.style.display = 'block';
+      img.style.display = "block";
     } else {
       img.src = "";
-      img.style.display = 'none';
+      img.style.display = "none";
     }
 
     // `editable` の内容をセットした後、チェックボックスのリスナーをアタッチ
@@ -1022,7 +962,7 @@ document.getElementById("undoBtn").addEventListener("click", () => {
       // If no history, clear the grid
       document.querySelectorAll(".cell").forEach(cell => {
         const editable = cell.querySelector(".editable");
-        const img = cell.querySelector("img");
+        const img = cell.querySelector(".img");
         if (editable) editable.innerHTML = "";
         if (img) { img.src = ""; img.style.display = "none"; }
         cell.style.backgroundColor = "";
@@ -1044,7 +984,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
         localStorage.removeItem(`brainhack-${getTodayKey()}`);
         document.querySelectorAll(".cell").forEach(cell => {
             const editable = cell.querySelector(".editable");
-            const img = cell.querySelector("img");
+            const img = cell.querySelector(".img");
             if (editable) editable.innerHTML = "";
             if (img) { img.src = ""; img.style.display = "none"; }
             cell.style.backgroundColor = "";
@@ -1073,7 +1013,7 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
   if (confirm("選択したセルの内容を削除しますか？")) {
     selectedCells.forEach(cell => {
       const editable = cell.querySelector(".editable");
-      const img = cell.querySelector("img");
+      const img = cell.querySelector(".img");
       if (editable) editable.innerHTML = "";
       if (img) {
         img.src = "";
