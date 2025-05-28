@@ -12,29 +12,29 @@
       font-family: sans-serif;
       background-color: #f5f5f5;
     }
-    
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
     }
-    
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
-      min-height: 40px; 
+      min-height: 40px;
     }
-    
+
     .title-area {
       flex-grow: 1;
     }
-    
+
     .nav-buttons {
       display: flex;
       gap: 10px;
     }
-    
+
     .nav-btn {
       padding: 8px 15px;
       background-color: #4285f4;
@@ -46,7 +46,7 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
     }
-    
+
     .nav-btn:hover {
       background-color: #3367d6;
     }
@@ -59,20 +59,20 @@
       color: #333;
       outline: none;
       text-align: center;
-      margin: 0 0 10px 0; 
+      margin: 0 0 10px 0;
     }
-    
+
     .title-input::placeholder {
       color: #999;
     }
-    
+
     #dateDisplay {
       font-weight: bold;
       font-size: 1.2em;
       margin-bottom: 0; /* これが修正点 */
       color: #333;
     }
-    
+
     .controls {
       display: flex;
       flex-wrap: wrap;
@@ -80,10 +80,10 @@
       margin-bottom: 15px;
       background-color: white;
       padding: 10px;
-      border-radius: 8px; 
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-    
+
     button {
       padding: 6px 10px;
       font-size: 14px;
@@ -93,7 +93,7 @@
       cursor: pointer;
       color: #333;
     }
-    
+
     button:hover {
       background-color: #e9e9e9;
     }
@@ -105,7 +105,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    
+
     .size-btn {
       width: 32px;
       height: 32px;
@@ -117,7 +117,7 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .grid-container {
       display: grid;
       grid-template-columns: repeat(20, 1fr);
@@ -126,28 +126,28 @@
       height: 75vh;
       gap: 1px;
       background-color: white;
-      border-radius: 8px; 
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       padding: 2px;
     }
-    
+
     .cell {
       border: 1px solid #ddd;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; 
-      align-items: flex-start;    
+      justify-content: flex-start;
+      align-items: flex-start;
       padding: 1px;
       font-size: 1vw;
       background-color: white;
-      position: relative; 
-      box-sizing: border-box; 
+      position: relative;
+      box-sizing: border-box;
     }
-    
+
     .cell.selected {
       outline: 2px solid #4285f4;
     }
-    
+
     .editable {
       width: 100%;
       height: 100%;
@@ -164,14 +164,14 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
-    
+
     .cell img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
     }
-    
+
     /* History Modal specific styles (record.html用なのでindex.htmlでは本来不要) */
     .history-modal-content {
       background-color: #fefefe;
@@ -226,7 +226,7 @@
         -webkit-line-clamp: 3; /* Limit to 3 lines */
         -webkit-box-orient: vertical;
     }
-    
+
     /* チェックボックスの改行間隔を狭めるためのスタイル */
     .checkbox-wrapper {
       display: flex;
@@ -265,9 +265,9 @@
         <a href="record.html" class="nav-btn">Record</a>
       </div>
     </div>
-    
+
     <input class="title-input" id="pageTitle" placeholder="Brain Hacker Home" />
-    
+
     <div class="controls">
       <button class="color-btn" data-color="#ffa500" style="background-color:#ffa500;"></button>
       <button class="color-btn" data-color="#f2c1c1" style="background-color:#f2c1c1;"></button>
@@ -292,7 +292,7 @@
       <button id="alignTopLeftBtn">left alignment</button>
       <button id="alignCenterBtn">centered</button>
     </div>
-    
+
     <div class="grid-container" id="grid"></div>
   </div>
 
@@ -341,7 +341,7 @@ function saveState() {
             }
         });
     }
-    
+
     return {
       row: cell.dataset.row,
       col: cell.dataset.col,
@@ -363,7 +363,7 @@ function saveState() {
     date: getTodayKey(),
     cells: state
   };
-  
+
   // Save to localStorage for daily persistence
   localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(fullState))));
 
@@ -429,17 +429,17 @@ function restoreState(stateToRestore) {
           parsed.cells.forEach(c => {
             const temp = document.createElement("div");
             temp.innerHTML = c.html;
-            
+
             // 太字のチェックボックス項目を削除 (太字は持ち越さない)
             const filteredNodes = [...temp.childNodes].filter(node => {
               // <div>.checkbox-wrapper > <input> + <span> 構造に対応
               const wrapper = node.classList?.contains('checkbox-wrapper') ? node : null;
               const cb = wrapper ? wrapper.querySelector("input[type='checkbox']") : null;
               const sp = cb ? cb.nextElementSibling : null; // span.checkbox-text
-              
+
               return !(cb && sp?.style.fontWeight === "bold"); // 太字のチェックボックスをフィルタリング
             });
-            
+
             // 通常のチェックボックスのチェックと取り消し線をリセット
             filteredNodes.forEach(node => {
               const cb = node.querySelector?.("input[type='checkbox']");
@@ -447,10 +447,10 @@ function restoreState(stateToRestore) {
               if (cb && sp && !sp.style.fontWeight.includes("bold")) {
                 cb.removeAttribute("checked");
                 // クラスを削除してスタイルをリセット
-                sp.classList.remove("checked-item"); 
+                sp.classList.remove("checked-item");
               }
             });
-            
+
             const wrapper = document.createElement("div");
             filteredNodes.forEach(n => wrapper.appendChild(n.cloneNode(true)));
             c.html = wrapper.innerHTML;
@@ -508,26 +508,26 @@ function restoreState(stateToRestore) {
 
     const editable = cell.querySelector(".editable");
     const img = cell.querySelector("img");
-    
+
     // editable または img が null ならば、このセルの要素処理をスキップ
     // ただし、これらはHTMLに常に存在するため、通常はnullにならないはず
     if (!editable || !img) {
         console.warn(`Editable or Image element not found in cell at row: ${data.row}, col: ${data.col}. Skipping part of restoration.`);
-        return; 
+        return;
     }
-    
+
     editable.innerHTML = typeof data.html === 'string' ? data.html : "";
-    
+
     editable.style.fontSize = data.fontSize || "";
     editable.style.alignItems = data.alignItems || "";
     editable.style.justifyContent = data.justifyContent || ""; // justifyContentとalignItemsが同じになっていたため修正
     editable.style.textAlign = data.textAlign || "";
-    
+
     cell.style.backgroundColor = data.bgColor || "";
     cell.style.display = data.display || "flex"; // Default to flex if display is not set
     cell.style.gridRow = data.gridRow || "";
     cell.style.gridColumn = data.gridColumn || "";
-    
+
     if (data.imgSrc && data.imgSrc.startsWith("data:image/")) {
       img.src = data.imgSrc;
       img.style.display = "block";
@@ -545,7 +545,7 @@ function restoreState(stateToRestore) {
   if (isLoadedFromLocalStorage && undoHistory.length === 0) {
       // isLoadedFromLocalStorage が true の場合、parsedFullState は LocalStorage からロードされた状態
       // これを undoHistory に追加して、最初のUndoでこの状態に戻れるようにする
-      undoHistory.push(JSON.parse(JSON.stringify(parsedFullState))); 
+      undoHistory.push(JSON.parse(JSON.stringify(parsedFullState)));
   }
 }
 
@@ -567,15 +567,15 @@ for (let row = 0; row < 16; row++) {
     cell.dataset.row = row;
     cell.dataset.col = col;
     cell.setAttribute("tabindex", "0"); // Make cells focusable
-    
+
     const editable = document.createElement("div");
     editable.className = "editable";
     editable.setAttribute("contenteditable", "true");
-    
+
     // editable の内容変更時に autoSave を呼び出す
     // editable.removeEventListener("input", saveState); // 既存のsaveStateを削除 (念のため)
     editable.addEventListener("input", autoSave);
-    
+
     const img = document.createElement("img");
     img.style.display = "none"; // Initially hidden
 
@@ -707,9 +707,11 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
   const firstCell = document.querySelector(`.cell[data-row='${minRow}'][data-col='${minCol}']`);
   if (!firstCell) return;
 
-  // Combine content of selected cells into the first cell
-  let combinedHtml = "";
-  selectedCells.sort((a, b) => { // Sort to ensure consistent content order
+  let combinedHtmlContent = []; // 各セルのHTML内容を格納する配列
+  let previousRow = minRow;
+
+  // ソートされたセルをループしてコンテンツを結合
+  selectedCells.sort((a, b) => {
       const rowA = parseInt(a.dataset.row);
       const colA = parseInt(a.dataset.col);
       const rowB = parseInt(b.dataset.row);
@@ -717,38 +719,48 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
       if (rowA !== rowB) return rowA - rowB;
       return colA - colB;
   }).forEach(cell => {
-      if (cell !== firstCell) {
-          const editableContent = cell.querySelector(".editable")?.innerHTML.trim(); // Optional chainingでnullチェック
-          if (editableContent) {
-              combinedHtml += editableContent + "<br>"; // Add content with line break
-          }
+      const currentRow = parseInt(cell.dataset.row);
+      // 行が変わるたびに、区切りを入れるか、新しい行であることを示すために何らかのマークを入れる
+      if (currentRow > previousRow && combinedHtmlContent.length > 0) {
+          combinedHtmlContent.push('<br><hr>'); // 視覚的な区切りとしてHRタグを追加
       }
+      const editableContent = cell.querySelector(".editable")?.innerHTML.trim();
+      if (editableContent) {
+          combinedHtmlContent.push(editableContent);
+      }
+      previousRow = currentRow;
   });
 
   const firstCellEditable = firstCell.querySelector(".editable");
-  if (firstCellEditable) { // firstCellEditableが存在することを確認
-      // Prepend combined content to first cell's existing content
-      if (combinedHtml) {
-          firstCellEditable.innerHTML = combinedHtml + firstCellEditable.innerHTML;
+  if (firstCellEditable) {
+      // 既存のコンテンツはそのまま残し、新しいコンテンツをその後に追加
+      // あるいは、完全に再構築するために clear してから追加
+      // 例: firstCellEditable.innerHTML = ""; // 既存コンテンツをクリアする場合
+      if (firstCellEditable.innerHTML.trim() !== "" && combinedHtmlContent.length > 0) {
+          // firstCell自身に内容がある場合、結合される内容との間に区切りを入れる
+          firstCellEditable.innerHTML += '<br><hr>' + combinedHtmlContent.join('<br>');
+      } else {
+          firstCellEditable.innerHTML = combinedHtmlContent.join('<br>');
       }
 
-      // Re-attach listeners to the merged cell's content
-      attachCheckboxListeners(firstCellEditable); // 追加: マージ後のチェックボックスリスナー再アタッチ
+      attachCheckboxListeners(firstCellEditable);
   }
 
   // Apply grid styles to the first cell
   firstCell.style.gridRow = `span ${rowSpan}`;
   firstCell.style.gridColumn = `span ${colSpan}`;
-  
+
   // Hide other selected cells
   selectedCells.forEach(cell => {
     if (cell !== firstCell) {
       cell.style.display = "none";
       const editable = cell.querySelector(".editable");
       if(editable) editable.innerHTML = ""; // Clear content of hidden cells
+      const img = cell.querySelector("img");
+      if (img) { img.src = ""; img.style.display = "none"; }
     }
   });
-  
+
   clearSelections();
   autoSave();
 });
@@ -805,7 +817,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
         textSpan.className = 'checkbox-text';
         textSpan.contentEditable = 'true'; // ここでeditableに設定
         textSpan.textContent = ' '; // 初期テキストとしてスペースを挿入
-        
+
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(textSpan);
 
@@ -813,7 +825,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
         if (range && editable.contains(range.commonAncestorContainer)) {
             range.deleteContents(); // 選択範囲を削除
             range.insertNode(checkboxWrapper); // チェックボックスを挿入
-            
+
             // 挿入後、新しいテキスト要素にカーソルを移動
             range.setStart(textSpan, 1); // スペースの後にカーソル
             range.collapse(true);
@@ -858,14 +870,14 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
         textSpan.contentEditable = 'true';
         textSpan.style.fontWeight = 'bold'; // 太字スタイルを適用
         textSpan.textContent = ' '; // 初期テキストとしてスペースを挿入
-        
+
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(textSpan);
 
         if (range && editable.contains(range.commonAncestorContainer)) {
             range.deleteContents();
             range.insertNode(checkboxWrapper);
-            
+
             range.setStart(textSpan, 1);
             range.collapse(true);
             selection.removeAllRanges();
@@ -902,7 +914,7 @@ document.getElementById("insertNoteBtn").addEventListener("click", () => {
             noteSpan.style.color = '#555'; // Adjust color for notes
             noteSpan.style.fontStyle = 'italic'; // Italic style for notes
             noteSpan.textContent = ' '; // Initial text
-            
+
             if (range && editable.contains(range.commonAncestorContainer)) {
                 range.deleteContents();
                 range.insertNode(noteSpan);
