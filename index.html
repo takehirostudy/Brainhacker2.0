@@ -233,7 +233,7 @@
   align-items: flex-start;
   margin-bottom: 2px;
   line-height: 1.2;
-  width: 100%; 
+  width: 100%;
   clear: both;
 }
     }
@@ -798,7 +798,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
   autoSave();
 });
 
-document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
+document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
     return;
@@ -821,7 +821,7 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
         const textSpan = document.createElement('span');
         textSpan.className = 'checkbox-text';
         textSpan.contentEditable = 'true';
-        textSpan.style.fontWeight = 'bold';
+        // textSpan.style.fontWeight = 'bold'; // This line was present in the duplicated function, removed for regular checkbox
         textSpan.textContent = ' ';
 
         checkboxWrapper.appendChild(checkbox);
@@ -849,6 +849,7 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
   autoSave();
 });
 
+// This is the correct definition for insertBoldCheckboxBtn
 document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
