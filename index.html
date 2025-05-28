@@ -228,11 +228,14 @@
     }
 
     /* チェックボックスの改行間隔を狭めるためのスタイル */
-    .checkbox-wrapper {
-      display: flex;
-      align-items: flex-start; /* チェックボックスとテキストを上揃え */
-      margin-bottom: 2px; /* 各チェックボックス行の下マージンを狭める */
-      line-height: 1.2; /* 行の高さを調整 */
+.checkbox-wrapper {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2px;
+  line-height: 1.2;
+  width: 100%; 
+  clear: both; 
+}
     }
     /* editable内のbrタグが不要になるように、margin-bottomで制御 */
     .editable br {
@@ -795,7 +798,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
   autoSave();
 });
 
-document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
+document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
     return;
@@ -803,38 +806,36 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   selectedCells.forEach(cell => {
     const editable = cell.querySelector(".editable");
     if (editable) {
-        // 現在の選択範囲を保持
         const selection = window.getSelection();
         const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-        const currentContent = editable.innerHTML;
 
-        // 新しいチェックボックス要素
+        // 改行を追加（既にコンテンツがある場合）
+        if (editable.innerHTML.trim() !== "" && (!range || !editable.contains(range.commonAncestorContainer))) {
+            editable.appendChild(document.createElement('br'));
+        }
+
         const checkboxWrapper = document.createElement('div');
         checkboxWrapper.className = 'checkbox-wrapper';
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         const textSpan = document.createElement('span');
         textSpan.className = 'checkbox-text';
-        textSpan.contentEditable = 'true'; // ここでeditableに設定
-        textSpan.textContent = ' '; // 初期テキストとしてスペースを挿入
+        textSpan.contentEditable = 'true';
+        textSpan.style.fontWeight = 'bold';
+        textSpan.textContent = ' ';
 
         checkboxWrapper.appendChild(checkbox);
         checkboxWrapper.appendChild(textSpan);
 
-        // 挿入位置を考慮
         if (range && editable.contains(range.commonAncestorContainer)) {
-            range.deleteContents(); // 選択範囲を削除
-            range.insertNode(checkboxWrapper); // チェックボックスを挿入
-
-            // 挿入後、新しいテキスト要素にカーソルを移動
-            range.setStart(textSpan, 1); // スペースの後にカーソル
+            range.deleteContents();
+            range.insertNode(checkboxWrapper);
+            range.setStart(textSpan, 1);
             range.collapse(true);
             selection.removeAllRanges();
             selection.addRange(range);
         } else {
-            // 選択範囲がない場合、末尾に追加
             editable.appendChild(checkboxWrapper);
-            // 末尾に追加した場合もカーソルを移動
             const newRange = document.createRange();
             const newSelection = window.getSelection();
             newRange.setStart(textSpan, 1);
@@ -842,8 +843,6 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
             newSelection.removeAllRanges();
             newSelection.addRange(newRange);
         }
-
-        // 新しく挿入されたチェックボックスにイベントリスナーをアタッチ
         attachCheckboxListeners(checkboxWrapper);
     }
   });
