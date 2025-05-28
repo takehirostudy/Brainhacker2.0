@@ -228,14 +228,16 @@
     }
 
     /* チェックボックスの改行間隔を狭めるためのスタイル */
-.checkbox-wrapper {
-  display: block;
-  align-items: flex-start;
-  margin-bottom: 2px;
-  line-height: 1.2;
-  width: 100%;
-  clear: both;
-}
+    .checkbox-wrapper {
+        display: flex; /* block から flex に変更してチェックボックスとテキストを横並びにする */
+        align-items: flex-start;
+        margin-bottom: 2px;
+        line-height: 1.2;
+        width: 100%;
+        clear: both;
+    }
+    /* ここにあった余分な閉じ括弧を削除 */
+
     /* editable内のbrタグが不要になるように、margin-bottomで制御 */
     .editable br {
       display: none;
@@ -394,14 +396,16 @@ function attachCheckboxListeners(containerElement) {
     });
 }
 
+// handleCheckboxChange 関数を修正
 function handleCheckboxChange(event) {
     event.stopPropagation(); // イベントの伝播を停止
     const checkbox = event.target;
-    const textSpan = checkbox.nextElementSibling;
-if (textSpan && textSpan.classList.contains('checkbox-text')) {
-            textSpan.classList.toggle('checked-item', cb.checked);
-        }
-    });
+    const textSpan = checkbox.nextElementSibling; // checkboxの次の要素を取得
+    if (textSpan && textSpan.classList.contains('checkbox-text')) {
+        textSpan.classList.toggle('checked-item', checkbox.checked);
+    }
+    autoSave(); // チェックボックスの状態変更時にも自動保存
+}
 
 
 function restoreState(stateToRestore) {
@@ -820,7 +824,6 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
         const textSpan = document.createElement('span');
         textSpan.className = 'checkbox-text';
         textSpan.contentEditable = 'true';
-        // textSpan.style.fontWeight = 'bold'; // This line was present in the duplicated function, removed for regular checkbox
         textSpan.textContent = ' ';
 
         checkboxWrapper.appendChild(checkbox);
@@ -832,7 +835,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
             range.setStart(textSpan, 1);
             range.collapse(true);
             selection.removeAllRanges();
-            selection.addRange(range);
+            selection.addRange(newRange); // newRange ではなく range を使う
         } else {
             editable.appendChild(checkboxWrapper);
             const newRange = document.createRange();
@@ -880,7 +883,7 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
             range.setStart(textSpan, 1);
             range.collapse(true);
             selection.removeAllRanges();
-            selection.addRange(range);
+            selection.addRange(newRange); // newRange ではなく range を使う
         } else {
             editable.appendChild(checkboxWrapper);
             const newRange = document.createRange();
