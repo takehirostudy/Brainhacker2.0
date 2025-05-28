@@ -165,6 +165,11 @@
       white-space: pre-wrap; /* 空白と改行を維持し、必要に応じて改行 */
       word-break: break-word; /* 長い単語を改行 */
     }
+
+    /* ★追加: editable内のbrタグを非表示にする */
+    .editable br {
+        display: none;
+    }
     /* === 修正されたCSS部分ここまで === */
 
     .cell img {
@@ -229,14 +234,13 @@
         -webkit-box-orient: vertical;
     }
 
-    /* チェックボックスの改行間隔を狭めるためのスタイル */
-    /* ここから修正されたCSS */
+    /* チェックボックスのスタイル */
     .checkbox-wrapper {
       display: flex; /* チェックボックスとテキストを横並びにする */
       align-items: flex-start; /* チェックボックスとテキストの開始位置を揃える */
       margin-bottom: 2px; /* チェックボックス間の間隔 */
       line-height: 1.5; /* 行の高さ */
-      width: 100%; /* ラッパーがセルの幅いっぱいに広がるようにする */
+      width: 100%; /* ★重要: ラッパーがセルの幅いっぱいに広がるようにする */
       box-sizing: border-box; /* パディングとボーダーを要素の合計幅と高さに含める */
     }
 
@@ -807,6 +811,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
   autoSave();
 });
 
+// ★修正済み: insertCheckboxBtn 関数
 document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
@@ -834,22 +839,15 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
             // 現在のカーソル位置に挿入
             range.deleteContents();
             range.insertNode(checkboxWrapper);
-            // 新しいRangeを作成し、textSpanの末尾にカーソルを移動
-            const newRange = document.createRange();
-            newRange.setStart(textSpan, textSpan.textContent.length); // ここを修正
-            newRange.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(newRange);
+            // カーソルをtextSpanの末尾に移動し、フォーカスする
+            textSpan.focus();
+            selection.collapseToEnd();
         } else {
             // editableの最後に挿入
             editable.appendChild(checkboxWrapper);
-            // 新しいRangeを作成し、textSpanの末尾にカーソルを移動
-            const newRange = document.createRange();
-            const newSelection = window.getSelection();
-            newRange.setStart(textSpan, textSpan.textContent.length); // ここを修正
-            newRange.collapse(true);
-            newSelection.removeAllRanges();
-            newSelection.addRange(newRange);
+            // カーソルをtextSpanの末尾に移動し、フォーカスする
+            textSpan.focus();
+            selection.collapseToEnd();
         }
         attachCheckboxListeners(checkboxWrapper);
     }
@@ -857,6 +855,7 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
   autoSave();
 });
 
+// ★修正済み: insertBoldCheckboxBtn 関数
 document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
   if (selectedCells.length === 0) {
     alert("セルを選択してください。");
@@ -884,20 +883,12 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
         if (range && editable.contains(range.commonAncestorContainer)) {
             range.deleteContents();
             range.insertNode(checkboxWrapper);
-
-            const newRange = document.createRange();
-            newRange.setStart(textSpan, textSpan.textContent.length); // ここを修正
-            newRange.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(newRange);
+            textSpan.focus();
+            selection.collapseToEnd();
         } else {
             editable.appendChild(checkboxWrapper);
-            const newRange = document.createRange();
-            const newSelection = window.getSelection();
-            newRange.setStart(textSpan, textSpan.textContent.length); // ここを修正
-            newRange.collapse(true);
-            newSelection.removeAllRanges();
-            newSelection.addRange(newRange);
+            textSpan.focus();
+            selection.collapseToEnd();
         }
         attachCheckboxListeners(checkboxWrapper); // イベントリスナーをアタッチ
     }
@@ -983,7 +974,7 @@ document.getElementById("undoBtn").addEventListener("click", () => {
       // If no history, clear the grid
       document.querySelectorAll(".cell").forEach(cell => {
         const editable = cell.querySelector(".editable");
-        const img = cell.querySelector("img"); // 修正箇所
+        const img = cell.querySelector("img");
         if (editable) editable.innerHTML = "";
         if (img) { img.src = ""; img.style.display = "none"; }
         cell.style.backgroundColor = "";
@@ -1005,7 +996,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
         localStorage.removeItem(`brainhack-${getTodayKey()}`);
         document.querySelectorAll(".cell").forEach(cell => {
             const editable = cell.querySelector(".editable");
-            const img = cell.querySelector("img"); // 修正箇所
+            const img = cell.querySelector("img");
             if (editable) editable.innerHTML = "";
             if (img) { img.src = ""; img.style.display = "none"; }
             cell.style.backgroundColor = "";
