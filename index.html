@@ -380,7 +380,7 @@ function saveState() {
 
 // === チェックボックスのイベントリスナーをアタッチする共通関数 ===
 function attachCheckboxListeners(containerElement) {
-    if (!containerElement) return; // コンテナ要素がnullでないことを確認
+    if (!containerElement) return;
     containerElement.querySelectorAll("input[type='checkbox']").forEach(cb => {
         // 既存のリスナーを削除 (二重登録防止)
         cb.removeEventListener("change", handleCheckboxChange);
@@ -396,6 +396,7 @@ function attachCheckboxListeners(containerElement) {
 }
 
 function handleCheckboxChange(event) {
+    event.stopPropagation(); // イベントの伝播を停止
     const checkbox = event.target;
     const textSpan = checkbox.nextElementSibling;
     if (textSpan) {
