@@ -80,7 +80,7 @@
     button {
       padding: 6px 10px;
       font-size: 14px;
-      background-color: #f1f1f1;
+      background-color: #e8f0fe;
       border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
@@ -104,7 +104,7 @@
       height: 32px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      background-color: #f1f1f1;
+      background-color: #e8f0fe;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -614,14 +614,18 @@ grid.addEventListener("mousedown", (e) => {
     isMouseDown = true;
     startCell = e.target.closest(".cell");
     clearSelections();
-    toggleCellSelection(startCell);
+    // Only select the cell if it's currently visible
+    if (startCell.style.display !== 'none') {
+        toggleCellSelection(startCell);
+    }
   }
 });
 
 grid.addEventListener("mouseover", (e) => {
   if (isMouseDown && e.target.closest(".cell")) {
     const currentCell = e.target.closest(".cell");
-    if (startCell && currentCell) {
+    // Only consider visible cells for selection range
+    if (startCell && currentCell && currentCell.style.display !== 'none') {
       selectRange(startCell, currentCell);
     }
   }
@@ -644,7 +648,7 @@ function clearSelections() {
 }
 
 function toggleCellSelection(cell) {
-  if (!cell) return;
+  if (!cell || cell.style.display === 'none') return; // Don't select hidden cells
   cell.classList.toggle("selected");
   if (cell.classList.contains("selected")) {
     selectedCells.push(cell);
@@ -668,7 +672,8 @@ function selectRange(start, end) {
   for (let r = minRow; r <= maxRow; r++) {
     for (let c = minCol; c <= maxCol; c++) {
       const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
-      if (cell) {
+      // Only add to selection if the cell is visible
+      if (cell && cell.style.display !== 'none') { 
         cell.classList.add("selected");
         selectedCells.push(cell);
       }
@@ -717,10 +722,26 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
   const rowSpan = maxRow - minRow + 1;
   const colSpan = maxCol - minCol + 1;
 
+  // Check if selected cells form a contiguous rectangle
+  const expectedCells = [];
+  for (let r = minRow; r <= maxRow; r++) {
+      for (let c = minCol; c <= maxCol; c++) {
+          expectedCells.push(document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`));
+      }
+  }
+  // Ensure all cells in the bounding box are selected and visible
+  if (selectedCells.length !== expectedCells.length || !selectedCells.every(cell => expectedCells.includes(cell) && cell.style.display !== 'none')) {
+      alert("選択されたセルは連続した長方形を形成している必要があります。または、非表示のセルが含まれています。");
+      clearSelections();
+      return;
+  }
+
+
   const firstCell = document.querySelector(`.cell[data-row='${minRow}'][data-col='${minCol}']`);
   if (!firstCell) return;
 
   let combinedHtml = "";
+  // Sort cells by row then column to ensure content order
   selectedCells.sort((a, b) => {
       const rowA = parseInt(a.dataset.row);
       const colA = parseInt(a.dataset.col);
@@ -729,25 +750,31 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
       if (rowA !== rowB) return rowA - rowB;
       return colA - colB;
   }).forEach(cell => {
-      if (cell !== firstCell && cell.style.display !== 'none') {
-          const editableContent = cell.querySelector(".editable").innerHTML.trim();
-          if (editableContent) {
-              combinedHtml += editableContent + "<br>";
-          }
+      const editableContent = cell.querySelector(".editable").innerHTML.trim();
+      if (editableContent && cell !== firstCell) { // Only append content from cells that are not the firstCell
+          combinedHtml += editableContent + "<br>"; 
+      }
+      // Clear content of cells that will be hidden, to prevent duplication on split
+      if (cell !== firstCell) {
+          cell.querySelector(".editable").innerHTML = "";
+          cell.querySelector("img").src = "";
+          cell.querySelector("img").style.display = "none";
       }
   });
 
   const firstCellEditable = firstCell.querySelector(".editable");
+  // Prepend combined content to first cell's existing content, or set if no existing content
   if (combinedHtml) {
+      // Remove trailing <br> if it exists
       if (combinedHtml.endsWith('<br>')) {
           combinedHtml = combinedHtml.slice(0, -4);
       }
       firstCellEditable.innerHTML = combinedHtml + (firstCellEditable.innerHTML ? '<br>' + firstCellEditable.innerHTML : '');
   }
 
-  // Apply grid styles to the first cell (1-based indexing for grid-row-start/grid-column-start)
-  firstCell.style.gridRow = `${minRow + 1} / span ${rowSpan}`;
-  firstCell.style.gridColumn = `${minCol + 1} / span ${colSpan}`;
+  // Apply grid styles to the first cell
+  firstCell.style.gridRow = `${minRow + 1} / span ${rowSpan}`; // Use 1-based indexing for grid-row-start
+  firstCell.style.gridColumn = `${minCol + 1} / span ${colSpan}`; // Use 1-based indexing for grid-column-start
   
   // Hide other selected cells and ensure their grid properties are reset
   selectedCells.forEach(cell => {
@@ -758,6 +785,7 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
     }
   });
 
+  // Re-attach listeners to the merged cell's content
   attachCheckboxListeners(firstCellEditable);
   
   clearSelections();
@@ -775,8 +803,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
   const col = parseInt(cellToSplit.dataset.col);
 
   // Get current span values (default to 1 if not explicitly set)
-  // Use regex to extract the span value from gridRow/gridColumn style.
-  // If not found, default to 1.
+  // Need to parse from computed style or initial state if it's not set directly
   const currentRowSpan = cellToSplit.style.gridRow ? parseInt(cellToSplit.style.gridRow.match(/span (\d+)/)?.[1] || 1) : 1;
   const currentColSpan = cellToSplit.style.gridColumn ? parseInt(cellToSplit.style.gridColumn.match(/span (\d+)/)?.[1] || 1) : 1;
 
@@ -858,9 +885,9 @@ document.getElementById("uploadImageBtn").addEventListener("click", () => {
 document.getElementById("imageInput").addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file && selectedCells.length > 0) {
+    const targetCell = selectedCells[0];
     const reader = new FileReader();
     reader.onload = (e) => {
-      const targetCell = selectedCells[0];
       const img = targetCell.querySelector("img");
       const editable = targetCell.querySelector(".editable");
 
@@ -950,16 +977,16 @@ document.getElementById('alignCenterBtn').addEventListener('click', () => {
 
 
 // === シェア機能 ===
+// shareBtn, shareModal, closeShareModalBtn, shareLinkInput, copyBtn はHTML内に定義されていないため、
+// 該当するHTML要素が追加されるまで、以下のイベントリスナーは動作しません。
+// 必要に応じてHTMLにこれらの要素を追加してください。
+/*
 const shareModal = document.getElementById("shareModal");
 const shareBtn = document.getElementById("shareBtn");
 const closeShareModalBtn = shareModal.querySelector(".close-btn");
 const shareLinkInput = document.getElementById("shareLink");
 const copyBtn = document.getElementById("copyBtn");
 
-// shareBtn, shareModal, closeShareModalBtn, shareLinkInput, copyBtn はHTML内に定義されていないため、
-// 該当するHTML要素が追加されるまで、以下のイベントリスナーは動作しません。
-// 必要に応じてHTMLにこれらの要素を追加してください。
-/*
 shareBtn.addEventListener("click", () => {
   saveState();
   const currentState = localStorage.getItem(`brainhack-${getTodayKey()}`);
