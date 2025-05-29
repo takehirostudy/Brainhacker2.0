@@ -10,6 +10,7 @@
       height: 100%; /* htmlとbodyがビューポートの全高を使用するように設定 */
       margin: 0;
       padding: 0; /* bodyのpaddingをなくす */
+      overflow: hidden; /* ページ全体のスクロールを禁止 */
     }
 
     body {
@@ -21,7 +22,7 @@
     }
 
     .container {
-      max-width: 1600px; /* ここを1400pxから1600pxに変更しました */
+      max-width: 1200px; /* ここを1600pxから1200pxに変更しました */
       margin: 0 auto;
       flex-grow: 1; /* 利用可能なスペースを埋めるように拡張 */
       display: flex; /* containerもFlexboxコンテナにする */
@@ -146,7 +147,7 @@
       width: 100%;
       height: auto; /* 高さを自動調整 */
       flex-grow: 1; /* 利用可能なスペースを埋める */
-      overflow: auto; /* グリッドの内容が溢れた場合にスクロール */
+      overflow: hidden; /* グリッド全体のスクロールを禁止 */
       min-height: 0; /* Flexアイテムが内容によって拡大しすぎないように */
       gap: 1px;
       background-color: white;
@@ -166,6 +167,7 @@
       font-size: 1vw;
       background-color: white;
       position: relative;
+      overflow: hidden; /* セル内のコンテンツがはみ出す場合にクリップ */
     }
 
     .cell.selected {
@@ -184,7 +186,7 @@
       padding: 2px;
       border: none;
       outline: none;
-      overflow: auto;
+      overflow: auto; /* editableエリア内はスクロール可能 */
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -844,7 +846,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
 
   // Reset styles for the main cell
   cellToSplit.style.gridRow = "";
-  celltoSplit.style.gridColumn = "";
+  cellToSplit.style.gridColumn = "";
   cellToSplit.style.display = "flex"; // Ensure it's visible after splitting
 
   // Show all cells covered by the original span and reset their styles
