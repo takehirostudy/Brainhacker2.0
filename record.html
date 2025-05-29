@@ -31,8 +31,8 @@
       color: #333;
       font-size: 1.2em;
       font-weight: bold;
-      margin: 0; /* h1のデフォルトマージンを完全にリセット */
-      padding: 0; /* 必要であればパディングもリセット */
+      margin: 0;
+      padding: 0;
     }
 
     .back-btn {
@@ -51,12 +51,23 @@
       background-color: #3367d6;
     }
 
+    /* 全てのセクションを囲む新しいコンテナ */
+    .all-sections-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        margin-bottom: 25px; /* 下部にスペースを確保 */
+    }
+
     .record-section {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 25px;
+      /* 背景、パディング、シャドウはall-sections-containerに移管 */
+      padding: 0; /* 個々のセクションのパディングは内部h2などで調整 */
+      margin-bottom: 25px; /* 各セクション間の間隔 */
+    }
+
+    .record-section:last-child {
+        margin-bottom: 0; /* 最後のセクションの下マージンは不要 */
     }
 
     .record-section h2 {
@@ -66,6 +77,11 @@
       margin-bottom: 20px;
       font-size: 1.4em;
       font-weight: 600;
+      padding-top: 10px; /* 各セクションのタイトル上部にスペース */
+    }
+
+    .record-section:first-child h2 {
+        padding-top: 0; /* 最初のセクションのタイトル上部のスペースは不要 */
     }
 
     .summary-grid {
@@ -162,15 +178,14 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      /* タイトルは表示しないので、実際には使われません */
+      display: none;
     }
 
     /* Continuous Streaks Section */
     .streaks-section {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 25px;
+      /* 背景、パディング、シャドウはall-sections-containerに移管 */
+      padding: 0; /* 個々のセクションのパディングは内部h2などで調整 */
     }
 
     .streaks-section h2 {
@@ -375,50 +390,52 @@
       <a href="index.html" class="back-btn">Home</a>
     </div>
 
-    <div class="record-section">
-      <h2>Today's Summary</h2>
-      <div class="summary-grid">
-        <div class="summary-item">
-          <h3>Today's Completion</h3>
-          <p class="completion-percentage" id="todayCompletion">0%</p>
-          <p class="completion-tasks" id="todayTasks">0/0 tasks completed</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="todayProgressBar"></div>
-          </div>
+    <div class="all-sections-container">
+        <div class="record-section">
+          <h2>Today's Summary</h2>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <h3>Today's Completion</h3>
+              <p class="completion-percentage" id="todayCompletion">0%</p>
+              <p class="completion-tasks" id="todayTasks">0/0 tasks completed</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="todayProgressBar"></div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <h3>Yesterday's Completion</h3>
+              <p class="completion-percentage" id="yesterdayCompletion">0%</p>
+              <p class="completion-tasks" id="yesterdayTasks">0/0 tasks completed</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="yesterdayProgressBar"></div>
+              </div>
+            </div>
+            <div class="summary-item">
+              <h3>Average Completion (Last 7 Days)</h3>
+              <p class="completion-percentage" id="avgCompletion7Days">0%</p>
+              <p class="completion-tasks">&nbsp;</p>
+              <div class="progress-bar-container">
+                <div class="progress-bar" id="avg7DaysProgressBar"></div>
+              </div>
+            </div>
+            </div>
         </div>
-        <div class="summary-item">
-          <h3>Yesterday's Completion</h3>
-          <p class="completion-percentage" id="yesterdayCompletion">0%</p>
-          <p class="completion-tasks" id="yesterdayTasks">0/0 tasks completed</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="yesterdayProgressBar"></div>
-          </div>
-        </div>
-        <div class="summary-item">
-          <h3>Average Completion (Last 7 Days)</h3>
-          <p class="completion-percentage" id="avgCompletion7Days">0%</p>
-          <p class="completion-tasks">&nbsp;</p>
-          <div class="progress-bar-container">
-            <div class="progress-bar" id="avg7DaysProgressBar"></div>
-          </div>
-        </div>
-        </div>
-    </div>
 
-    <div class="streaks-section">
-      <h2>Continuous Streaks</h2>
-      <div id="continuousStreaksList">
-        <div class="streak-item">
-          <span class="streak-task-content">No active streaks found.</span>
-          <span class="streak-days"></span>
+        <div class="streaks-section record-section">
+          <h2>Continuous Streaks</h2>
+          <div id="continuousStreaksList">
+            <div class="streak-item">
+              <span class="streak-task-content">No active streaks found.</span>
+              <span class="streak-days"></span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="record-section">
-      <h2>History</h2>
-      <ul id="historyList" class="history-list">
-        </ul>
+        <div class="record-section">
+          <h2>History</h2>
+          <ul id="historyList" class="history-list">
+            </ul>
+        </div>
     </div>
   </div>
 
@@ -548,11 +565,12 @@
         dateSpan.classList.add('history-date');
         dateSpan.textContent = data.date;
 
-        const titleSpan = document.createElement('span');
-        titleSpan.classList.add('history-title');
-        titleSpan.textContent = data.title || '（タイトルなし）';
+        // タイトル表示は削除するため、titleSpanは生成しない
+        // const titleSpan = document.createElement('span');
+        // titleSpan.classList.add('history-title');
+        // titleSpan.textContent = data.title || '（タイトルなし）';
 
-        listItem.append(dateSpan, titleSpan);
+        listItem.append(dateSpan); // 日付のみを追加
         historyList.appendChild(listItem);
 
         listItem.addEventListener('click', () => displayHistoryModal(data));
@@ -725,49 +743,35 @@
             editableDiv.style.alignItems = cellInfo.alignItems || '';
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
-            
-            // Clear existing content before setting innerHTML
-            editableDiv.innerHTML = ''; 
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = cellInfo.html || '';
+            editableDiv.innerHTML = cellInfo.html || '';
 
-            // Append child elements of tempDiv directly to editableDiv
-            while (tempDiv.firstChild) {
-                editableDiv.appendChild(tempDiv.firstChild);
-            }
-
-            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                checkbox.disabled = true; // Disable checkboxes in modal
-                const textSpan = checkbox.nextElementSibling;
+            // Attach checkbox event listeners for modal display
+            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.disabled = true; // モーダル内ではチェックボックスを無効化
+                const textSpan = cb.nextElementSibling;
                 if (textSpan) {
-                    textSpan.style.textDecoration = checkbox.hasAttribute('checked') ? 'line-through' : 'none';
-                    textSpan.style.color = checkbox.hasAttribute('checked') ? '#888' : '';
+                    // 保存された checked 属性に基づいてスタイルを適用
+                    if (cb.hasAttribute('checked')) {
+                        textSpan.classList.add('completed-text');
+                    } else {
+                        textSpan.classList.remove('completed-text');
+                    }
                 }
             });
 
             const img = document.createElement('img');
-            // Display image data if it exists and is a valid base64 image
             if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
                 img.src = cellInfo.imgSrc;
                 img.style.display = 'block';
-                editableDiv.style.display = 'none'; // Hide editableDiv if image is present
             } else {
-                img.src = "";
                 img.style.display = 'none';
-                editableDiv.style.display = 'flex'; // Show editableDiv if no image
             }
+
             cell.appendChild(editableDiv);
             cell.appendChild(img);
           } else {
-            // If no cell info, create an empty editableDiv and img
-            const editableDiv = document.createElement('div');
-            editableDiv.classList.add('editable');
-            editableDiv.innerHTML = '';
-            const img = document.createElement('img');
-            img.style.display = 'none';
-            cell.appendChild(editableDiv);
-            cell.appendChild(img);
+            // データがないセルは空のまま表示
+            cell.style.backgroundColor = 'white'; // デフォルトの背景色
           }
           historyGridDisplay.appendChild(cell);
         }
@@ -786,7 +790,7 @@
       }
     });
 
-    // --- Initialization ---
+    // --- Initial Load ---
     document.addEventListener('DOMContentLoaded', () => {
       updateSummary();
       populateHistoryList();
