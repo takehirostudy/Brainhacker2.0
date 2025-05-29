@@ -22,9 +22,10 @@
       justify-content: space-between;
       align-items: center; /* 中央揃えを維持 */
       margin-bottom: 20px;
-      min-height: 40px; /* Recordページのヘッダーの高さと揃える */
-      padding-top: 5px; /* 微調整 */
-      padding-bottom: 5px; /* 微調整 */
+      /* record.htmlのheaderに合わせてpaddingと高さを調整 */
+      padding: 10px 0; /* 上下のパディングをrecord.htmlに合わせて調整 */
+      min-height: 40px; /* 必要であればmin-heightも調整 */
+      box-sizing: border-box; /* paddingを含めた高さ */
     }
     
     .title-area {
@@ -37,7 +38,7 @@
     }
     
     .nav-btn {
-      padding: 8px 15px; /* record.htmlのボタンに合わせる */
+      padding: 8px 15px; /* record.htmlのボタンと揃える */
       background-color: #4285f4;
       color: white;
       border: none;
@@ -46,11 +47,11 @@
       font-size: 14px;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      line-height: 1; /* テキストの垂直方向を中央に */
+      line-height: 1; /* テキストの垂直方向を中央に揃える */
       display: flex; /* Flexboxを使って内容を中央揃え */
       align-items: center; /* 垂直方向中央 */
       justify-content: center; /* 水平方向中央 */
-      height: 38px; /* 明示的な高さを設定して揃える */
+      height: 38px; /* 明示的な高さを設定して揃える (paddingとborderを含めた高さ) */
       box-sizing: border-box; /* paddingとborderを含めた高さにする */
     }
     
@@ -826,7 +827,7 @@ document.getElementById("splitBtn").addEventListener("click", () => {
 
   // Reset styles for the main cell
   cellToSplit.style.gridRow = "";
-  cellToSplit.style.gridColumn = "";
+  celltoSplit.style.gridColumn = "";
   cellToSplit.style.display = "flex"; // Ensure it's visible after splitting
 
   // Show all cells covered by the original span and reset their styles
