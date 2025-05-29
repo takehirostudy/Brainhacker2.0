@@ -722,16 +722,19 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
   const rowSpan = maxRow - minRow + 1;
   const colSpan = maxCol - minCol + 1;
 
-  // Check if selected cells form a contiguous rectangle
+  // Check if selected cells form a contiguous rectangle and are all visible
   const expectedCells = [];
   for (let r = minRow; r <= maxRow; r++) {
       for (let c = minCol; c <= maxCol; c++) {
-          expectedCells.push(document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`));
+          const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+          if (cell && cell.style.display !== 'none') { // Only consider visible cells
+              expectedCells.push(cell);
+          }
       }
   }
-  // Ensure all cells in the bounding box are selected and visible
-  if (selectedCells.length !== expectedCells.length || !selectedCells.every(cell => expectedCells.includes(cell) && cell.style.display !== 'none')) {
-      alert("選択されたセルは連続した長方形を形成している必要があります。または、非表示のセルが含まれています。");
+  // Ensure all cells in the bounding box are selected and are not hidden
+  if (selectedCells.length !== expectedCells.length || !selectedCells.every(cell => expectedCells.includes(cell))) {
+      alert("選択されたセルは連続した長方形を形成している必要があり、かつ既に非表示になっているセルを含めません。");
       clearSelections();
       return;
   }
@@ -754,7 +757,7 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
       if (editableContent && cell !== firstCell) { // Only append content from cells that are not the firstCell
           combinedHtml += editableContent + "<br>"; 
       }
-      // Clear content of cells that will be hidden, to prevent duplication on split
+      // Clear content of cells that will be hidden
       if (cell !== firstCell) {
           cell.querySelector(".editable").innerHTML = "";
           cell.querySelector("img").src = "";
@@ -941,14 +944,36 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
     alert("削除するセルを選択してください。");
     return;
   }
+
   selectedCells.forEach((cell) => {
-    cell.querySelector(".editable").innerHTML = "";
-    cell.querySelector("img").src = "";
-    cell.querySelector("img").style.display = "none";
-    cell.style.backgroundColor = "";
-    cell.style.display = "flex";
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    // Get current span values (default to 1 if not explicitly set)
+    const currentRowSpan = cell.style.gridRow ? parseInt(cell.style.gridRow.match(/span (\d+)/)?.[1] || 1) : 1;
+    const currentColSpan = cell.style.gridColumn ? parseInt(cell.style.gridColumn.match(/span (\d+)/)?.[1] || 1) : 1;
+
+    // Reset styles for the main cell
     cell.style.gridRow = "";
     cell.style.gridColumn = "";
+    cell.style.display = "flex"; // Ensure it's visible after deleting
+
+    // Show all cells covered by the original span and reset their styles
+    // This is crucial if the deleted cell was a merged cell
+    for (let r = row; r < row + currentRowSpan; r++) {
+      for (let c = col; c < col + currentColSpan; c++) {
+        const affectedCell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+        if (affectedCell) {
+          affectedCell.style.display = "flex"; // Make sure all cells in the original merged area are visible
+          affectedCell.style.gridRow = "";     // Reset their grid properties
+          affectedCell.style.gridColumn = "";  // Reset their grid properties
+          affectedCell.querySelector(".editable").innerHTML = ""; // Clear content
+          affectedCell.querySelector("img").src = "";             // Clear image
+          affectedCell.querySelector("img").style.display = "none"; // Hide image
+          affectedCell.style.backgroundColor = ""; // Reset background color
+        }
+      }
+    }
   });
   clearSelections();
   autoSave();
