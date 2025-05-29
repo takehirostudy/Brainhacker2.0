@@ -138,16 +138,16 @@
     .black-text-btn { /* New style for black text button */
         width: 32px;
         height: 32px;
-        border: 1px solid #e8f0fe; /* White border */
+        border: 1px solid #ddd; /* Same border as surrounding buttons */
         border-radius: 4px;
-        background-color: black; /* Black background */
+        background-color: #e8f0fe; /* Same background as surrounding buttons */
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         color: black; /* Black text */
         font-size: 1.6vw; /* Same size as middle 'A' */
-        text-shadow: 0 0 2px white; /* Outline for black text on black background */
+        text-shadow: 0 0 2px white; /* Outline for black text on light background */
     }
     
     .grid-container {
@@ -363,7 +363,9 @@
   <button class="border-color-btn" data-border-color="#555555" style="border-color:#555555;"></button>
   <button id="mergeBtn">integrate</button>
   <button id="splitBtn">separate</button>
-  <button id="insertCheckboxBtn">✅</button> <button id="insertBoldCheckboxBtn">☑️</button> <button id="uploadImageBtn">🖼️</button>
+  <button id="insertCheckboxBtn">✅</button>
+  <button id="insertBoldCheckboxBtn">☑️</button>
+  <button id="uploadImageBtn">🖼️</button>
   <input type="file" id="imageInput" accept="image/*" style="display: none;" />
   <button class="black-text-btn" data-text-color="black">A</button>
   <button class="white-text-btn" data-text-color="white">A</button>
