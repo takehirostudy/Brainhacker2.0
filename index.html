@@ -26,7 +26,7 @@
       flex-grow: 1; /* 利用可能なスペースを埋めるように拡張 */
       display: flex; /* containerもFlexboxコンテナにする */
       flex-direction: column; /* 子要素を縦に並べる */
-      padding: 20px; /* 全体の余白をcontainerに設定 */
+      padding: 10px 20px; /* 上下のpaddingを少し減らし、左右は維持 */
       box-sizing: border-box; /* paddingがサイズ計算に含まれるようにする */
     }
     
@@ -34,9 +34,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center; /* 中央揃えを維持 */
-      margin-bottom: 20px;
-      padding: 10px 0;
-      min-height: 40px;
+      margin-bottom: 5px; /* 余白を削減 */
+      padding: 5px 0; /* 余白を削減 */
+      min-height: 30px; /* 最小高さを調整 */
       box-sizing: border-box;
     }
     
@@ -46,24 +46,24 @@
     
     .nav-buttons {
       display: flex;
-      gap: 10px;
+      gap: 8px; /* ボタン間のスペースを削減 */
     }
     
     .nav-btn {
-      padding: 8px 15px;
+      padding: 6px 12px; /* パディングを削減 */
       background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 5px;
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px; /* フォントサイズを少し小さく */
       cursor: pointer;
       transition: background-color 0.2s ease;
       line-height: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 38px;
+      height: 32px; /* 高さを削減 */
       box-sizing: border-box;
     }
     
@@ -72,14 +72,14 @@
     }
     
     .title-input {
-      font-size: 2em;
+      font-size: 1.8em; /* フォントサイズを少し小さく */
       width: 100%;
       border: none;
       background-color: transparent;
       color: #333;
       outline: none;
       text-align: center;
-      margin: 10px 0;
+      margin: 5px 0; /* 余白を削減 */
     }
     
     .title-input::placeholder {
@@ -88,25 +88,25 @@
     
     #dateDisplay {
       font-weight: bold;
-      font-size: 1.2em;
-      margin-bottom: 10px;
+      font-size: 1.1em; /* フォントサイズを少し小さく */
+      margin-bottom: 5px; /* 余白を削減 */
       color: #333;
     }
     
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 15px;
+      gap: 5px; /* ボタン間のスペースを削減 */
+      margin-bottom: 10px; /* 余白を削減 */
       background-color: white;
-      padding: 10px;
+      padding: 5px; /* パディングを削減 */
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     
     button {
-      padding: 6px 10px;
-      font-size: 14px;
+      padding: 4px 8px; /* パディングを削減 */
+      font-size: 13px; /* フォントサイズを小さく */
       background-color: #e8f0fe;
       border: 1px solid #ddd;
       border-radius: 4px;
@@ -119,16 +119,16 @@
     }
 
     .color-btn {
-      width: 24px;
-      height: 24px;
+      width: 20px; /* 幅を削減 */
+      height: 20px; /* 高さを削減 */
       border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
     }
     
     .size-btn {
-      width: 32px;
-      height: 32px;
+      width: 28px; /* 幅を削減 */
+      height: 28px; /* 高さを削減 */
       border: 1px solid #ddd;
       border-radius: 4px;
       background-color: #e8f0fe;
@@ -136,6 +136,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 10px; /* フォントサイズを小さく */
     }
     
     .grid-container {
@@ -902,11 +903,6 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
 document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
     insertTextIntoSelectedCell("task", true, true);
 });
-
-// "note"機能のイベントリスナーを削除
-// document.getElementById("insertNoteBtn").addEventListener("click", () => {
-//     insertTextIntoSelectedCell("note", false, false);
-// });
 
 
 // === 画像アップロード ===
