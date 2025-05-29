@@ -9,7 +9,9 @@
     html, body {
       height: 100%; /* htmlとbodyがビューポートの全高を使用するように設定 */
       margin: 0;
-      padding: 0; /* bodyのpaddingをなくす */
+      /* bodyにpaddingを追加し、Recordページと左右の余白を揃えます */
+      padding: 15px; /* ここを変更 */
+      box-sizing: border-box; /* paddingがwidth/height計算に含まれるようにする */
       overflow: hidden; /* ページ全体のスクロールを禁止 */
     }
 
@@ -27,7 +29,8 @@
       flex-grow: 1; /* 利用可能なスペースを埋めるように拡張 */
       display: flex; /* containerもFlexboxコンテナにする */
       flex-direction: column; /* 子要素を縦に並べる */
-      padding: 10px 20px; /* 上下のpaddingを少し減らし、左右は維持 */
+      /* bodyにpaddingを追加したので、containerのpaddingを調整 */
+      padding: 0px 0px; /* 左右の余白はbodyのpaddingで確保されるため0に */
       box-sizing: border-box; /* paddingがサイズ計算に含まれるようにする */
     }
 
@@ -167,7 +170,12 @@
       font-size: 1vw;
       background-color: white;
       position: relative;
-      overflow: hidden; /* セル内のコンテンツがはみ出す場合にクリップ */
+      /* ここは以前hiddenにしましたが、editable内でスクロールさせるため
+         明示的に設定しない（またはvisible）にして、editableのoverflow:autoに任せます。
+         ただし、グリッドのレイアウトを壊さないためにmin/max-width/heightは維持。
+         デフォルトのoverflow: visibleでも、親要素がhiddenならそちらが優先されるため、
+         editableのoverflow: autoが効くようにします。*/
+      overflow: hidden; /* セル内のコンテンツがセルの境界を越えるのを防ぎ、editableのスクロールを可能にする */
     }
 
     .cell.selected {
@@ -186,7 +194,7 @@
       padding: 2px;
       border: none;
       outline: none;
-      overflow: auto; /* editableエリア内はスクロール可能 */
+      overflow: auto; /* ここは「B」の要望通りautoを維持します */
       white-space: pre-wrap;
       word-break: break-word;
     }
