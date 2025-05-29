@@ -22,6 +22,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+      min-height: 40px; /* record.htmlと合わせるための追加 */
     }
     
     .title-area {
@@ -42,6 +43,11 @@
       text-decoration: none;
       font-size: 14px;
       cursor: pointer;
+      transition: background-color 0.2s ease; /* record.htmlと合わせるための追加 */
+    }
+    
+    .nav-btn:hover { /* record.htmlと合わせるための変更 */
+      background-color: #3367d6; 
     }
     
     .title-input {
