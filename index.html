@@ -134,6 +134,21 @@
         font-size: 1.6vw; /* Same size as middle 'A' */
         text-shadow: 0 0 2px black; /* Outline for white text on white/light background */
     }
+
+    .black-text-btn { /* New style for black text button */
+        width: 32px;
+        height: 32px;
+        border: 1px solid #e8f0fe; /* White border */
+        border-radius: 4px;
+        background-color: black; /* Black background */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: black; /* Black text */
+        font-size: 1.6vw; /* Same size as middle 'A' */
+        text-shadow: 0 0 2px white; /* Outline for black text on black background */
+    }
     
     .grid-container {
       display: grid;
@@ -340,16 +355,17 @@
   <button class="color-btn" data-color="#3367d6" style="background-color:#3367d6;"></button>
   <button class="color-btn" data-color="#4285f4" style="background-color:#4285f4;"></button>
   <button class="color-btn" data-color="#e8f0fe" style="background-color:#e8f0fe;"></button>
-  <button class="color-btn" data-color="#555555" style="background-color:#555555;"></button> <button class="color-btn" data-color="#e0e0e0" style="background-color:#e0e0e0;"></button>
+  <button class="color-btn" data-color="#555555" style="background-color:#555555;"></button>
+  <button class="color-btn" data-color="#e0e0e0" style="background-color:#e0e0e0;"></button>
   <button class="color-btn" data-color="#ffffff" style="background-color:#ffffff;"></button>
   <button class="border-color-btn" data-border-color="#3367d6" style="border-color:#3367d6;"></button>
   <button class="border-color-btn" data-border-color="#4285f4" style="border-color:#4285f4;"></button>
-  <button class="border-color-btn" data-border-color="#555555" style="border-color:#555555;"></button> <button id="mergeBtn">integrate</button>
+  <button class="border-color-btn" data-border-color="#555555" style="border-color:#555555;"></button>
+  <button id="mergeBtn">integrate</button>
   <button id="splitBtn">separate</button>
-  <button id="insertCheckboxBtn">✅ check</button>
-  <button id="insertBoldCheckboxBtn">☑️ check</button>
-  <button id="uploadImageBtn">🖼️</button>
+  <button id="insertCheckboxBtn">✅</button> <button id="insertBoldCheckboxBtn">☑️</button> <button id="uploadImageBtn">🖼️</button>
   <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+  <button class="black-text-btn" data-text-color="black">A</button>
   <button class="white-text-btn" data-text-color="white">A</button>
   <button class="size-btn" data-size="2.56vw" style="font-size:2.56vw;">A</button>
   <button class="size-btn" data-size="1.92vw" style="font-size:1.92vw;">A</button>
@@ -748,6 +764,14 @@ document.querySelector(".white-text-btn").addEventListener("click", () => { /* N
     selectedCells.forEach((cell) => {
         const editable = cell.querySelector(".editable");
         editable.style.color = "white";
+    });
+    autoSave();
+});
+
+document.querySelector(".black-text-btn").addEventListener("click", () => { /* New event listener for black text */
+    selectedCells.forEach((cell) => {
+        const editable = cell.querySelector(".editable");
+        editable.style.color = "black";
     });
     autoSave();
 });
