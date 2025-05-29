@@ -324,7 +324,7 @@
       <button id="splitBtn">separate</button>
       <button id="insertCheckboxBtn">✅ check</button>
       <button id="insertBoldCheckboxBtn">☑️ check</button>
-      <button id="insertNoteBtn">📝 note</button> <button id="uploadImageBtn">🖼️</button>
+      <button id="uploadImageBtn">🖼️</button>
       <input type="file" id="imageInput" accept="image/*" style="display: none;" />
       <button class="size-btn" data-size="2.56vw" style="font-size:2.56vw;">A</button>
       <button class="size-btn" data-size="1.92vw" style="font-size:1.92vw;">A</button>
@@ -848,6 +848,9 @@ function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
             </div>
         `;
     } else {
+        // This 'else' block would handle the 'note' button's functionality
+        // but since it's removed, this path won't be triggered for notes.
+        // It's kept for potential future non-checkbox text insertions.
         contentToInsert = `<div><span contenteditable="true" ${isBold ? 'style="font-weight: bold;"' : ''}>${text}</span></div>`;
     }
     
@@ -871,9 +874,9 @@ document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () =>
     insertTextIntoSelectedCell("task", true, true);
 });
 
-document.getElementById("insertNoteBtn").addEventListener("click", () => {
-    insertTextIntoSelectedCell("note", false, false);
-});
+// document.getElementById("insertNoteBtn").addEventListener("click", () => { <-- This event listener was removed
+//     insertTextIntoSelectedCell("note", false, false);
+// });
 
 
 // === 画像アップロード ===
