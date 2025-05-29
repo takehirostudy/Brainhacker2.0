@@ -5,134 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brain Hacker</title>
   <style>
-    /* 全体をスクロールなしで一枚絵にするための変更 */
-    html, body {
-      height: 100%; /* htmlとbodyがビューポートの全高を使用するように設定 */
-      margin: 0;
-      /* bodyにpaddingを追加し、Recordページと左右の余白を揃えます */
-      padding: 15px; /* ここを変更 */
-      box-sizing: border-box; /* paddingがwidth/height計算に含まれるようにする */
-      overflow: hidden; /* ページ全体のスクロールを禁止 */
-    }
-
     body {
+      margin: 0;
+      padding: 20px;
       font-family: sans-serif;
       background-color: #f5f5f5;
-      display: flex; /* bodyをFlexboxコンテナにする */
-      flex-direction: column; /* 子要素を縦に並べる */
-      min-height: 100vh; /* 少なくともビューポートの高さを持つようにする */
     }
-
+    
     .container {
-      max-width: 1200px; /* ここを1600pxから1200pxに変更しました */
+      max-width: 1200px;
       margin: 0 auto;
-      flex-grow: 1; /* 利用可能なスペースを埋めるように拡張 */
-      display: flex; /* containerもFlexboxコンテナにする */
-      flex-direction: column; /* 子要素を縦に並べる */
-      /* bodyにpaddingを追加したので、containerのpaddingを調整 */
-      padding: 0px 0px; /* 左右の余白はbodyのpaddingで確保されるため0に */
-      box-sizing: border-box; /* paddingがサイズ計算に含まれるようにする */
     }
-
+    
     .header {
       display: flex;
       justify-content: space-between;
-      align-items: center; /* 中央揃えを維持 */
-      margin-bottom: 5px; /* 余白を削減 */
-      padding: 5px 0; /* 余白を削減 */
-      min-height: 30px; /* 最小高さを調整 */
-      box-sizing: border-box;
+      align-items: center;
+      margin-bottom: 20px;
     }
-
+    
     .title-area {
       flex-grow: 1;
     }
-
+    
     .nav-buttons {
       display: flex;
-      gap: 8px; /* ボタン間のスペースを削減 */
+      gap: 10px;
     }
-
+    
     .nav-btn {
-      padding: 6px 12px; /* パディングを削減 */
+      padding: 8px 15px;
       background-color: #4285f4;
       color: white;
       border: none;
       border-radius: 5px;
       text-decoration: none;
-      font-size: 13px; /* フォントサイズを少し小さく */
+      font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 32px; /* 高さを削減 */
-      box-sizing: border-box;
     }
-
-    .nav-btn:hover {
-      background-color: #3367d6;
-    }
-
+    
     .title-input {
-      font-size: 1.8em; /* フォントサイズを少し小さく */
+      font-size: 2em;
       width: 100%;
       border: none;
       background-color: transparent;
       color: #333;
       outline: none;
       text-align: center;
-      margin: 5px 0; /* 余白を削減 */
+      margin: 10px 0;
     }
-
+    
     .title-input::placeholder {
       color: #999;
     }
-
+    
     #dateDisplay {
       font-weight: bold;
-      font-size: 1.1em; /* フォントサイズを少し小さく */
-      margin-bottom: 5px; /* 余白を削減 */
+      font-size: 1.2em;
+      margin-bottom: 10px;
       color: #333;
     }
-
+    
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px; /* ボタン間のスペースを削減 */
-      margin-bottom: 10px; /* 余白を削減 */
+      gap: 6px;
+      margin-bottom: 15px;
       background-color: white;
-      padding: 5px; /* パディングを削減 */
+      padding: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-
+    
     button {
-      padding: 4px 8px; /* パディングを削減 */
-      font-size: 13px; /* フォントサイズを小さく */
+      padding: 6px 10px;
+      font-size: 14px;
       background-color: #e8f0fe;
       border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
       color: #333;
     }
-
+    
     button:hover {
       background-color: #e9e9e9;
     }
 
     .color-btn {
-      width: 20px; /* 幅を削減 */
-      height: 20px; /* 高さを削減 */
+      width: 24px;
+      height: 24px;
       border: 1px solid #ddd;
       border-radius: 4px;
       cursor: pointer;
     }
-
+    
     .size-btn {
-      width: 28px; /* 幅を削減 */
-      height: 28px; /* 高さを削減 */
+      width: 32px;
+      height: 32px;
       border: 1px solid #ddd;
       border-radius: 4px;
       background-color: #e8f0fe;
@@ -140,26 +109,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px; /* フォントサイズを小さく */
     }
-
+    
     .grid-container {
       display: grid;
       grid-template-columns: repeat(20, 1fr);
       grid-template-rows: repeat(16, 1fr);
       width: 100%;
-      height: auto; /* 高さを自動調整 */
-      flex-grow: 1; /* 利用可能なスペースを埋める */
-      overflow: hidden; /* グリッド全体のスクロールを禁止 */
-      min-height: 0; /* Flexアイテムが内容によって拡大しすぎないように */
+      height: 75vh;
       gap: 1px;
       background-color: white;
       border-radius: 5px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       padding: 2px;
-      box-sizing: border-box; /* paddingを含めて高さが計算されるように */
     }
-
+    
     .cell {
       border: 1px solid #ddd;
       display: flex;
@@ -170,18 +134,12 @@
       font-size: 1vw;
       background-color: white;
       position: relative;
-      /* ここは以前hiddenにしましたが、editable内でスクロールさせるため
-         明示的に設定しない（またはvisible）にして、editableのoverflow:autoに任せます。
-         ただし、グリッドのレイアウトを壊さないためにmin/max-width/heightは維持。
-         デフォルトのoverflow: visibleでも、親要素がhiddenならそちらが優先されるため、
-         editableのoverflow: autoが効くようにします。*/
-      overflow: hidden; /* セル内のコンテンツがセルの境界を越えるのを防ぎ、editableのスクロールを可能にする */
     }
-
+    
     .cell.selected {
       outline: 2px solid #4285f4;
     }
-
+    
     .editable {
       width: 100%;
       height: 100%;
@@ -194,18 +152,18 @@
       padding: 2px;
       border: none;
       outline: none;
-      overflow: auto; /* ここは「B」の要望通りautoを維持します */
+      overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
     }
-
+    
     .cell img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       display: block;
     }
-
+    
     /* Modal for sharing */
     .modal {
       display: none;
@@ -220,7 +178,7 @@
       justify-content: center;
       align-items: center;
     }
-
+    
     .modal-content {
       background-color: #fefefe;
       margin: auto;
@@ -229,7 +187,7 @@
       width: 80%;
       max-width: 500px;
     }
-
+    
     .close-btn {
       color: #aaa;
       float: right;
@@ -237,11 +195,11 @@
       font-weight: bold;
       cursor: pointer;
     }
-
+    
     .close-btn:hover {
       color: #333;
     }
-
+    
     .share-input {
       width: 100%;
       padding: 10px;
@@ -249,7 +207,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
-
+    
     .copy-btn {
       background-color: #4285f4;
       color: white;
@@ -351,9 +309,9 @@
         <a href="record.html" class="nav-btn">Record</a>
       </div>
     </div>
-
+    
     <input class="title-input" id="pageTitle" placeholder="Brain Hacker Home" />
-
+    
     <div class="controls">
       <button class="color-btn" data-color="#ffa500" style="background-color:#ffa500;"></button>
       <button class="color-btn" data-color="#f2c1c1" style="background-color:#f2c1c1;"></button>
@@ -366,7 +324,7 @@
       <button id="splitBtn">separate</button>
       <button id="insertCheckboxBtn">✅ check</button>
       <button id="insertBoldCheckboxBtn">☑️ check</button>
-      <button id="uploadImageBtn">🖼️</button>
+      <button id="insertNoteBtn">📝 note</button> <button id="uploadImageBtn">🖼️</button>
       <input type="file" id="imageInput" accept="image/*" style="display: none;" />
       <button class="size-btn" data-size="2.56vw" style="font-size:2.56vw;">A</button>
       <button class="size-btn" data-size="1.92vw" style="font-size:1.92vw;">A</button>
@@ -378,7 +336,7 @@
       <button id="alignTopLeftBtn">left alignment</button>
       <button id="alignCenterBtn">centered</button>
     </div>
-
+    
     <div class="grid-container" id="grid"></div>
   </div>
 
@@ -446,7 +404,7 @@ function saveState() {
     date: getTodayKey(),
     cells: state
   };
-
+  
   // Save to localStorage for daily persistence
   // encodeURIComponentとbtoaを使用してデータを圧縮（既存のindex.html.a.htmlの形式）
   localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(fullState))));
@@ -512,17 +470,17 @@ function restoreState(stateToRestore) {
           parsed.cells.forEach(c => {
             const temp = document.createElement("div");
             temp.innerHTML = c.html;
-
+            
             // 太字のチェックボックス項目を削除 (太字は持ち越さない)
             const filteredNodes = [...temp.childNodes].filter(node => {
               // <div>.checkbox-wrapper > <input> + <span> 構造に対応
               const wrapper = node.classList?.contains('checkbox-wrapper') ? node : null;
               const cb = wrapper ? wrapper.querySelector("input[type='checkbox']") : null;
               const sp = cb ? cb.nextElementSibling : null; // span.checkbox-text
-
+              
               return !(cb && sp?.style.fontWeight === "bold"); // 太字のチェックボックスをフィルタリング
             });
-
+            
             // 通常のチェックボックスのチェックと取り消し線をリセット
             filteredNodes.forEach(node => {
               const cb = node.querySelector?.("input[type='checkbox']");
@@ -530,10 +488,10 @@ function restoreState(stateToRestore) {
               if (cb && sp && !sp.style.fontWeight.includes("bold")) {
                 cb.removeAttribute("checked");
                 // クラスを削除してスタイルをリセット
-                sp.classList.remove("checked-item");
+                sp.classList.remove("checked-item"); 
               }
             });
-
+            
             const wrapper = document.createElement("div");
             filteredNodes.forEach(n => wrapper.appendChild(n.cloneNode(true)));
             c.html = wrapper.innerHTML;
@@ -582,19 +540,19 @@ function restoreState(stateToRestore) {
 
     const editable = cell.querySelector(".editable");
     const img = cell.querySelector("img");
-
+    
     editable.innerHTML = typeof data.html === 'string' ? data.html : "";
-
+    
     editable.style.fontSize = data.fontSize || "";
     editable.style.alignItems = data.alignItems || "";
     editable.style.justifyContent = data.alignItems || "";
     editable.style.textAlign = data.textAlign || "";
-
+    
     cell.style.backgroundColor = data.bgColor || "";
     cell.style.display = data.display || "flex";
     cell.style.gridRow = data.gridRow || "";
     cell.style.gridColumn = data.gridColumn || "";
-
+    
     if (data.imgSrc && data.imgSrc.startsWith("data:image/")) {
       img.src = data.imgSrc;
       img.style.display = 'block';
@@ -629,13 +587,13 @@ for (let row = 0; row < 16; row++) {
     cell.dataset.row = row;
     cell.dataset.col = col;
     cell.setAttribute("tabindex", "0");
-
+    
     const editable = document.createElement("div");
     editable.className = "editable";
     editable.setAttribute("contenteditable", "true");
-
+    
     editable.addEventListener("input", autoSave);
-
+    
     const img = document.createElement("img");
     img.style.display = "none";
 
@@ -715,7 +673,7 @@ function selectRange(start, end) {
     for (let c = minCol; c <= maxCol; c++) {
       const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
       // Only add to selection if the cell is visible
-      if (cell && cell.style.display !== 'none') {
+      if (cell && cell.style.display !== 'none') { 
         cell.classList.add("selected");
         selectedCells.push(cell);
       }
@@ -797,7 +755,7 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
   }).forEach(cell => {
       const editableContent = cell.querySelector(".editable").innerHTML.trim();
       if (editableContent && cell !== firstCell) { // Only append content from cells that are not the firstCell
-          combinedHtml += editableContent + "<br>";
+          combinedHtml += editableContent + "<br>"; 
       }
       // Clear content of cells that will be hidden
       if (cell !== firstCell) {
@@ -820,7 +778,7 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
   // Apply grid styles to the first cell
   firstCell.style.gridRow = `${minRow + 1} / span ${rowSpan}`; // Use 1-based indexing for grid-row-start
   firstCell.style.gridColumn = `${minCol + 1} / span ${colSpan}`; // Use 1-based indexing for grid-column-start
-
+  
   // Hide other selected cells and ensure their grid properties are reset
   selectedCells.forEach(cell => {
     if (cell !== firstCell) {
@@ -832,7 +790,7 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
 
   // Re-attach listeners to the merged cell's content
   attachCheckboxListeners(firstCellEditable);
-
+  
   clearSelections();
   autoSave();
 });
@@ -880,7 +838,7 @@ function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
     }
     const targetCell = selectedCells[0];
     const editable = targetCell.querySelector(".editable");
-
+    
     let contentToInsert = '';
     if (isCheckbox) {
         contentToInsert = `
@@ -890,10 +848,9 @@ function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
             </div>
         `;
     } else {
-        // note機能削除により、ここでは使用されないが、汎用関数として残す
         contentToInsert = `<div><span contenteditable="true" ${isBold ? 'style="font-weight: bold;"' : ''}>${text}</span></div>`;
     }
-
+    
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = contentToInsert.trim();
     const newElement = tempDiv.firstChild;
@@ -902,7 +859,7 @@ function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
     if (isCheckbox) {
         attachCheckboxListeners(newElement);
     }
-
+    
     autoSave();
 }
 
@@ -912,6 +869,10 @@ document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
 
 document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
     insertTextIntoSelectedCell("task", true, true);
+});
+
+document.getElementById("insertNoteBtn").addEventListener("click", () => {
+    insertTextIntoSelectedCell("note", false, false);
 });
 
 
