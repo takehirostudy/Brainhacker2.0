@@ -98,6 +98,15 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .border-color-btn { /* Added style for border color buttons */
+      width: 24px;
+      height: 24px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: white; /* Make background white to show border color clearly */
+    }
     
     .size-btn {
       width: 32px;
@@ -109,6 +118,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .white-text-btn { /* Added style for white text button */
+        width: 32px;
+        height: 32px;
+        border: 1px solid black; /* Black border */
+        border-radius: 4px;
+        background-color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white; /* White text */
+        font-size: 1.6vw; /* Same size as middle 'A' */
+        text-shadow: 0 0 2px black; /* Outline for white text on white background */
     }
     
     .grid-container {
@@ -318,12 +342,16 @@
   <button class="color-btn" data-color="#e8f0fe" style="background-color:#e8f0fe;"></button>
   <button class="color-btn" data-color="#e0e0e0" style="background-color:#e0e0e0;"></button>
   <button class="color-btn" data-color="#ffffff" style="background-color:#ffffff;"></button>
+  <button class="border-color-btn" data-border-color="#3367d6" style="border-color:#3367d6;"></button>
+  <button class="border-color-btn" data-border-color="#4285f4" style="border-color:#4285f4;"></button>
+  <button class="border-color-btn" data-border-color="#e8f0fe" style="border-color:#e8f0fe;"></button>
   <button id="mergeBtn">integrate</button>
   <button id="splitBtn">separate</button>
   <button id="insertCheckboxBtn">✅ check</button>
   <button id="insertBoldCheckboxBtn">☑️ check</button>
   <button id="uploadImageBtn">🖼️</button>
   <input type="file" id="imageInput" accept="image/*" style="display: none;" />
+  <button class="white-text-btn" data-text-color="white">A</button>
   <button class="size-btn" data-size="2.56vw" style="font-size:2.56vw;">A</button>
   <button class="size-btn" data-size="1.92vw" style="font-size:1.92vw;">A</button>
   <button class="size-btn" data-size="1.6vw" style="font-size:1.6vw;">A</button>
@@ -393,7 +421,9 @@ function saveState() {
       imgSrc: (img.src && img.src !== "undefined" && img.src !== "null" && img.style.display !== 'none') ? img.src : "",
       alignItems: editable.style.alignItems,
       justifyContent: editable.style.justifyContent,
-      textAlign: editable.style.textAlign
+      textAlign: editable.style.textAlign,
+      borderColor: cell.style.borderColor, // Save border color
+      color: editable.style.color // Save text color
     };
   });
 
@@ -530,6 +560,8 @@ function restoreState(stateToRestore) {
     cell.querySelector(".editable").style.alignItems = "";
     cell.querySelector(".editable").style.justifyContent = "";
     cell.querySelector(".editable").style.textAlign = "";
+    cell.style.borderColor = ""; // Reset border color
+    cell.querySelector(".editable").style.color = ""; // Reset text color
   });
 
   parsedCells.forEach(data => {
@@ -545,8 +577,10 @@ function restoreState(stateToRestore) {
     editable.style.alignItems = data.alignItems || "";
     editable.style.justifyContent = data.alignItems || "";
     editable.style.textAlign = data.textAlign || "";
+    editable.style.color = data.color || ""; // Restore text color
     
     cell.style.backgroundColor = data.bgColor || "";
+    cell.style.borderColor = data.borderColor || ""; // Restore border color
     cell.style.display = data.display || "flex";
     cell.style.gridRow = data.gridRow || "";
     cell.style.gridColumn = data.gridColumn || "";
@@ -690,6 +724,16 @@ document.querySelectorAll(".color-btn").forEach((button) => {
   });
 });
 
+document.querySelectorAll(".border-color-btn").forEach((button) => { /* New event listener for border color */
+  button.addEventListener("click", () => {
+    const borderColor = button.dataset.borderColor;
+    selectedCells.forEach((cell) => {
+      cell.style.borderColor = borderColor;
+    });
+    autoSave();
+  });
+});
+
 document.querySelectorAll(".size-btn").forEach((button) => {
   button.addEventListener("click", () => {
     const fontSize = button.dataset.size;
@@ -700,6 +744,15 @@ document.querySelectorAll(".size-btn").forEach((button) => {
     autoSave();
   });
 });
+
+document.querySelector(".white-text-btn").addEventListener("click", () => { /* New event listener for white text */
+    selectedCells.forEach((cell) => {
+        const editable = cell.querySelector(".editable");
+        editable.style.color = "white";
+    });
+    autoSave();
+});
+
 
 document.getElementById("mergeBtn").addEventListener("click", () => {
   if (selectedCells.length < 2) {
@@ -931,6 +984,8 @@ document.getElementById("resetBtn").addEventListener("click", () => {
       cell.querySelector(".editable").style.alignItems = "";
       cell.querySelector(".editable").style.justifyContent = "";
       cell.querySelector(".editable").style.textAlign = "";
+      cell.style.borderColor = ""; // Reset border color
+      cell.querySelector(".editable").style.color = ""; // Reset text color
     });
     document.getElementById("pageTitle").value = "Brain Hacker Home";
     undoHistory.length = 0;
@@ -972,6 +1027,8 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
           affectedCell.querySelector("img").src = "";             // Clear image
           affectedCell.querySelector("img").style.display = "none"; // Hide image
           affectedCell.style.backgroundColor = ""; // Reset background color
+          affectedCell.style.borderColor = ""; // Reset border color
+          affectedCell.querySelector(".editable").style.color = ""; // Reset text color
         }
       }
     }
