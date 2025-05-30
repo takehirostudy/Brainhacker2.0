@@ -112,7 +112,7 @@
       width: 32px;
       height: 32px;
       border: 1px solid #ddd;
-      border-radius: 4px;
+      border-radius: 4pt;
       background-color: #e8f0fe;
       cursor: pointer;
       display: flex;
@@ -361,7 +361,7 @@
   <button class="border-color-btn" data-border-color="#3367d6" style="border-color:#3367d6;"></button>
   <button class="border-color-btn" data-border-color="#4285f4" style="border-color:#4285f4;"></button>
   <button class="border-color-btn" data-border-color="#555555" style="border-color:#555555;"></button>
-  <button id="mergeBtn">integrate</button>
+  <button id="resetBorderBtn">Default Border</button> <button id="mergeBtn">integrate</button>
   <button id="splitBtn">separate</button>
   <button id="insertCheckboxBtn">✅</button>
   <button id="insertBoldCheckboxBtn">☑️</button>
@@ -749,6 +749,14 @@ document.querySelectorAll(".border-color-btn").forEach((button) => { /* New even
     });
     autoSave();
   });
+});
+
+// 追加された「Default Border」ボタンのイベントリスナー
+document.getElementById("resetBorderBtn").addEventListener("click", () => {
+  selectedCells.forEach((cell) => {
+    cell.style.borderColor = "#ddd"; // デフォルトの境界線の色
+  });
+  autoSave();
 });
 
 document.querySelectorAll(".size-btn").forEach((button) => {
