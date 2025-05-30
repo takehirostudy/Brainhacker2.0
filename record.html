@@ -362,9 +362,9 @@
       align-items: flex-start;
       margin-bottom: 2px;
       line-height: 1.2; /* 行の高さを調整 */
-      /* font-size: 0.6em !important; /* ここから移動 */
     }
-    .history-cell .checkbox-wrapper .checkbox-text { /* ここを追加 */
+    /* チェックボックスのテキストに直接適用 */
+    .history-cell .checkbox-wrapper .checkbox-text {
         font-size: 0.6em !important;
     }
     .history-cell .checkbox-wrapper br {
@@ -378,7 +378,7 @@
     .history-cell .completed-text {
         text-decoration: line-through;
         color: #888;
-        font-size: 0.6em !important; /* ここも0.6emに統一 */
+        font-size: 0.6em !important;
     }
 
     .history-cell.hidden {
@@ -743,27 +743,64 @@
 
             const editableDiv = document.createElement('div');
             editableDiv.classList.add('editable');
-            // ここで、cellInfo.fontSize を使用するのではなく、CSSで統一されたフォントサイズを優先するため削除
-            // editableDiv.style.fontSize = cellInfo.fontSize || ''; 
             editableDiv.style.alignItems = cellInfo.alignItems || '';
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
-            editableDiv.innerHTML = cellInfo.html || '';
+            
+            // ここでinnerHTMLをパースし、チェックボックスのテキストを<span>で囲む
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = cellInfo.html || '';
 
-            // Attach checkbox event listeners for modal display
-            editableDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+            tempContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                 cb.disabled = true; // モーダル内ではチェックボックスを無効化
-                // checkbox-textクラスを持つ要素に直接スタイルを適用できるようにする
-                const textSpan = cb.nextElementSibling; // または親要素を辿ってtextSpanを見つける
-                if (textSpan) {
-                    // 保存された checked 属性に基づいてスタイルを適用
-                    if (cb.hasAttribute('checked')) {
-                        textSpan.classList.add('completed-text');
-                    } else {
-                        textSpan.classList.remove('completed-text');
+                const parentWrapper = cb.closest('.checkbox-wrapper');
+                if (parentWrapper) {
+                    // checkbox-wrapper内のテキストノードを直接ターゲットにするか、
+                    // checkbox-textクラスを持つ要素が存在しない場合に新しく作成
+                    let textNode = null;
+                    // チェックボックスの直後のテキストノードを探す
+                    let nextSibling = cb.nextSibling;
+                    while (nextSibling && nextSibling.nodeType !== Node.TEXT_NODE && nextSibling.nodeName !== 'SPAN') {
+                        nextSibling = nextSibling.nextSibling;
+                    }
+
+                    if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
+                        // テキストノードが見つかった場合、それをspanで囲む
+                        textNode = nextSibling;
+                        const textSpan = document.createElement('span');
+                        textSpan.classList.add('checkbox-text');
+                        textSpan.textContent = textNode.textContent;
+                        textNode.replaceWith(textSpan);
+                        // 更新されたtextSpanをターゲットにする
+                        nextSibling = textSpan;
+                    } else if (nextSibling && nextSibling.nodeName === 'SPAN' && !nextSibling.classList.contains('checkbox-text')) {
+                         // 既存の<span>がcheckbox-textを持たない場合、追加する
+                        nextSibling.classList.add('checkbox-text');
+                    } else if (!nextSibling) {
+                        // チェックボックスの後にテキストノードやspanがない場合（改行など）、
+                        // parentWrapper内にテキストノードを探す
+                        for (const child of parentWrapper.childNodes) {
+                            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim() !== '') {
+                                textNode = child;
+                                const textSpan = document.createElement('span');
+                                textSpan.classList.add('checkbox-text');
+                                textSpan.textContent = textNode.textContent;
+                                textNode.replaceWith(textSpan);
+                                nextSibling = textSpan;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 完了したテキストにスタイルを適用
+                    if (cb.hasAttribute('checked') && nextSibling) {
+                        nextSibling.classList.add('completed-text');
+                    } else if (nextSibling) {
+                        nextSibling.classList.remove('completed-text');
                     }
                 }
             });
+            editableDiv.innerHTML = tempContainer.innerHTML;
 
             const img = document.createElement('img');
             if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
