@@ -366,6 +366,7 @@
     /* チェックボックスのテキストに直接適用 */
     .history-cell .checkbox-wrapper .checkbox-text {
         font-size: 0.6em !important;
+        font-weight: normal !important; /* 太字も上書き */
     }
     .history-cell .checkbox-wrapper br {
         display: none;
@@ -379,6 +380,21 @@
         text-decoration: line-through;
         color: #888;
         font-size: 0.6em !important;
+        font-weight: normal !important; /* 太字も上書き */
+    }
+    /* 念のため、editable内の全てのテキスト要素に適用 */
+    .history-cell .editable * {
+        font-size: inherit !important;
+        font-weight: normal !important;
+        text-decoration: none !important; /* 取り消し線はcompleted-textで制御 */
+        color: inherit !important; /* 色も上書き */
+    }
+
+    /* .completed-textは上記の*よりも特異度を高くして、取り消し線と色を適用 */
+    .history-cell .editable .completed-text {
+        text-decoration: line-through !important;
+        color: #888 !important;
+        font-weight: normal !important;
     }
 
     .history-cell.hidden {
@@ -747,60 +763,58 @@
             editableDiv.style.justifyContent = cellInfo.justifyContent || '';
             editableDiv.style.textAlign = cellInfo.textAlign || '';
             
-            // ここでinnerHTMLをパースし、チェックボックスのテキストを<span>で囲む
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = cellInfo.html || '';
+            // DOMParserを使用してHTMLをパースし、スタイルをクリーンアップ
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(cellInfo.html || '', 'text/html');
+            
+            // body要素の子ノードをeditableDivに追加する前にスタイルを調整
+            Array.from(doc.body.children).forEach(child => {
+                // すべての要素のfont-size, font-weight, text-decoration, colorスタイルを削除またはリセット
+                child.style.removeProperty('font-size');
+                child.style.removeProperty('font-weight');
+                child.style.removeProperty('text-decoration');
+                child.style.removeProperty('color');
 
-            tempContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                cb.disabled = true; // モーダル内ではチェックボックスを無効化
-                const parentWrapper = cb.closest('.checkbox-wrapper');
-                if (parentWrapper) {
-                    // checkbox-wrapper内のテキストノードを直接ターゲットにするか、
-                    // checkbox-textクラスを持つ要素が存在しない場合に新しく作成
-                    let textNode = null;
-                    // チェックボックスの直後のテキストノードを探す
-                    let nextSibling = cb.nextSibling;
-                    while (nextSibling && nextSibling.nodeType !== Node.TEXT_NODE && nextSibling.nodeName !== 'SPAN') {
-                        nextSibling = nextSibling.nextSibling;
+                // checkbox-wrapper内のinput[type="checkbox"]を見つけてdisabledにする
+                if (child.classList.contains('checkbox-wrapper')) {
+                    const checkbox = child.querySelector('input[type="checkbox"]');
+                    if (checkbox) {
+                        checkbox.disabled = true;
                     }
-
-                    if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
-                        // テキストノードが見つかった場合、それをspanで囲む
-                        textNode = nextSibling;
-                        const textSpan = document.createElement('span');
-                        textSpan.classList.add('checkbox-text');
-                        textSpan.textContent = textNode.textContent;
-                        textNode.replaceWith(textSpan);
-                        // 更新されたtextSpanをターゲットにする
-                        nextSibling = textSpan;
-                    } else if (nextSibling && nextSibling.nodeName === 'SPAN' && !nextSibling.classList.contains('checkbox-text')) {
-                         // 既存の<span>がcheckbox-textを持たない場合、追加する
-                        nextSibling.classList.add('checkbox-text');
-                    } else if (!nextSibling) {
-                        // チェックボックスの後にテキストノードやspanがない場合（改行など）、
-                        // parentWrapper内にテキストノードを探す
-                        for (const child of parentWrapper.childNodes) {
-                            if (child.nodeType === Node.TEXT_NODE && child.textContent.trim() !== '') {
-                                textNode = child;
-                                const textSpan = document.createElement('span');
-                                textSpan.classList.add('checkbox-text');
-                                textSpan.textContent = textNode.textContent;
-                                textNode.replaceWith(textSpan);
-                                nextSibling = textSpan;
-                                break;
-                            }
+                    // checkbox-wrapper内のテキストノードやspanも処理
+                    Array.from(child.childNodes).forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                            // テキストノードをspanで囲む
+                            const textSpan = document.createElement('span');
+                            textSpan.classList.add('checkbox-text');
+                            textSpan.textContent = node.textContent;
+                            node.replaceWith(textSpan);
+                        } else if (node.nodeName === 'SPAN' && !node.classList.contains('checkbox-text')) {
+                            // 既存のspanでcheckbox-textクラスがないものに追加
+                            node.classList.add('checkbox-text');
                         }
-                    }
+                    });
 
                     // 完了したテキストにスタイルを適用
-                    if (cb.hasAttribute('checked') && nextSibling) {
-                        nextSibling.classList.add('completed-text');
-                    } else if (nextSibling) {
-                        nextSibling.classList.remove('completed-text');
+                    if (checkbox && checkbox.hasAttribute('checked')) {
+                        const textElement = child.querySelector('.checkbox-text');
+                        if (textElement) {
+                            textElement.classList.add('completed-text');
+                        }
                     }
+                } else if (child.nodeName === 'SPAN' || child.nodeName === 'DIV' || child.nodeName === 'P') {
+                    // その他のテキストを含む可能性のある要素のスタイルをリセット
+                    // これにより、元のHTMLに埋め込まれたインラインスタイルが上書きされる
+                    // CSSの!importantがあるため、ここではインラインスタイルを削除するアプローチ
+                    child.style.removeProperty('font-size');
+                    child.style.removeProperty('font-weight');
+                    child.style.removeProperty('text-decoration');
+                    child.style.removeProperty('color');
                 }
+
+                // 子孫要素に対しても同様の処理を再帰的に適用する場合はここに追加 (今回は省略)
             });
-            editableDiv.innerHTML = tempContainer.innerHTML;
+            editableDiv.innerHTML = doc.body.innerHTML;
 
             const img = document.createElement('img');
             if (cellInfo.imgSrc && cellInfo.imgSrc.startsWith("data:image/")) {
