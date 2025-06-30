@@ -431,7 +431,7 @@ function saveState(addToHistory = true) { // addToHistory引数を追加
       html: editable.innerHTML,
       fontSize: editable.style.fontSize,
       bgColor: cell.style.backgroundColor,
-      display: cell.style.display,
+      display: cell.style.display, // displayプロパティを保存
       gridRow: cell.style.gridRow,
       gridColumn: cell.style.gridColumn,
       imgSrc: (img.src && img.src !== "undefined" && img.src !== "null" && img.style.display !== 'none') ? img.src : "",
@@ -492,6 +492,7 @@ function handleCheckboxChange(event) {
 
 function restoreState(stateToRestore) {
   clearSelections();
+  console.log("restoreState called.");
 
   let state;
   let loadedFromLocalStorage = false;
@@ -565,20 +566,22 @@ function restoreState(stateToRestore) {
     state = {
         title: "Brain Hacker Home",
         date: getTodayKey(),
-        cells: []
+        cells: [] // この時点ではまだ空、DOMに反映されるのは後述のループ
     };
-    console.log("No saved state found, initializing empty grid.");
+    console.log("No saved state found, initializing empty grid state object.");
   }
 
   const parsedFullState = state;
   const allGridCells = new Map();
+
   // まず全てのセルをデフォルトの状態にリセットする
-  // このループはgrid DOMが完全に構築された後で実行される必要がある
+  // この処理はgrid DOMが完全に構築された後で実行される必要があるため、DOMContentLoaded後に呼び出す
+  console.log("Resetting all cells to default state.");
   for (let r = 0; r < 16; r++) {
     for (let c = 0; c < 20; c++) {
       const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
       if (cell) {
-        cell.style.display = "flex"; // 基本的にすべてのセルを表示状態に戻す
+        cell.style.display = "flex"; // すべてのセルをデフォルトで表示
         cell.style.gridRow = "";
         cell.style.gridColumn = "";
         cell.querySelector(".editable").innerHTML = "";
@@ -597,9 +600,13 @@ function restoreState(stateToRestore) {
   }
 
   // 復元されたデータを各セルに適用
+  console.log("Applying loaded data to cells.");
   parsedFullState.cells.forEach(data => {
     const cell = allGridCells.get(`${data.row}-${data.col}`);
-    if (!cell) return;
+    if (!cell) {
+        console.warn(`Cell at ${data.row}-${data.col} not found in DOM, skipping.`);
+        return;
+    }
 
     const editable = cell.querySelector(".editable");
     const img = cell.querySelector("img");
@@ -614,19 +621,17 @@ function restoreState(stateToRestore) {
     cell.style.backgroundColor = data.bgColor || "";
     cell.style.borderColor = data.borderColor || "";
     
-    // 結合セルかどうかの判定とdisplayの適用
-    // data.displayが'none'の場合は非表示に、そうでない場合は'flex'に設定
+    // displayプロパティは保存された値を使用
     // 結合されている場合はgridRowとgridColumnも適用
     if (data.gridRow && data.gridColumn) {
         cell.style.gridRow = data.gridRow;
         cell.style.gridColumn = data.gridColumn;
-        // 結合セルでなければ'flex'、結合で非表示にされたセルなら'none'
+        // 結合によって非表示にされたセルはdisplay: noneを保持
         cell.style.display = data.display || "flex"; 
     } else {
-        // 結合されていない通常のセルは常に'flex'
+        // 結合されていない通常のセルは常に"flex"
         cell.style.display = "flex"; 
     }
-
 
     if (data.imgSrc && data.imgSrc.startsWith("data:image/")) {
       img.src = data.imgSrc;
@@ -663,8 +668,10 @@ function pageTitleInputHandler() {
 
 
 const grid = document.getElementById("grid");
-// グリッド生成前に、既存のセルをすべてクリア（リロード時の再生成対策）
-grid.innerHTML = ''; 
+// グリッド生成はDOMContentLoadedイベントの**外**に配置し、
+// HTMLパース時にDOMが構築されるようにする。
+//これにより、restoreStateが実行される時点でグリッドが確実に存在します。
+grid.innerHTML = ''; // 既存のセルをクリア（保険）
 for (let row = 0; row < 16; row++) {
   for (let col = 0; col < 20; col++) {
     const cell = document.createElement("div");
@@ -891,4 +898,300 @@ document.getElementById("mergeBtn").addEventListener("click", () => {
       firstCellEditable.innerHTML = combinedHtml + (firstCellEditable.innerHTML ? '<br>' + firstCellEditable.innerHTML : '');
   }
 
-  firstCell.style.gridRow = `${minRow +
+  firstCell.style.gridRow = `${minRow + 1} / span ${rowSpan}`;
+  firstCell.style.gridColumn = `${minCol + 1} / span ${colSpan}`;
+  firstCell.style.display = "flex";
+
+  selectedCells.forEach(cell => {
+    if (cell !== firstCell) {
+      cell.style.display = "none";
+      cell.style.gridRow = "";
+      cell.style.gridColumn = "";
+    }
+  });
+
+  attachCheckboxListeners(firstCellEditable);
+  
+  clearSelections();
+  autoSave();
+});
+
+document.getElementById("splitBtn").addEventListener("click", () => {
+  if (selectedCells.length !== 1) {
+    alert("分割するには1つのセルを選択してください。");
+    return;
+  }
+
+  const cellToSplit = selectedCells[0];
+  const row = parseInt(cellToSplit.dataset.row);
+  const col = parseInt(cellToSplit.dataset.col);
+
+  const computedStyle = window.getComputedStyle(cellToSplit);
+  const gridRowEnd = parseInt(computedStyle.gridRowEnd);
+  const gridColumnEnd = parseInt(computedStyle.gridColumnEnd);
+  const gridRowStart = parseInt(computedStyle.gridRowStart);
+  const gridColumnStart = parseInt(computedStyle.gridColumnStart);
+  
+  const currentRowSpan = gridRowEnd - gridRowStart;
+  const currentColSpan = gridColumnEnd - gridColumnStart;
+
+  cellToSplit.style.gridRow = "";
+  cellToSplit.style.gridColumn = "";
+  cellToSplit.style.display = "flex";
+
+  for (let r = row; r < row + currentRowSpan; r++) {
+    for (let c = col; c < col + currentColSpan; c++) {
+      const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+      if (cell) {
+        cell.style.display = "flex";
+        cell.style.gridRow = "";
+        cell.style.gridColumn = "";
+      }
+    }
+  }
+  clearSelections();
+  autoSave();
+});
+
+// === テキスト挿入機能 ===
+function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
+    if (selectedCells.length === 0) {
+        alert("セルを選択してください。");
+        return;
+    }
+    const targetCell = selectedCells[0];
+    const editable = targetCell.querySelector(".editable");
+    
+    let contentToInsert = '';
+    if (isCheckbox) {
+        contentToInsert = `
+            <div class="checkbox-wrapper">
+                <input type="checkbox">
+                <span contenteditable="true" class="checkbox-text" ${isBold ? 'style="font-weight: bold;"' : ''}>${text}</span>
+            </div>
+        `;
+    } else {
+        contentToInsert = `<div><span contenteditable="true" ${isBold ? 'style="font-weight: bold;"' : ''}>${text}</span></div>`;
+    }
+    
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = contentToInsert.trim();
+    const newElement = tempDiv.firstChild;
+    editable.appendChild(newElement);
+
+    if (isCheckbox) {
+        attachCheckboxListeners(newElement);
+    }
+    
+    autoSave();
+}
+
+document.getElementById("insertCheckboxBtn").addEventListener("click", () => {
+    insertTextIntoSelectedCell("task", false, true);
+});
+
+document.getElementById("insertBoldCheckboxBtn").addEventListener("click", () => {
+    insertTextIntoSelectedCell("task", true, true);
+});
+
+
+// === 画像アップロード ===
+document.getElementById("uploadImageBtn").addEventListener("click", () => {
+  if (selectedCells.length === 0) {
+    alert("画像挿入先のセルを選択してください。");
+    return;
+  }
+  document.getElementById("imageInput").click();
+});
+
+document.getElementById("imageInput").addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file && selectedCells.length > 0) {
+    const targetCell = selectedCells[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = targetCell.querySelector("img");
+      const editable = targetCell.querySelector(".editable");
+
+      editable.innerHTML = "";
+      img.src = e.target.result;
+      img.style.display = "block";
+      autoSave();
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// === Undo/Reset/Delete ===
+document.getElementById("undoBtn").addEventListener("click", () => {
+  if (undoHistory.length > 1) { // 少なくとも現在の状態とその前の状態が必要
+    undoHistory.pop(); // 現在の状態を削除
+    const previousState = undoHistory[undoHistory.length - 1]; // 1つ前の状態を取得
+    restoreState(previousState);
+    console.log("Undo successful. History size:", undoHistory.length);
+  } else {
+    alert("これ以上戻る履歴はありません。");
+  }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("現在のグリッドをリセットしますか？この操作は元に戻せません。")) {
+    localStorage.removeItem(`brainhack-${getTodayKey()}`);
+    // グリッド内のDOMを直接操作してリセット
+    for (let r = 0; r < 16; r++) {
+      for (let c = 0; c < 20; c++) {
+        const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+        if (cell) {
+          cell.style.display = "flex";
+          cell.style.gridRow = "";
+          cell.style.gridColumn = "";
+          cell.querySelector(".editable").innerHTML = "";
+          cell.querySelector("img").src = "";
+          cell.querySelector("img").style.display = "none";
+          cell.style.backgroundColor = "";
+          cell.querySelector(".editable").style.fontSize = "";
+          cell.querySelector(".editable").style.alignItems = "";
+          cell.querySelector(".editable").style.justifyContent = "";
+          cell.querySelector(".editable").style.textAlign = "";
+          cell.style.borderColor = "";
+          cell.querySelector(".editable").style.color = "";
+        }
+      }
+    }
+    document.getElementById("pageTitle").value = "Brain Hacker Home";
+    undoHistory.length = 0; // Undo履歴をクリア
+    saveState(true); // リセット後の空の状態を履歴に保存し、localStorageにも保存
+    clearSelections();
+    console.log("Grid reset.");
+  }
+});
+
+document.getElementById("deleteBtn").addEventListener("click", () => {
+  if (selectedCells.length === 0) {
+    alert("削除するセルを選択してください。");
+    return;
+  }
+
+  selectedCells.forEach((cell) => {
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    let currentRowSpan = 1;
+    let currentColSpan = 1;
+
+    if (cell.style.gridRow && cell.style.gridColumn) {
+        const computedStyle = window.getComputedStyle(cell);
+        const gridRowStart = parseInt(computedStyle.gridRowStart);
+        const gridRowEnd = parseInt(computedStyle.gridRowEnd);
+        const gridColumnStart = parseInt(computedStyle.gridColumnStart);
+        const gridColumnEnd = parseInt(computedStyle.gridColumnEnd);
+
+        currentRowSpan = gridRowEnd - gridRowStart;
+        currentColSpan = gridColumnEnd - gridColumnStart;
+        
+        if (currentRowSpan <= 0) currentRowSpan = 1;
+        if (currentColSpan <= 0) currentColSpan = 1;
+    }
+
+    for (let r = row; r < row + currentRowSpan; r++) {
+      for (let c = col; c < col + currentColSpan; c++) {
+        const affectedCell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
+        if (affectedCell) {
+          affectedCell.style.display = "flex";
+          affectedCell.style.gridRow = "";
+          affectedCell.style.gridColumn = "";
+          affectedCell.querySelector(".editable").innerHTML = "";
+          affectedCell.querySelector("img").src = "";
+          affectedCell.querySelector("img").style.display = "none";
+          affectedCell.style.backgroundColor = "";
+          affectedCell.style.borderColor = "";
+          affectedCell.querySelector(".editable").style.color = "";
+        }
+      }
+    }
+  });
+  clearSelections();
+  autoSave();
+});
+
+// === テキスト配置 ===
+document.getElementById('alignTopLeftBtn').addEventListener('click', () => {
+    selectedCells.forEach(cell => {
+        const editable = cell.querySelector('.editable');
+        editable.style.alignItems = 'flex-start';
+        editable.style.justifyContent = 'flex-start';
+        editable.style.textAlign = 'left';
+    });
+    autoSave();
+});
+
+document.getElementById('alignCenterBtn').addEventListener("click", () => {
+    selectedCells.forEach((cell) => {
+        const editable = cell.querySelector(".editable");
+        editable.style.alignItems = "center";
+        editable.style.justifyContent = "center";
+        editable.style.textAlign = "center";
+    });
+    autoSave();
+});
+
+// === シェア機能 ===
+// shareBtn, shareModal, closeShareModalBtn, shareLinkInput, copyBtn はHTML内に定義されていないため、
+// 該当するHTML要素が追加されるまで、以下のイベントリスナーは動作しません。
+// 必要に応じてHTMLにこれらの要素を追加してください。
+/*
+const shareModal = document.getElementById("shareModal");
+const shareBtn = document.getElementById("shareBtn");
+const closeShareModalBtn = shareModal.querySelector(".close-btn");
+const shareLinkInput = document.getElementById("shareLink");
+const copyBtn = document.getElementById("copyBtn");
+
+shareBtn.addEventListener("click", () => {
+  saveState();
+  const currentState = localStorage.getItem(`brainhack-${getTodayKey()}`);
+  if (currentState) {
+    const encodedState = btoa(encodeURIComponent(currentState));
+    const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodedState}`;
+    shareLinkInput.value = shareUrl;
+    shareModal.style.display = "flex";
+  } else {
+    alert("共有するデータがありません。");
+  }
+});
+
+closeShareModalBtn.addEventListener("click", () => {
+  shareModal.style.display = "none";
+});
+
+copyBtn.addEventListener("click", () => {
+  shareLinkInput.select();
+  document.execCommand("copy");
+  alert("リンクがコピーされました！");
+  shareModal.style.display = "none";
+});
+
+window.addEventListener("click", (event) => {
+  if (event.target === shareModal) {
+    shareModal.style.display = "none";
+  }
+});
+*/
+
+// === 初期ロード ===
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOMContentLoaded fired. Starting restoreState...");
+  // 保存状態を復元
+  restoreState();
+  
+  // 各editable divにinputリスナーが確実にあることを確認
+  // restoreState内で既にアタッチされているため、ここでは主に確認と重複防止
+  document.querySelectorAll('.editable').forEach(editableDiv => {
+      editableDiv.removeEventListener("input", autoSave); // 重複防止
+      editableDiv.addEventListener("input", autoSave);
+  });
+  console.log("DOMContentLoaded tasks completed.");
+});
+
+</script>
+</body>
+</html>
