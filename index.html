@@ -412,19 +412,22 @@ function autoSave() {
 const undoHistory = [];
 const MAX_HISTORY = 20; // 保存する履歴の最大数
 
-// saveState関数を修正: undoHistoryへの追加ロジックをより制御されたものにする
-function saveState(addToHistory = true) { // addToHistory引数を追加
+function saveState(addToHistory = true) {
   const state = [...document.querySelectorAll(".cell")].map(cell => {
     const editable = cell.querySelector(".editable");
     const img = cell.querySelector("img");
+    
     // チェックボックスの状態をHTMLに反映させる (重要)
     editable.querySelectorAll("input[type='checkbox']").forEach(cb => {
+      // isChecked プロパティを直接読み取る
       cb.checked ? cb.setAttribute("checked", "checked") : cb.removeAttribute("checked");
+      // また、テキストのスタイルも保存時に更新されていることを確認
       const textSpan = cb.nextElementSibling;
       if (textSpan) {
         textSpan.classList.toggle('checked-item', cb.checked);
       }
     });
+
     return {
       row: cell.dataset.row,
       col: cell.dataset.col,
@@ -432,14 +435,14 @@ function saveState(addToHistory = true) { // addToHistory引数を追加
       fontSize: editable.style.fontSize,
       bgColor: cell.style.backgroundColor,
       display: cell.style.display, // displayプロパティを保存
-      gridRow: cell.style.gridRow,
-      gridColumn: cell.style.gridColumn,
+      gridRow: cell.style.gridRow, // gridRowプロパティを保存
+      gridColumn: cell.style.gridColumn, // gridColumnプロパティを保存
       imgSrc: (img.src && img.src !== "undefined" && img.src !== "null" && img.style.display !== 'none') ? img.src : "",
       alignItems: editable.style.alignItems,
       justifyContent: editable.style.justifyContent,
       textAlign: editable.style.textAlign,
-      borderColor: cell.style.borderColor,
-      color: editable.style.color
+      borderColor: cell.style.borderColor, // 罫線色を保存
+      color: editable.style.color // 文字色を保存
     };
   });
 
@@ -451,8 +454,7 @@ function saveState(addToHistory = true) { // addToHistory引数を追加
   
   localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(fullState))));
 
-  if (addToHistory) { // addToHistoryがtrueの場合のみ履歴に追加
-    // 現在の状態がundoHistoryの最新のものと同じでなければ追加（重複保存防止）
+  if (addToHistory) {
     if (undoHistory.length === 0 || JSON.stringify(undoHistory[undoHistory.length - 1]) !== JSON.stringify(fullState)) {
       undoHistory.push(JSON.parse(JSON.stringify(fullState))); // Deep copy
       if (undoHistory.length > MAX_HISTORY) {
@@ -470,8 +472,8 @@ function saveState(addToHistory = true) { // addToHistory引数を追加
 // === チェックボックスのイベントリスナーをアタッチする共通関数 ===
 function attachCheckboxListeners(containerElement) {
     containerElement.querySelectorAll("input[type='checkbox']").forEach(cb => {
-        cb.removeEventListener("change", handleCheckboxChange); // 既存のリスナーを削除
-        cb.addEventListener("change", handleCheckboxChange); // 新しいリスナーを追加
+        cb.removeEventListener("change", handleCheckboxChange);
+        cb.addEventListener("change", handleCheckboxChange);
 
         const textSpan = cb.nextElementSibling;
         if (textSpan) {
@@ -497,7 +499,7 @@ function restoreState(stateToRestore) {
   let state;
   let loadedFromLocalStorage = false;
 
-  if (!stateToRestore) { // stateToRestoreが指定されていない場合（初期ロード時など）
+  if (!stateToRestore) {
     const compressed = localStorage.getItem(`brainhack-${getTodayKey()}`);
     if (compressed) {
       try {
@@ -509,7 +511,7 @@ function restoreState(stateToRestore) {
       }
     }
 
-    if (!state) { // 今日のデータがない、または破損している場合、昨日のデータを試す
+    if (!state) {
       const yCompressed = localStorage.getItem(`brainhack-${getYesterdayKey()}`);
       if (yCompressed) {
         try {
@@ -546,7 +548,6 @@ function restoreState(stateToRestore) {
               date: getTodayKey(),
               cells: parsed.cells
           };
-          // 昨日の状態を今日のものとしてlocalStorageに保存（今日の日付で）
           localStorage.setItem(`brainhack-${getTodayKey()}`, btoa(encodeURIComponent(JSON.stringify(state))));
           loadedFromLocalStorage = true;
           console.log("Yesterday's state loaded and saved as today's.");
@@ -555,18 +556,17 @@ function restoreState(stateToRestore) {
         }
       }
     }
-  } else { // stateToRestoreが指定されている場合（Undo時など）
+  } else {
       state = stateToRestore;
       loadedFromLocalStorage = false;
       console.log("State restored from undo history.");
   }
 
-  // 復元する状態がない場合、初期の空の状態を作成
   if (!state) {
     state = {
         title: "Brain Hacker Home",
         date: getTodayKey(),
-        cells: [] // この時点ではまだ空、DOMに反映されるのは後述のループ
+        cells: []
     };
     console.log("No saved state found, initializing empty grid state object.");
   }
@@ -575,15 +575,14 @@ function restoreState(stateToRestore) {
   const allGridCells = new Map();
 
   // まず全てのセルをデフォルトの状態にリセットする
-  // この処理はgrid DOMが完全に構築された後で実行される必要があるため、DOMContentLoaded後に呼び出す
   console.log("Resetting all cells to default state.");
   for (let r = 0; r < 16; r++) {
     for (let c = 0; c < 20; c++) {
       const cell = document.querySelector(`.cell[data-row='${r}'][data-col='${c}']`);
       if (cell) {
         cell.style.display = "flex"; // すべてのセルをデフォルトで表示
-        cell.style.gridRow = "";
-        cell.style.gridColumn = "";
+        cell.style.gridRow = ""; // gridRowプロパティをリセット
+        cell.style.gridColumn = ""; // gridColumnプロパティをリセット
         cell.querySelector(".editable").innerHTML = "";
         cell.querySelector("img").src = "";
         cell.querySelector("img").style.display = "none";
@@ -623,10 +622,10 @@ function restoreState(stateToRestore) {
     
     // displayプロパティは保存された値を使用
     // 結合されている場合はgridRowとgridColumnも適用
-    if (data.gridRow && data.gridColumn) {
-        cell.style.gridRow = data.gridRow;
-        cell.style.gridColumn = data.gridColumn;
-        // 結合によって非表示にされたセルはdisplay: noneを保持
+    if (data.gridRow && data.gridColumn) { // 結合情報がある場合
+        cell.style.gridRow = data.gridRow; // gridRowプロパティを復元
+        cell.style.gridColumn = data.gridColumn; // gridColumnプロパティを復元
+        // 結合によって非表示にされたセルはdisplay: noneを保持、それ以外はflex
         cell.style.display = data.display || "flex"; 
     } else {
         // 結合されていない通常のセルは常に"flex"
@@ -643,14 +642,13 @@ function restoreState(stateToRestore) {
 
     attachCheckboxListeners(editable); // 各セル内のチェックボックスにリスナーを再アタッチ
     editable.removeEventListener("input", autoSave); // 重複防止
-    editable.addEventListener("input", autoSave);
+    editable.addEventListener("input", autoSave); // inputイベントリスナーを再アタッチ
   });
   
   document.getElementById("pageTitle").value = parsedFullState.title || "Brain Hacker Home";
 
-  // 初期ロード時のみ、復元された状態をundoHistoryに追加
   if (stateToRestore === undefined) { 
-      saveState(true); // 今回のsaveStateはaddToHistory=trueで呼び出す
+      saveState(true);
       console.log("Initial state added to undo history.");
   }
   console.log("State restored and elements updated.");
@@ -1024,9 +1022,9 @@ document.getElementById("imageInput").addEventListener("change", (event) => {
 
 // === Undo/Reset/Delete ===
 document.getElementById("undoBtn").addEventListener("click", () => {
-  if (undoHistory.length > 1) { // 少なくとも現在の状態とその前の状態が必要
-    undoHistory.pop(); // 現在の状態を削除
-    const previousState = undoHistory[undoHistory.length - 1]; // 1つ前の状態を取得
+  if (undoHistory.length > 1) {
+    undoHistory.pop();
+    const previousState = undoHistory[undoHistory.length - 1];
     restoreState(previousState);
     console.log("Undo successful. History size:", undoHistory.length);
   } else {
