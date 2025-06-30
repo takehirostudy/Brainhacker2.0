@@ -948,6 +948,16 @@ function insertTextIntoSelectedCell(text, isBold = false, isCheckbox = false) {
         // Add an event listener to remove 'task' text when user starts typing
         const textSpan = newElement.querySelector('.checkbox-text');
         if (textSpan && textSpan.textContent.trim() === 'task') {
+            textSpan.addEventListener('keydown', function handler(e) {
+                // Allow navigation keys, etc., but clear on actual text input
+                if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Delete') {
+                    if (this.textContent.trim() === 'task') {
+                        this.textContent = '';
+                    }
+                    this.removeEventListener('keydown', handler);
+                }
+            });
+            // Also clear on focus if it's still 'task' and user just clicks in
             textSpan.addEventListener('focus', function handler() {
                 if (this.textContent.trim() === 'task') {
                     this.textContent = '';
@@ -1146,6 +1156,7 @@ window.addEventListener("click", (event) => {
 
 // === 初期ロード ===
 document.addEventListener("DOMContentLoaded", () => {
+  createGrid(); // Add this line back
   restoreState();
   document.querySelectorAll('.editable').forEach(editableDiv => {
       attachCheckboxListeners(editableDiv);
